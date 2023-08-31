@@ -1,0 +1,121 @@
+\documentclass[11pt,letterpaper]{article}
+\usepackage[left=3.5cm,right=3.5cm,top=2.5cm,bottom=2.5cm]{geometry}
+%\usepackage[spanish]{babel}
+
+\usepackage{amsmath,amsfonts,amsthm}
+\usepackage{enumitem,mathtools}
+\usepackage[english]{isodate}
+\setenumerate[0]{label=(\alph*)}
+
+\newtheorem{exercise}{Ejercicio}
+\newtheorem{example}{Ejemplo}
+\newtheorem{remark}{Observación}
+\newtheorem*{sol}{Solución}
+
+\newcommand\N{\mathbb N}
+
+\title{Notas de análisis numérico para ecuaciones diferenciales}
+\author{Jorge Alfredo Álvarez Contreras}
+
+\begin{document}
+\maketitle
+
+\section{Métodos de un paso}
+
+\subsection{Estabilidad absoluta}
+
+\begin{example}
+  Consideremos el PVI
+  \begin{equation}
+    \left\{
+    \begin{aligned}
+      y' &= -2y \\
+      y(0) &= 1
+    \end{aligned}
+    \right.
+  \end{equation}
+  La solución es, claramente, $y(t)=e^{-2t}$.
+
+  El método de Euler es
+  \begin{equation}
+    \left\{
+    \begin{aligned}
+      u_{n+1} &= u_n + hf(t_n,u_n) \\
+      u_0 &= 1
+    \end{aligned}
+    \right.
+  .\end{equation}
+  Es decir, la función de incremento es simplemente $\Phi=f$.
+  Como $\Phi(t,y)=f(t,y)=-2y$ es Lipschitz en su segundo argumento
+  podemos concluir que el método es consistente (de orden $1$).
+  También es convergente.
+  \begin{equation}
+    \left\{
+    \begin{aligned}
+      u_{n+1} &= u_n + -2u_nh = (1-2h)u_n \\
+      u_0 &= 1
+    \end{aligned}
+    \right.
+  .\end{equation}
+  
+
+\end{example}
+
+\begin{remark}
+  No todos los métodos implicitos son inconcidionalmente estables.
+\end{remark}
+
+\subsection{Ecuaciones en diferencias }
+
+Consideremos ecuaciones en diferencias de la forma
+\begin{equation}\label{eq:ec_diferencias}
+  u_{n+k} + \alpha_{k-1}u_{n+k-1}
+  + \dots +
+  \alpha_1 u_{n+1}+\alpha_0u_n
+  =
+  \phi_{n+k},
+  \quad \alpha_0 \neq 0; n=0,1,\dots
+\end{equation}
+(dados $u_0,u_1,\dots,u_{k-1}$ ).
+Si $\phi_{n+k}=0,n=0,1,\dots$, decimos que la ecuación en diferencias
+es homogénea. Si $\alpha_{k-1},\alpha_{k-2},\dots,\alpha_0$ son
+constantes, decimos que es una ecuación en diferencias con
+coeficientes constantes.
+
+Dados los valores iniciales $u_0,u_1,\dots,u_{k-1}$, se puede
+determinar $u_n$ directamente a partir de la ecuación en diferencias,
+sustituyendo sucesivamente.
+
+Consideremos el problema homogéneo y busquemos soluciones de la forma
+$u_n=r^{n}$. Entonces
+\begin{equation}
+  r^{n+k} + \alpha_{k-1}r^{n+k-1}
+  + \dots +
+  \alpha_1 r^{n+1}+\alpha_0r^n
+  =
+  0.
+\end{equation}
+Para $r=0$, obtenemos la solución trivial, así que supondremos que
+$r\neq 0$, de modo que al cancelar $r^{n}$ obtenemos
+\begin{equation}
+  r^{k} + \alpha_{k-1}r^{k-1}
+  + \dots +
+  \alpha_1 r^{1}+\alpha_0
+  =
+  0.
+\end{equation}
+El lado izquierdo de esta ecuación se es un polinomio de grado $k$ y
+se llama el polinomio característico de la ecuación en diferencias
+\eqref{eq:ec_diferencias} 
+Se denota con $\pi(r)$.
+Si $\pi(r)$ tiene $k$ raíces distintas, digamos
+$r_0,r_1,\dots,r_{k-1}$, entonces la solución general de la ecuación
+en diferencias es
+\begin{equation}\label{eq:sol_general}
+  u_n = \gamma_0r_0^{n} + \dots + \gamma_{k-1}r_{k-1}^{n}
+\end{equation}
+y, dados $u_0,\dots,u_{k-1}$, existe un conjunto único de constantes
+$\gamma_0,\dots,\gamma_{k_1}$ tal que \eqref{eq:sol_general}.
+
+
+\end{document}
