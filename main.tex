@@ -117,5 +117,81 @@ en diferencias es
 y, dados $u_0,\dots,u_{k-1}$, existe un conjunto único de constantes
 $\gamma_0,\dots,\gamma_{k_1}$ tal que \eqref{eq:sol_general}.
 
+\begin{example}
+  La sucesión de Fibonacci es la solución a la ecuación
+  \begin{equation}
+    u_{n+2} = u_{n+1} + u_n
+  \end{equation}
+  con condiciones iniciales $u_0=u_1=1$.
+  Las soluciones de la forma $u_n=r^n$ satisfacen la ecuación
+  característica
+  \begin{equation}
+    r^2 = r + 1
+  .\end{equation}
+  Es decir,
+  \begin{equation}
+    r = \frac{1\pm\sqrt 5}{2}
+  .\end{equation}
+  Por lo tanto,
+  \begin{equation}
+    u_n = \gamma_0
+    \left( \frac{1+\sqrt 5}{2} \right)^n
+    +
+    \gamma_1
+    \left( \frac{1-\sqrt 5}{2} \right)^n
+  ,\end{equation}
+  donde las constantes $\gamma_0$ y $\gamma_1$ se obtienen aplicando
+  las condiciones iniciales
+  \begin{align}
+    1 = u_0 &= \gamma_0
+    +
+    \gamma_1
+    \\
+    1 = u_1 &= \gamma_0
+    \left( \frac{1+\sqrt 5}{2} \right)
+    +
+    \gamma_1
+    \left( \frac{1-\sqrt 5}{2} \right)
+  ,\end{align}
+  Resolviendo este sistema, obtenemos
+  \begin{equation}
+    \gamma_{0,1} = \frac{1}{2} \pm \frac{\sqrt 5}{10}
+  .\end{equation}
+\end{example}
+
+Si la raíz $r_j$ tiene multiplicidad $m\geq 2$, debemos buscar
+soluciones de la forma $p(n)r^n$, donde $p$ es un polinomio en $n$ de
+grado $m-1$.
+
+\begin{example}
+  Consideremos la ecuación
+  \begin{equation}
+    u_{n+3} -2u_{n+2} - 7 u_{n+1} - 4u_n = 0
+  \end{equation}
+  con condiciones iniciales $u_0=1$, $u_1=0$, $u_{2}=-1$.
+  La ecuación característica
+  \begin{equation}
+    r^{3}-2r^{2}-7r-4 = 0
+  \end{equation}
+  tiene una raíz simple $r_0=4$ y una raíz doble $r_{1,2}=-1$.
+  Por lo tanto, la solución general es
+  \begin{equation}
+    u_n = \gamma_{0}4^n + (\gamma_1+\gamma_2n)(-1)^n
+  .\end{equation}
+  Aplicando las condiciones iniciales, obtenemos ecuaciones
+  \begin{align}
+    \gamma_0+\gamma_1 &= 1 \\
+    4\gamma_0-\gamma_1-\gamma_2 &= 0 \\
+    16\gamma_0+\gamma_1+2\gamma_2&= -1
+  \end{align}
+  con solución $\gamma_0=0$, $\gamma_1=1$, $\gamma_2=-1$.
+  Por lo tanto, la solución es
+  \begin{equation}
+    u_n = (1-n)(-1)^{n}
+  .\end{equation}
+\end{example}
+
+\section{Métodos multipaso}
+
 
 \end{document}
