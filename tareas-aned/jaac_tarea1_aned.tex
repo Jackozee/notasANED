@@ -9,6 +9,7 @@
 \newtheorem{definition}{Definición}
 \newtheorem{exercise}{Ejercicio}
 \newtheorem*{sol}{Solución}
+\newtheorem*{theorem}{Teorema}
 
 \newcommand\N{\mathbb N}
 \newcommand\R{\mathbb R}
@@ -147,8 +148,8 @@ Tarea 1 - Introducción a los métodos de un paso}
     \end{split}
   \end{equation}
   donde $\xi\in(t_n,t_{n+1})$ y $z\in\R^{2}$ es un vector en el
-  segmento que conecta a los puntos $(t_n,y_n)$ y $(t_{n+1},y_{n+1})$.
-  Notando que
+  segmento de recta que conecta a los puntos $(t_n,y_n)$ y
+  $(t_{n+1},y_{n+1})$. Notando que
   \begin{align}
     Df(t_n,y_n)((1,y'_n))
     &= \frac{\partial f}{\partial t}(t_n,y_n)
@@ -176,7 +177,24 @@ Tarea 1 - Introducción a los métodos de un paso}
     \right)
     = O(h^{2})
   .\end{equation}
-  
+  Si, por ejemplo, tenemos cotas
+  $|y'''|\leq M_1$, $|y'|\leq M_2$ en $I$ y
+  $\|D^{2}f\|\leq M_3$ en el segmento de recta que conecta a
+  $(t_n,y_n)$ con $(t_{n+1},y_{n+1})$, entonces
+  \begin{equation}
+    |\tau_{n+1}(h)|\leq \frac{h^{2}}{2}
+    \left(
+      \frac{M_1}{3} + \frac{(1+M_2^{2})M_3}{2}
+    \right)
+  \end{equation}
+  para todo $n$, así que tenemos la siguiente cota para el error de
+  truncamiento global:
+  \begin{equation}
+    \tau(h)
+    \leq
+    \left( \frac{M_1}{3} + \frac{(1+M_2^{2})M_3}{2}  \right)
+    \frac{h^{2}}{2}
+  .\end{equation}
 \end{sol}
 
 \begin{exercise}
@@ -195,6 +213,121 @@ Tarea 1 - Introducción a los métodos de un paso}
       constantes de tal manera que el orden es mayor a $2$?
   \end{enumerate}
 \end{exercise}
+\begin{sol}
+  \begin{enumerate}
+    \item
+      En los puntos $y_n$, $y_{n+1}$, tenemos
+      \begin{equation}\label{eq:sin_expandir}
+        y_{n+1}
+        = y_{n} + h[ay'_n + bf(t_n + \alpha h, y_n + \beta h y'_n)] +
+        \epsilon_{n+1}
+      .\end{equation}
+      Expandiendo en serie de Taylor hasta primer orden en $h$,
+      tenemos
+      \begin{equation}
+        y_n + hy'_{n} + O(h^{2})
+        = y_{n} + h[ay'_n + b f(t_n,y_n) + O(h)] +
+        \epsilon_{n+1}
+      \end{equation}
+      notando que $f(t_n,y_n)=y'_n$, esto es
+      \begin{equation}
+        y_n + hy'_{n} + O(h^{2})
+        = y_{n} + h(a+b)y'_n + O(h^{2}) +
+        \epsilon_{n+1}
+      .\end{equation}
+      Si se cumple $a+b=1$, los primeros dos términos de cada lado se
+      cancelan y tenemos $\epsilon_{n+1} = O(h^{2})$, por lo cual
+      \begin{equation}
+        \tau_{n+1}(h) = \frac{\epsilon_{n+1}}{h} = O(h)
+      .\end{equation}
+    \item
+      Volviendo a expandir la expresión \eqref{eq:sin_expandir} en
+      serie de Taylor, pero ahora hasta orden $2$ en $h$, obtenemos
+      \begin{equation}
+        \begin{split}
+          &\hspace{-5mm}
+          y_n + hy'_{n} + \frac{h^{2}}{2}y''_n + O(h^{3}) \\
+          &= y_{n}
+          + h[
+          ay'_n + b f(t_n,y_n) + bh Df(t_n,y_n)((\alpha, \beta y'_n))
+          + O(h^{2})]
+          + \epsilon_{n+1}
+        \end{split}
+      \end{equation}
+      De nuevo, notemos que $f(t_n,y_n)=y'_n$, así que
+      \begin{equation}
+        \begin{split}
+          &\hspace{-5mm}
+          y_n + hy'_{n} + \frac{h^{2}}{2}y''_n + O(h^{3}) \\
+          &= y_{n}
+          + h(a+b)y'_n
+          + bh^{2} Df(t_n,y_n)((\alpha, \beta y'_n))
+          + O(h^{3})
+          + \epsilon_{n+1}
+        \end{split}
+      \end{equation}
+      Como vimos antes, para que el método sea de orden $1$ (al
+      menos), debemos pedir que $a+b=1$, con lo cual se cancelan los
+      primeros dos términos de cada lado.
+      Además, si $\alpha=\beta$, entonces podemos sacar $\alpha$ del
+      término de orden $2$, el cual se convierte en un múltiplo de
+      $Df(t_n,y_n)((1,y'_n))=y''_n$, es decir:
+      \begin{equation}
+          y_n + hy'_{n} + \frac{h^{2}}{2}y''_n + O(h^{3})
+          = y_{n}
+          + hy'_n
+          + \alpha bh^{2} y''_n
+          + O(h^{3})
+          + \epsilon_{n+1}.
+      \end{equation}
+      Los primeros dos términos se cancelan. Finalmente, si requerimos
+      que $\alpha b=\frac{1}{2}$, entonces el tercer término también
+      se cancela, con lo cual obtenemos $\epsilon_{n+1}=O(h^{3})$.
+      Luego,
+      \begin{equation}
+        \tau_{n+1}(h) = \frac{\epsilon_{n+1}}{h} = O(h^{2})
+      .\end{equation}
+      En resumen, para que el método sea de orden $2$, las condiciones
+      son $a+b=1$ y $\alpha=\beta=\frac{1}{2b}$.
+    \item
+    No se pueden elegir constantes para que el método sea de orden
+    $3$. En efecto, después de imponer las condiciones para que el
+    método sea de orden $2$, tenemos
+    \begin{equation}\label{eq:nosepuede}
+      \frac{h^{3}}{3!}y'''_n + O(h^{4})
+      = b\frac{h^{3}}{2}D^{2}f(t_n,y_n)((1,y'_n),(1,y'_n))
+      + \epsilon_{n+1}
+      + O(h^{4})
+    .\end{equation}
+    Sin embargo, el término $y'''_n$ no se puede cancelar con nada del
+    lado derecho, ya que, aunque $y''_n = Df(t_n,y_n)((1,y'_n))$,
+    tenemos
+    \begin{equation}
+      y'''_n = D^{2}f(t_n,y_n)((1,y'_n),(1,y'_n)) +
+      Df(t_n,y_n)(0,y''_n)
+    \end{equation}
+    y este último término, que incluye $y''_n$, no se puede cancelar
+    con ninguna elección de $b$.
+    \iffalse
+    La elección que más simplifica la
+    expresión \eqref{eq:nosepuede} es tomar $b=\frac{1}{3}$, de modo
+    que
+    \begin{equation}
+      \frac{h^{3}}{3!}y'''_n + O(h^{4})
+      = \frac{h^{3}}{3!}D^{2}f(t_n,y_n)((1,y'_n),(1,y'_n))
+      + \epsilon_{n+1}
+      + O(h^{4})
+    \end{equation}
+    y entonces
+    \begin{equation}
+      \epsilon_{n+1}
+      =
+      \frac{h^{3}}{3!}Df(t_n,y_n)(0,y''_n)
+      + O(h^{4})
+    \end{equation}
+    \fi
+  \end{enumerate}
+\end{sol}
 
 \begin{exercise}
   Considere el método de un paso dado por
@@ -208,9 +341,102 @@ Tarea 1 - Introducción a los métodos de un paso}
   ,\end{equation}
   donde $g=f_t+ff_y$. Muestre que el método es de orden $3$.
 \end{exercise}
+\begin{sol}
+  El error residual $\epsilon_{n+1}$ satisface
+  \begin{equation}
+    y_{n+1} = y_n + h \left[
+      y'_n + \frac{h}{2}g \left(
+        t_n + \frac{1}{3}h,
+        y_n + \frac{1}{3}hy'_n
+      \right)
+    \right]
+    + \epsilon_{n+1}
+  .\end{equation}
+  Expandiendo el lado izquierdo en serie de Taylor hasta orden $3$ en
+  $h$, tenemos
+  \begin{equation}
+    y_n + hy'_n + \frac{h^{2}}{2}y''_n + \frac{h^{3}}{3!}y'''_n +
+    O(h^{4})
+    = y_n + h \left[
+      y'_n + \frac{h}{2}g \left(
+        t_n + \frac{1}{3}h,
+        y_n + \frac{1}{3}hy'_n
+      \right)
+    \right]
+    + \epsilon_{n+1}
+  \end{equation}
+  con lo cual podemos cancelar los primeros dos términos y obtener
+  \begin{equation}
+    \frac{h^{2}}{2}y''_n + \frac{h^{3}}{3!}y'''_n +
+    O(h^{4})
+    = \frac{h^{2}}{2}g \left(
+        t_n + \frac{1}{3}h,
+        y_n + \frac{1}{3}hy'_n
+      \right)
+    + \epsilon_{n+1}
+  \end{equation}
+  Ahora tenemos
+  \begin{equation}\label{eq:aquisisepudo}
+    \frac{h^{2}}{2}y''_n + \frac{h^{3}}{3!}y'''_n +
+    O(h^{4})
+    =
+    \frac{h^{2}}{2}g(t_n,y_n)
+    +
+    \frac{h^{3}}{3!}Dg(t_n,y_n)(1,y'_n) + O(h^{4})
+    + \epsilon_{n+1}.
+  \end{equation}
+  Derivando ambos lados de la igualdad $y'(t)=f(t,y(t))$, tenemos
+  \begin{align}
+    y''(t)
+    &= f_t(t,y(t))+f(t,y(t))f_y(t,y(t)) \\
+    &= f_t(t,y(t))+y'(t)f_y(t,y(t)) \\
+    &= g(t,y(t)),
+    \\
+    y'''(t)
+    &= g_t(t,y(t)) + g_y(t,y(t)) y'(t) \\
+    &= Dg(t,y(t))(1,y'(t)).
+  \end{align}
+  Por lo tanto, los primeros dos términos de cada lado de
+  \eqref{eq:aquisisepudo} se cancelan y obtenemos
+  $\epsilon_{n+1}=O(h^{4})$, de modo que
+  \begin{equation}
+    \tau _{n+1}(h) = \frac{\epsilon_{n+1}}{h} = O(h^{3})
+  ,\end{equation}
+  como se quería.
+\end{sol}
 
 \begin{exercise}
-  Demuestre el teorema de convergencia 11.2 del libro de Quarteroni:
+  Demuestre el teorema de convergencia 11.2 del libro de Quarteroni.
 \end{exercise}
+\begin{theorem}[Convergencia. p. 487]
+  Si, en el método de un paso
+  \begin{equation*}
+    u_{n+1} = u_n + h\Phi(t_n,u_n,f_n;h),
+    \quad
+    0\leq n\leq N_h-1,
+    \quad
+    u_0=y_0
+    \tag{11.11}
+  ,\end{equation*}
+  la función de incremento $\Phi$ es de Lipschitz en su segunda
+  entrada, con constante de Lipschitz $\Lambda$ independiente de $h$ 
+  y de los nodos $t_j\in[t_0,t_0+T]$, entonces se cumple
+  \begin{equation*}
+    |y_n-u_n|\leq (|y_0-u_0|+nh\tau(h))e^{nh\Lambda},
+    \quad
+    1\leq n\leq N_h
+    \tag{11.20}
+  .\end{equation*}
+  Por lo tanto, si se satisface la hipótesis de consistencia
+  \begin{equation*}
+    \lim_{h\to 0} \Phi(t_n,y_n,f(t_n,y_n);h) = f(t_n,y_n),
+    \quad
+    \forall t_n\geq t_0
+    \tag{11.13}
+  \end{equation*}
+  y $|y_0-u_0|\to 0$ cuando $h\to 0$, entonces el método es
+  convergente. Más aún, si $|y_0-u_0|=O(h^p)$ y el método tiene orden
+  $p$, entonces también tiene orden de convergencia $p$.
+\end{theorem}
 
 \end{document}
