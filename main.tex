@@ -193,5 +193,77 @@ grado $m-1$.
 
 \section{Métodos multipaso}
 
+\section{Métodos Adams}
+
+El problema de valor inicial
+\begin{equation}
+  \left\{
+    \begin{aligned}
+      y'(t) &= f(t,y(t)) \\
+      y(t_0) &= y_0
+    \end{aligned}
+  \right.
+\end{equation}
+en $I=[t_0,t_N]$, es equivalente a las ecuaciones integrales
+\begin{equation}
+  y(t_{n+1}) = y(t_n) + \int_{t_n}^{t_{n+1}}\! f(t,y(t))\,dt
+\end{equation}
+para $n=0,\dots,N-1$.
+
+La aproximación se construye como
+\begin{equation}
+  u_{n+1} = u_n + \int_{t_n}^{t_{n+1}}\Pi(t)\,dt,
+\end{equation}
+donde $\Pi(t)$ es el polinomio interpolador de $f(t,y(t))$.
+
+
+\subsection{Metodos Adams-Bashforth (explícitos)}
+Interpolar en $t_{n},t_{n-1},\dots,t_{n-p}$.
+
+\subsection{Métodos Adams-Moulton (implícitos)}
+Interpolar con $t_{n+1},t_n,\dots,t_{n-p}$.
+
+\begin{example}
+  Recordemos que el polinomio interpolador de Lagrange de grado $n$ 
+  con datos $(x_0,y_0),(x_1,y_1),\dots,(x_n,y_n)$ se construye como
+  \begin{equation}
+    \Pi(x) =  L_0(x)y_0 + L_1(x)y_1 + \dots + L_n(x)y_n
+  \end{equation}
+  donde cada $L_i(x)$ es un polinomio de grado $n$ que satisface
+  $L_i(x_j)=\delta_{ij}$. Explícitamente,
+  \begin{equation}
+    L_i(x) = \frac{\prod_{j\neq i}(x-x_j)}{\prod_{j\neq i}(x_i-x_j)}
+  .\end{equation}
+\end{example}
+
+\begin{example}
+  Interpolaremos $f(t,y(t))$ en $f_n,f_{n-1},f_{n-2}$. Entonces
+  \begin{align}
+    \Pi(t)
+    &= \frac{(t-t_{n-1})(t-t_n)}{(-h)(-2h)}f_{n-2}
+    +  \frac{(t-t_{n-2})(t-t_n)}{(h)(-h)}f_{n-1}
+    +  \frac{(t-t_{n-2})(t-t_{n-1})}{(2h)(h)}f_{n}
+    \\
+    &=
+    \frac{1}{2h^{2}}
+    \left[
+      (t-t_{n-1})(t-t_n)f_{n-2}
+    - 2(t-t_{n-2})(t-t_n)f_{n-1}
+    + (t-t_{n-2})(t-t_{n-1})f_{n}
+    \right]
+  .\end{align}
+  Cualquier polinomio $f(t)$ de grado $2$ se puede integrar como
+  \begin{equation}
+    \int_{a}^{b}f(t)\,dt = \frac{b-a}{3}[f(a)+4f((a+b)/2)+f(b)]
+  .\end{equation}
+  Así,
+  \begin{align}
+     \int_{t_n}^{t_{n+1}}\Pi(t)\,dt
+     =
+     \frac{h}{3}[\Pi(t_{n})+4\Pi(t_{n}+h / 2)+\Pi(t_{n+1})]
+  .\end{align}
+  
+\end{example}
+
 
 \end{document}
