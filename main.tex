@@ -220,9 +220,6 @@ donde $\Pi(t)$ es el polinomio interpolador de $f(t,y(t))$.
 \subsection{Metodos Adams-Bashforth (explícitos)}
 Interpolar en $t_{n},t_{n-1},\dots,t_{n-p}$.
 
-\subsection{Métodos Adams-Moulton (implícitos)}
-Interpolar con $t_{n+1},t_n,\dots,t_{n-p}$.
-
 \begin{example}
   Recordemos que el polinomio interpolador de Lagrange de grado $n$ 
   con datos $(x_0,y_0),(x_1,y_1),\dots,(x_n,y_n)$ se construye como
@@ -260,10 +257,145 @@ Interpolar con $t_{n+1},t_n,\dots,t_{n-p}$.
   \begin{align}
      \int_{t_n}^{t_{n+1}}\Pi(t)\,dt
      =
-     \frac{h}{3}[\Pi(t_{n})+4\Pi(t_{n}+h / 2)+\Pi(t_{n+1})]
+     \frac{h}{6}[\Pi(t_{n})+4\Pi(t_{n}+h / 2)+\Pi(t_{n+1})]
   .\end{align}
-  
 \end{example}
+
+\subsection{Métodos Adams-Moulton (implícitos)}
+Interpolar con $t_{n+1},t_n,\dots,t_{n-p}$.
+
+\begin{example}
+  Supongamos que $\Pi(t)$ es el polinomio interpolador únicamente en
+  un punto: $t_{n+1}$, es decir, $\Pi(t)=f_{n+1}$.
+  Por lo tanto, el método
+  \begin{equation}
+    u_{n+1} = u_n + \int_{t_n}^{t_{n+1}} \Pi(t) \,dt
+  \end{equation}
+  se reduce a
+  \begin{equation}
+    u_{n+1} = u_n + hf_{n+1}.
+  \end{equation}
+
+  Para el caso de dos puntos, interpolaremos en $t_{n+1},t_n$:
+   \begin{equation}
+    \Pi(t)
+    = \frac{t-t_{n+1}}{t_{n}-t_{n+1}}f_n
+    + \frac{t-t_n}{t_{n+1}-t_n}f_{n+1}
+  .\end{equation}
+  Como $\Pi(t)$ es de grado $1$, podemos evaluar la integral con la
+  regla trapezoidal (Simpson $\frac{1}{2}$) como sigue:
+  \begin{align}
+    u_{n+1}
+    &= u_n + \int_{t_n}^{t_{n+1}} \Pi(t) \,dt \\
+    &= u_{n} + \frac{h}{2}(\Pi(t_{n})+\Pi(t_{n+1})) \\
+    &= u_{n} + \frac{h}{2}(f_{n}+f_{n+1}).
+  \end{align}
+
+  Para el caso de tres puntos, interpolaremos en $t_{n+1},t_n,t_{n-1}$ 
+  como sigue:
+  \begin{equation}
+    \begin{split}
+      \Pi(t)
+      &=
+      \frac{(t-t_{n})(t-t_{n+1})}{(t_{n-1}-t_n)(t_{n-1}-t_{n+1})}
+      f_{n-1}
+      +
+      \frac{(t-t_{n-1})(t-t_{n+1})}{(t_{n}-t_{n-1})(t_{n}-t_{n+1})}
+      f_{n}
+      \\
+      &\quad +
+      \frac{(t-t_{n-1})(t-t_{n})}{(t_{n+1}-t_{n-1})(t_{n+1}-t_{n})}
+      f_{n+1}
+      \\
+      &=
+      \frac{(t-t_{n})(t-t_{n+1})}{(-h)(-2h)}
+      f_{n-1}
+      +
+      \frac{(t-t_{n-1})(t-t_{n+1})}{(h)(-h)}
+      f_{n}
+      +
+      \frac{(t-t_{n-1})(t-t_{n})}{(2h)(h)}
+      f_{n+1}
+      \\
+      &=
+      \frac{1}{2h^{2}}
+      \left[
+        (t-t_{n})(t-t_{n+1}) f_{n-1}
+        - (t-t_{n-1})(t-t_{n+1}) f_{n}
+        + (t-t_{n-1})(t-t_{n}) f_{n+1}
+      \right]
+    \end{split}
+  \end{equation}
+  Ahora $\Pi(t)$ es un polinomio de grado $2$, así que podemos
+  evaluarlo con la regla de Simpson $\frac{1}{3}$ como sigue:
+  \begin{align}
+    u_{n+1}
+    &= u_n + \int_{t_n}^{t_{n+1}} \Pi(t) \,dt \\
+    &= u_{n}
+    + \frac{h}{6}(\Pi(t_{n})+4\Pi(t_n + h / 2)+\Pi(t_{n+1})) \\
+    &= u_{n}
+    + \frac{h}{6}(f_{n}+4\Pi(t_n + h / 2)+f_{n+1}) \\
+    &= 
+  \end{align}
+\end{example}
+
+\subsection{Métodos BDF (backwards difference formulae)}
+
+Dado el problema
+\begin{equation}
+  y'(t)=f(t,(t))
+,\end{equation}
+la idea es aproximar $y'(t_{n+1})$ con diferencias finitas atrasadas
+de distintos órdenes (usando $t_{n+1},t_{n},t_{n-1},\dots,t_{n-p}$).
+
+\begin{example}
+  \begin{enumerate}
+    \item
+      Usando $t_{n+1},t_{n},t_{n-1}$, aproximar $y'(t_{n+1})$:
+      \begin{equation}
+        y'_{n+1} = ay_{n-1} + by_{n} + cy_{n+1}
+      .\end{equation}
+      Esto es
+      \begin{equation}
+        y'(t_{n}+h)
+        = ay(t_{n}-h) + by(t_{n}) + cy(t_n+h)
+      .\end{equation}
+      Expandiendo en serie de Taylor hasta orden $2$, esto es
+      \begin{align}
+        &\hspace{-10mm}
+        y'_n + hy''_n + \frac{h^{2}}{2}y'''_n + O(h^{3}) \\
+        &= a \left[y_n - h y'_n + \frac{h^{2}}{2}y''_n\right]
+        + b y_n
+        + c \left[y_n + hy'_n + \frac{h^{2}}{2}y''_n\right]
+        + O(h^{3})
+      .\end{align}
+      Luego, obtenemos el sistema de ecuaciones
+      \begin{align}
+        a+b+c &= 0, \\
+        -ah+ch &= 1, \\
+        \frac{ah^{2}}{2} + \frac{ch^{2}}{2} &= h,
+      \end{align}
+      que tiene solución
+      \begin{align}
+        a &= \frac{1}{2h}, &
+        b &= -\frac{2}{h}, &
+        c &= \frac{3}{2h}.
+      \end{align}
+      Aplicando la aproximación, esto es
+      \begin{align}
+        y'_{n+1}
+        &= \frac{1}{2h}y_{n-1} - \frac{2}{h}y_n + \frac{3}{2h}y_{n+1}
+        + O(h^{3})
+        \\
+        &= \frac{1}{2h}[y_{n-1} - 4y_n + 3y_{n+1}] + O(h^{3})
+      .\end{align}
+      Luego, obtenemos el método
+      \begin{equation}
+        f_{n+1} = \frac{1}{2h}[u_{n-1} - 4u_n + 3u_{n+1}]
+      .\end{equation}
+  \end{enumerate}
+\end{example}
+
 
 
 \end{document}
