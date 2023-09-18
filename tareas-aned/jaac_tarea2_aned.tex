@@ -1,0 +1,68 @@
+\documentclass[11pt]{article}
+\usepackage[left=3.5cm,right=3.5cm,top=2.5cm,bottom=2.5cm]{geometry}
+%\usepackage[spanish]{babel}
+
+\usepackage{amsmath,amsfonts,amsthm}
+\usepackage{enumitem,mathtools,graphicx}
+\setenumerate[0]{label=(\alph*)}
+
+\newtheorem{definition}{Definición}
+\newtheorem{exercise}{Ejercicio}
+\newtheorem*{sol}{Solución}
+\newtheorem*{theorem}{Teorema}
+
+\newcommand\N{\mathbb N}
+\newcommand\R{\mathbb R}
+
+\title{Análisis numérico para ecuaciones diferenciales \\
+Tarea 2 - Estabilidad absoluta, ecuaciones en diferencias finitas y
+métodos multipaso}
+\author{Jorge Alfredo Álvarez Contreras}
+
+\begin{document}
+\maketitle
+
+\begin{exercise}
+   Se sabe que al aplicar el método de Euler al problema de valores
+   iniciales $y'=y$, $y(0)=1$, se obtienen las aproximaciones
+   $u_n=(1+h)^{t_n / h}$.
+   \begin{enumerate}
+     \item
+       Demuestre que $y_n-u_n = \frac{1}{2}ht_ne^{t_n}+O(h^{2})$.
+     \item
+       Usando el resultado anterior, determine el tamaño de paso más
+       grande posible para aproximar $y(1)$ con una tolerancia de
+       $10^{-5}$. ¿Cuántos pasos de Euler se tienen que dar para
+       obtener dicha aproximación de $y(1)$?
+   \end{enumerate}
+\end{exercise}
+
+\begin{exercise}
+  Determine y grafique (con ayuda de \texttt{pyton}) la región de
+  estabilidad absoluta de los métodos
+  \begin{enumerate}
+    \item
+      Heun
+    \item
+      BDF2
+  \end{enumerate}
+\end{exercise}
+
+\begin{exercise}
+  Resuelva la ecuación en diferencias
+  \begin{equation}
+    u_{n+4} - 6u_{n+3} + 14u_{n+2} - 16 u_{n+1} + 8u_{n} = n
+  \end{equation}
+  con las condiciones $u_0=1$, $u_1=2$, $u_2=3$, $u_3=4$.
+
+  \emph{Solución: $u_n=2^n(n / 4 -1) + 2^{(n-2) / 2}\sin(n\pi /
+  4)+n+2$}.
+\end{exercise}
+
+\begin{exercise}
+  Calcule el error de truncamiento local $\tau_{n+1}(h)$ y la
+  constante de error del método de Adams-Moulton AM3.
+\end{exercise}
+
+
+\end{document}

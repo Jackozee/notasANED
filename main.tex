@@ -7,8 +7,10 @@
 \usepackage[english]{isodate}
 \setenumerate[0]{label=(\alph*)}
 
+\newtheorem{definition}{Definición}
 \newtheorem{exercise}{Ejercicio}
 \newtheorem{example}{Ejemplo}
+\newtheorem{theorem}{Teorema}
 \newtheorem{remark}{Observación}
 \newtheorem*{sol}{Solución}
 
@@ -394,8 +396,207 @@ de distintos órdenes (usando $t_{n+1},t_{n},t_{n-1},\dots,t_{n-p}$).
         f_{n+1} = \frac{1}{2h}[u_{n-1} - 4u_n + 3u_{n+1}]
       .\end{equation}
   \end{enumerate}
+\end{example}o
+
+\subsection{Análisis de los métodos multipaso}
+El método multipaso
+\begin{equation}
+  u_{n+1}
+  =
+  \sum_{j=0}^{p}a_ju_{n-j}
+  +
+  h
+  \sum_{j=0}^{p}b_jf_{n-j} + b_{-1}f_{n+1},
+  \quad
+  n=p, p+1,\dots
+\end{equation}
+tiene error de truncamiento local
+\begin{equation}
+  \tau_{n+1}
+  =
+  \frac{1}{h}
+  \left[
+    y_{n+1}
+    -
+    \sum_{j=0}^{p} a_jy_{n-j}
+    +
+    h
+    \sum_{j=1}^{p}b_{j}y'_{n-j}
+    +
+    b_{-1}f_{n+1}
+  \right]
+,\end{equation}
+donde $y_{n-j}=y(t_{n-j})$,
+$y'_{n-j}=y'(t_{n-j})=f(t_{n-j},y(t_{n-j}))$.
+El error de truncamiento global es
+\begin{equation}
+  \tau(h) = \max_n |\tau_{n}(h)|
+.\end{equation}
+
+El método es consistente si $\lim_{h\to 0}\tau(h)=0$.
+El método tiene orden $q$ si $\tau(h)=O(h^{q})$ para algún $q\geq 1$.
+Si el método tiene orden $q$, entonces
+\begin{equation}
+  \tau_{n+1}(h) = C_qh^qy^{(q+1)}(t_n) + O(h^{q+1})
+.\end{equation}
+La constante $C_q$ se llama constante de error.
+
+\begin{example}
+  Método de Euler:
+  \begin{equation}
+    u_{n+1} = u_{n} + hf_n
+  .\end{equation}
+  Entonces
+  \begin{align}
+    \tau_{n+1}
+    &= \frac{1}{h}(y_{n+1} - (y_n+hy'_n)) \\
+    &= \frac{1}{h}
+    \left(
+    y_n + hy'_n + \frac{h^{2}}{2} y''_n + O(h^{3})
+    - (y_n + hy'_n))
+    \right)
+    \\
+    &= \frac{h}{2}y''_n + O(h^{3})
+  .\end{align}
+  Así, el método de Euler es de orden $1$ y la constante de error es
+  $C_1=\frac{1}{2}$.
 \end{example}
 
+\begin{theorem}
+  El método multipaso es consistente si se cumplen las condiciones
+  \begin{equation}\label{eq:consistencia_multi}
+    \sum_{j=0}^{p}a_j = 1,
+    \qquad
+    -\sum_{j=0}^{p}ja_j + \sum_{j=-1}^{p}b_j = 1.
+  \end{equation}
+  Más aún, si $y\in C^{q+1}(I)$ para algún $q\geq 1$, entonces el
+  método es de orden $q$ si, y solo si, se satisfacen
+  \eqref{eq:consistencia_multi} y
+  \begin{equation}
+    \sum_{j=0}^{p}(-j)^{i}a_j + i \sum_{j=-1}^{p}(-j)^{i-1}b_j = 1,
+    \quad i=2,3,\dots,q
+  .\end{equation}
+\end{theorem}
+\begin{proof}
+  (Solo para la parte de consistencia).
 
+  Primero, observemos que
+  \begin{equation}
+    y_{n-j} = y_{n} - jhy'_n + O(h^{2}),
+    \qquad 
+    y'_{n-j} = y'_n + O(h)
+  .\end{equation}
+  Así,
+  \begin{align}
+    h\tau_{n+1}
+    &= y_{n+1}
+    - \sum_{j=0}^{p}a_jy_{n-j}
+    - h \sum_{j=-1}^{p}b_{j}y'_{n-j} \\
+    &= y_{n+1}
+    - \sum_{j=0}^{p}a_j(y_n - jhy'_n + O(h^{2}))
+    - h \sum_{j=-1}^{p}b_{j}(y'_{n}+O(h)) \\
+    &= y_{n+1}
+    - y_n \sum_{j=0}^{p}a_j
+    + hy'_n \sum_{j=0}^{p}ja_j
+    - hy'_n \sum_{j=-1}^{p}b_{j} + O(h^{2})
+    \\
+    &= y_{n+1} - y_n
+    + y_n\left(1-\sum_{j=0}^{p}a_j\right)
+    - hy'_n
+    \left( - \sum_{j=0}^{p}ja_j + \sum_{j=-1}^{p}b_{j} \right)
+    + O(h^{2})
+  .\end{align}
+  
+  Si se cumplen las hipotesis del teorema, el primer
+  paréntesis es $0$ y el segundo es $1$, de modo que
+  \begin{equation}
+    \tau_{n+1}
+    = \frac{y_{n+1} - y_n}{h} - y'_n + O(h)
+    = \frac{y_{n+1} - y_n}{h} - y'_n + O(h)
+    \to 0
+  \end{equation}
+  cuando $h\to 0$.
+\end{proof}
+
+\subsection{Condiciones de la raíz}
+
+El problema de prueba
+\begin{equation}
+  \left\{
+    \begin{aligned}
+      y' &= \lambda y, \\
+      y(0) &= 1.
+    \end{aligned}
+  \right.
+\end{equation}
+tiene $f(t,y)=\lambda y$. Aplicando el método multipaso, obtenemos
+\begin{equation}
+  u_{n+1}
+  =
+  \sum_{j=0}^{p}a_ju_{n-j}
+  +
+  h\lambda
+  \sum_{j=-1}^{p}b_ju_{n-j}
+  \quad
+  n=p, p+1,\dots
+\end{equation}
+la cual es una ecuación en diferencias con coeficientes constantes.
+Su polinomio característico
+\begin{equation}
+  \pi(r)
+  = 
+  r^{n+1}
+  -
+  \sum_{j=0}^{p}a_jr^{n-j}
+  -
+  h\lambda
+  \sum_{j=-1}^{p}b_jr^{n-j}
+\end{equation}
+se puede expresar en la forma
+\begin{equation}
+  \pi(r) = p(r) - h\lambda\sigma(r)
+\end{equation}
+donde
+\begin{equation}
+  \rho(r)
+  =
+  r^{p+1}
+  -
+  \sum_{j=0}^{p}a_jr^{p-j},
+  \qquad
+  \sigma(r)
+  =
+  \sum_{j=-1}^{p}b_jr^{p-j}
+.\end{equation}
+
+Si $r_i(h\lambda)$ son las raíces de $\pi(r;h\lambda)$, entonces las
+soluciones fundamentales son de la forma $u_n = [r_i(h\lambda)]^n$.
+
+\begin{definition}
+  El método satisface la \emph{condición absoluta de la raíz} si
+  existe $h_0>0$ tal que, para $h\in (0,h_0]$, entonces
+  \begin{equation}
+    |r_j(h\lambda)|<1, \quad j=0,1,\dots,p
+  .\end{equation}
+\end{definition}
+
+\begin{definition}
+  Sean $r_j=r_j(0)$ las raíces de $\rho(r)$.
+  El método multipaso satisface la \emph{condición de la raíz} si
+  todas las
+  raíces $r_i$ están contenidas en el disco unitario (cerrado) con
+  centro en el origen y, si estas caen en la frontera, entonces
+  deberán ser simples. I.e.
+  \begin{equation}
+    |r_j|\leq 1, \quad j=0,\dots,p
+    \quad \text{y} \quad
+    \text{si $|r_j|=1$, entonces } \rho'(r_j)\neq 0
+  .\end{equation}
+\end{definition}
+\begin{definition}
+  El método multipaso satisface la \emph{condición fuerte de la raíz}
+  si satisface la condición de la raíz y $r_0=1$ es la única raíz que
+  está en la frontera del disco unitario.
+\end{definition}
 
 \end{document}
