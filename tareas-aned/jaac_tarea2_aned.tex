@@ -36,6 +36,26 @@ métodos multipaso}
        obtener dicha aproximación de $y(1)$?
    \end{enumerate}
 \end{exercise}
+\begin{sol}
+  \begin{align}
+    u_{n+1}
+    = (1 + h)u_n
+  .\end{align}
+  \begin{equation}
+    r = 1 + h
+  .\end{equation}
+  
+  
+  \begin{enumerate}
+    \item
+      La solución exacta es $y(t)=e^t$, así que $y_n=e^{t_n}$.
+      \begin{align}
+        y_n - u_n
+        &= e^{t_n} - (1+h)^{t_n/h} \\
+      .\end{align}
+      
+  \end{enumerate}
+\end{sol}
 
 \begin{exercise}
   Determine y grafique (con ayuda de \texttt{pyton}) la región de

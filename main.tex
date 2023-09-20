@@ -599,4 +599,50 @@ soluciones fundamentales son de la forma $u_n = [r_i(h\lambda)]^n$.
   está en la frontera del disco unitario.
 \end{definition}
 
+\begin{definition}[Cero-estabilidad para métodos multipaso]
+  Consideremos un método multipaso y una perturbación por
+  $\delta_{n}$
+  \begin{align}
+    &\left\{
+      \begin{aligned}
+        u_{n+1}
+        &= \sum_{j=0}^{p}a_ju_{n-j}
+        + h \sum_{j=-1}^{p} b_jf_{n-j} \\
+        u_k &= w_k, \quad k=0,1,\dots,p
+      \end{aligned}
+    \right.
+    \label{eq:metodosinperturbar}
+    \\
+    &\left\{
+      \begin{aligned}
+        z_{n+1}
+        &= \sum_{j=0}^{p}a_jz_{n-j}
+        + h \sum_{j=-1}^{p} b_jf(t_{n-j},z_{n-j}) + h\delta_{n+1} \\
+        z_k &= w_k + \delta_k, \quad k=0,1,\dots,p
+      \end{aligned}
+    \right.
+  .\end{align}
+  Decimos que el método \eqref{eq:metodosinperturbar}  
+  es cero-estable si existen $h_0,C>0$ tales
+  que, para $h\in(0,h_0]$
+  \begin{equation}
+    |z_n-u_n|\leq C\epsilon, \quad 0\leq n\leq N_h
+  \end{equation}
+  siempre que $|\delta_n|<\epsilon, 0\leq n\leq N_h$.
+\end{definition}
+
+\begin{theorem}[Equivalencia de estabilidad cero y la condición de la
+  raíz]
+  Para un método multipaso consistente, la condición de la raíz es
+  equivalente a la estabilidad cero.
+\end{theorem}
+
+\begin{theorem}
+  Un método multipaso consistente es convergente si, y solo si,
+  satisface la condición de la raíz y el error en los valores
+  iniciales tiende a cero conforme $h$ tiende a cero. Más aún, el
+  método converge con orden $q$ si $\tau(h)=O(h^q)$ y el error en los
+  datos iniciales tiende a cero como $O(h^q)$.
+\end{theorem}
+
 \end{document}
