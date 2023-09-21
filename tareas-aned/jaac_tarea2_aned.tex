@@ -37,13 +37,43 @@ métodos multipaso}
    \end{enumerate}
 \end{exercise}
 \begin{sol}
+
   \begin{align}
-    u_{n+1}
-    = (1 + h)u_n
+    y_{n+1}
+    &= y_n + hy'_n + O(h^{2}) \\
+    &= (1 + h)y_n + O(h^{2}) \\
+  \end{align}
+  \begin{align}
+    u_{n+1} = (1 + h)u_n
   .\end{align}
+  asì que
   \begin{equation}
-    r = 1 + h
+    y_{n+1}-u_{n+1}
+    = (1+h)(y_n-u_n) + O(h^{2})
   .\end{equation}
+  
+  Notemos que
+  \begin{align}
+    u_n
+    &= (1+h)^{t_n/h} \\
+    &= (1+h)^{n} \\
+    &= 1 + nh + \frac{n(n-1)}{2} h^{2} + O(h^{3}) \\
+    &= 1 + t_n + \frac{t_n^{2}}{2} - \frac{ht_n}{2} + O(h^{3})
+  .\end{align}
+  
+  \begin{align}
+    y_n
+    &= e^{t_n} \\
+    &= 1 + t_n + \frac{1}{2}t_n^{2} + \frac{1}{3!}t_n^{3} + \dots \\
+  .\end{align}
+  
+  
+  \begin{align}
+    e^{t}
+    &= 1 + t + \frac{t^{2}}{2} + \frac{t^{3}}{3!} + \dots \\
+    &= 1 + t(1 + \frac{t}{2} + \frac{t^{2}}{3!} + \dots) \\
+  .\end{align}
+  
   
   
   \begin{enumerate}
@@ -52,13 +82,14 @@ métodos multipaso}
       \begin{align}
         y_n - u_n
         &= e^{t_n} - (1+h)^{t_n/h} \\
+        &= e^{t_n} - (1+h)^{n} \\
+        &= e^{t_n} - 1 - h + O(h^{2}) \\
       .\end{align}
-      
   \end{enumerate}
 \end{sol}
 
 \begin{exercise}
-  Determine y grafique (con ayuda de \texttt{pyton}) la región de
+  Determine y grafique (con ayuda de \texttt{python}) la región de
   estabilidad absoluta de los métodos
   \begin{enumerate}
     \item
