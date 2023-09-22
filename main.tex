@@ -572,7 +572,7 @@ donde
 Si $r_i(h\lambda)$ son las raíces de $\pi(r;h\lambda)$, entonces las
 soluciones fundamentales son de la forma $u_n = [r_i(h\lambda)]^n$.
 
-\begin{definition}
+\begin{definition}[Condición absoluta de la raíz]
   El método satisface la \emph{condición absoluta de la raíz} si
   existe $h_0>0$ tal que, para $h\in (0,h_0]$, entonces
   \begin{equation}
@@ -580,7 +580,7 @@ soluciones fundamentales son de la forma $u_n = [r_i(h\lambda)]^n$.
   .\end{equation}
 \end{definition}
 
-\begin{definition}
+\begin{definition}[Condición de la raíz]
   Sean $r_j=r_j(0)$ las raíces de $\rho(r)$.
   El método multipaso satisface la \emph{condición de la raíz} si
   todas las
@@ -593,7 +593,8 @@ soluciones fundamentales son de la forma $u_n = [r_i(h\lambda)]^n$.
     \text{si $|r_j|=1$, entonces } \rho'(r_j)\neq 0
   .\end{equation}
 \end{definition}
-\begin{definition}
+
+\begin{definition}[Condición fuerte de la raíz]
   El método multipaso satisface la \emph{condición fuerte de la raíz}
   si satisface la condición de la raíz y $r_0=1$ es la única raíz que
   está en la frontera del disco unitario.
@@ -632,17 +633,131 @@ soluciones fundamentales son de la forma $u_n = [r_i(h\lambda)]^n$.
 \end{definition}
 
 \begin{theorem}[Equivalencia de estabilidad cero y la condición de la
-  raíz]
+  raíz]\label{thm:estabilidad_y_raiz}
   Para un método multipaso consistente, la condición de la raíz es
   equivalente a la estabilidad cero.
 \end{theorem}
 
-\begin{theorem}
+Con esta equivalencia se puede probar el siguiente resultado de
+convergencia.
+
+\begin{theorem}[Condición de la raíz implica convergencia]
+  \label{thm:raiz_y_convergencia}
   Un método multipaso consistente es convergente si, y solo si,
   satisface la condición de la raíz y el error en los valores
   iniciales tiende a cero conforme $h$ tiende a cero. Más aún, el
   método converge con orden $q$ si $\tau(h)=O(h^q)$ y el error en los
   datos iniciales tiende a cero como $O(h^q)$.
 \end{theorem}
+
+\begin{example}
+  Consideremos el método de Euler
+  \begin{equation}
+    u_{n+1} = u_n + hf_n
+  \end{equation}
+  para el problema lineal $y'(t)=f(t,y(t))=\lambda y(t)$.
+  Tenemos
+  \begin{equation}
+    u_{n+1} = u_n + h\lambda u_n
+  .\end{equation}
+  La ecuación característica es
+  \begin{equation}
+    r - 1 - h\lambda = 0
+  .\end{equation}
+  Esta se puede escribir como
+  \begin{equation}
+    \pi(r;h\lambda) = \rho(r) - h\lambda\sigma(r) = 0
+  \end{equation}
+  con $\rho(r)=r-1$ y $\sigma(r)=1$.
+  Aquí, $\rho(r)$ solo tiene raíz simple $r_0=1$. Como esta raíz está
+  contenida en el disco unitario cerrado, el método cumple la
+  condición de la raíz. Por los teoremas
+  \ref{thm:estabilidad_y_raiz} y \ref{thm:raiz_y_convergencia}, 
+  el método es convergente.
+\end{example}
+
+\begin{example}[Métodos Adams]
+  Consideremos el método
+  \begin{equation}
+    u_{n+1} = u_n + h \sum_{j=1}^{p}b_jf_{n-j}
+  .\end{equation}
+  Aplicándolo al problema lineal $y'(t)=f(t,y(t))=\lambda y(t)$,
+  tenemos $f_{n-j}=\lambda u_{n-j}$, tenemos
+  \begin{equation}
+    u_{n+1} - u_n - \lambda h \sum_{j=1}^{p}b_ju_{n-j} = 0
+  .\end{equation}
+  Para encontrar el polinomio característico, sustituyamos
+  $u_n=r^n$:
+  \begin{equation}
+    r^{n+1} - r^n - \lambda h \sum_{j=1}^{p}b_jr^{n-j} = 0
+  .\end{equation}
+  La menor potencia de $r$ que aparece en la suma es $r^{n-p}$,
+  la cual es $1$ para $n=p$:
+  \begin{equation}
+    r^{p+1} - r^p - \lambda h \sum_{j=1}^{p}b_jr^{p-j} = 0
+  .\end{equation}
+  Poniendo $i=p-j$, tenemos $j=p-i$, donde $i$ va desde $0$ hasta
+  $p-1$:
+  \begin{equation}
+    r^{p+1} - r^p - \lambda h \sum_{i=0}^{p-1}b_{p-i}r^{i} = 0
+  .\end{equation}
+  Este es el polinomio característico buscado. Se puede escribir como
+  \begin{equation}
+    \pi(r,h\lambda) = \rho(r) - h\lambda\sigma(r)
+  \end{equation}
+  donde
+  \begin{align}
+    \rho(r) &= r^{p+1}-r^p = r^p(r-1) \\
+    \sigma(r) &= \sum_{i=0}^{p-1}b_{p-i}r^{i}
+  .\end{align}
+  Las raíces de $\rho(r)$ son $0$ (con multiplicidad $p$) y $1$ (raíz
+  simple). Como todas las raíces están en el disco unitario cerrado y
+  no hay raíces múltiples en la frontera, se cumple la condición de la
+  raíz y, por los teoremas, se sigue que los métodos son convergentes.
+\end{example}
+
+\subsection{Estabilidad absoluta}
+Al aplicar el método multipaso al problema de prueba $y'=\lambda y$,
+$y(0)=1$, los métodos multipaso se reducen a una ecuación en
+diferencias con soluciones de la forma
+\begin{equation}
+  u_n = \sum_{j=1}^{k'}
+  \left(
+    \sum_{s=0}^{m_j-1} \gamma_{s_j} n^{s}
+  \right)
+  r_{j}(h\lambda)^n
+,\end{equation}
+donde $k'$ es el número de raíces distintas de $\pi(r;h\lambda)$ y
+$m_j$ es la multiplicidad de $r_j(h\lambda)$.
+
+Al igual que en los métodos de un paso,
+\begin{equation}
+  A 
+  = \{
+    z=h\lambda
+  \mid
+  |u_n|\to 0 \text{ cuando } n\to \infty,
+  \Re(\lambda)<0
+\}
+.\end{equation}
+
+\begin{remark}
+  \begin{enumerate}
+    \item
+      Primera barrera de Dahlquist.
+      No existe método multipaso de $p$ pasos que sea cero estable con
+      orden mayor a $p+1$, si $p$ es impar, y mayor a $p+2$, si $p$ es
+      par.
+    \item
+      Segunda barrera de Dahlquist. Un método multipaso lineal
+      explícito no puede ser incondicionalmente estable ni
+      $\nu$-estable. Más aún, no existe método multipaso lineal que
+      sea incondicionalmente estable de orden mayor a $2$.
+    \item
+      Finalmente, para cualquier $\nu\in(0,\pi / 2)$ solo existen
+      métodos multipasos de $p$ pasos $\nu$-estables de orden $p$ para
+      $p=3$ y $p=4$.
+  \end{enumerate}
+\end{remark}
 
 \end{document}

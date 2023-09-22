@@ -13,6 +13,7 @@
 
 \newcommand\N{\mathbb N}
 \newcommand\R{\mathbb R}
+\newcommand\C{\mathbb C}
 
 \title{Análisis numérico para ecuaciones diferenciales \\
 Tarea 2 - Estabilidad absoluta, ecuaciones en diferencias finitas y
@@ -37,55 +38,57 @@ métodos multipaso}
    \end{enumerate}
 \end{exercise}
 \begin{sol}
-
+  Dado que $u_n=(1+h)^{t_n/h}$, tenemos
   \begin{align}
-    y_{n+1}
-    &= y_n + hy'_n + O(h^{2}) \\
-    &= (1 + h)y_n + O(h^{2}) \\
-  \end{align}
-  \begin{align}
-    u_{n+1} = (1 + h)u_n
+    \ln u_n 
+    &= \frac{t_n}{h}\ln(1+h) \\
+    &= \frac{t_n}{h}\left(h-\frac{h^{2}}{2} + O(h^{3})\right) \\
+    &= t_n - t_n \frac{h}{2} + O(h^{2})
   .\end{align}
-  asì que
+  Esto significa que tenemos una función $f(h)$, un $h_0>0$ y una
+  constante $C>0$ tales que, para todo $0<h<h_0$, se satisfacen
+  $|f(h)|\leq Ch^{2}$ y
   \begin{equation}
-    y_{n+1}-u_{n+1}
-    = (1+h)(y_n-u_n) + O(h^{2})
+    \ln u_n = t_n - t_n \frac{h}{2} + f(h)
+  .\end{equation}
+  Notemos que, para $0<h<h_0$, tenemos
+  \begin{align}
+     \left| -t_n \frac{h}{2} + f(h) \right|^{2}
+     &\leq t_n^{2} \frac{h^{2}}{4} + t_n h |f(h)| + |f(h)|^{2} \\
+     &\leq T^{2} \frac{h^{2}}{4} + t_n h Ch^{2} + C^{2}h^{4} \\
+     &\leq \left(\frac{T^{2}}{4} + t_n h_0 C + C^{2}h_0 \right)h^{2}
+  .\end{align}
+  Por lo tanto,
+  \begin{equation}
+     \left( -t_n \frac{h}{2} + f(h) \right)^{2}
+     = O(h^{2})
   .\end{equation}
   
-  Notemos que
+   
+  Luego,
   \begin{align}
     u_n
-    &= (1+h)^{t_n/h} \\
-    &= (1+h)^{n} \\
-    &= 1 + nh + \frac{n(n-1)}{2} h^{2} + O(h^{3}) \\
-    &= 1 + t_n + \frac{t_n^{2}}{2} - \frac{ht_n}{2} + O(h^{3})
+    &= e^{t_n}e^{-t_n \frac{h}{2} + f(h)} \\
+    &= e^{t_n}
+        \left(1
+         -t_n \frac{h}{2} + f(h)
+         + O\left(\left(
+         -t_n \frac{h}{2} + f(h)
+         \right)^{2}
+         \right)
+      \right) \\
+    &= 
+        e^{t_n}
+         -t_n \frac{h}{2}e^{t_n} + O(h^{2})
   .\end{align}
-  
+  Ahora, notando que la solución analítica es $y(t)=e^{t}$, tenemos
+  $y_n=e^{t_n}$, por lo cual
   \begin{align}
-    y_n
-    &= e^{t_n} \\
-    &= 1 + t_n + \frac{1}{2}t_n^{2} + \frac{1}{3!}t_n^{3} + \dots \\
-  .\end{align}
-  
-  
-  \begin{align}
-    e^{t}
-    &= 1 + t + \frac{t^{2}}{2} + \frac{t^{3}}{3!} + \dots \\
-    &= 1 + t(1 + \frac{t}{2} + \frac{t^{2}}{3!} + \dots) \\
-  .\end{align}
-  
-  
-  
-  \begin{enumerate}
-    \item
-      La solución exacta es $y(t)=e^t$, así que $y_n=e^{t_n}$.
-      \begin{align}
-        y_n - u_n
-        &= e^{t_n} - (1+h)^{t_n/h} \\
-        &= e^{t_n} - (1+h)^{n} \\
-        &= e^{t_n} - 1 - h + O(h^{2}) \\
-      .\end{align}
-  \end{enumerate}
+    y_n - u_n
+    &= e^{t_n} - u_n \\
+    &= t_n \frac{h}{2} e^{t_n} + O(h^{2})
+  ,\end{align}
+  como se quería.
 \end{sol}
 
 \begin{exercise}
@@ -98,6 +101,80 @@ métodos multipaso}
       BDF2
   \end{enumerate}
 \end{exercise}
+\begin{sol}
+  El método de Heun es
+  \begin{equation}
+    u_{n+1} = u_n + \frac{h}{2}[f_n + f(t_{n+1},u_n+hf_n)]
+  .\end{equation}
+  Para el problema de prueba $y'=y$, tenemos $f(t,y)=\lambda y$, así
+  que
+  \begin{align}
+    f_n
+      &= f(t_n,u_n)
+       = \lambda u_n \\
+    f(t_{n+1},u_{n}+hf_n)
+      &= \lambda(u_{n}+hf_n)
+       = \lambda u_n + h\lambda^{2} u_n
+  .\end{align}
+  Luego, el método es
+  \begin{align}
+    u_{n+1}
+    &= u_n + \frac{h}{2}(2\lambda u_n + h\lambda^{2} u_n) \\
+    &= \left(1 + h\lambda + \frac{1}{2}(h\lambda)^{2}\right) u_n
+  \end{align}
+  con $u_0=1$.
+  Por lo tanto, la solución es
+  \begin{equation}
+    u_n = \left(1 + h\lambda + \frac{1}{2}(h\lambda)^{2}\right)^{n}
+  .\end{equation}
+  y la región de estabilidad absoluta del método consiste en los
+  $z\in\C$ tales que
+  \begin{equation}
+    \left(1 + z + \frac{1}{2}z^{2}\right)^{n} \to 0
+  .\end{equation}
+  Esto sucede si, y solo si, 
+  \begin{equation}
+    \left|1 + z + \frac{1}{2}z^{2}\right|^{n} \to 0
+  .\end{equation}
+  lo cual sucede exactamente cuando
+  \begin{equation}
+    \left|1 + z + \frac{1}{2}z^{2}\right|^{2}<1
+  .\end{equation}
+  \begin{align}
+    \left|1 + z + \frac{1}{2}z^{2}\right|^{2}
+    &=
+    \left(1 + z + \frac{1}{2}z^{2}\right)
+    \left(1 + \bar z + \frac{1}{2}\bar z^{2}\right)
+    \\
+    &=
+    1 + \bar z + \frac{1}{2}\bar z^{2}
+    + z + z\bar z + \frac{1}{2}z\bar z^{2}
+    + \frac{1}{2}z^{2} + \frac{1}{2}z^{2}\bar z + \frac{1}{4}z^{2}\bar z^{2}
+    \\
+    &=
+    1 + 2\Re(z) + \Re(z^{2})
+    + |z|^{2} + |z|^{2}\Re(z)
+    + \frac{1}{4}|z|^{4}
+    \\
+    &=
+    1 + 2x + x^{2}-y^{2}
+    + x^{2}+y^{2} + (x^{2}+y^{2})x
+    + \frac{1}{4}(x^{2}+y^{2})^{2}
+    \\
+    &=
+    1 + 2x + 2x^{2}
+    + (x^{2}+y^{2})x
+    + \frac{1}{4}(x^{2}+y^{2})^{2}
+  .\end{align}
+  
+  Si $x,y$ son las partes real e imaginaria de $z$, entonces esto es
+  \begin{equation}
+    (1+x+iy + (x^{2}-y^{2}) / 2 + ixy)
+    (1+x-iy + (x^{2}-y^{2}) / 2 - ixy) < 1
+  .\end{equation}
+  
+  
+\end{sol}
 
 \begin{exercise}
   Resuelva la ecuación en diferencias
