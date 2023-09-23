@@ -102,78 +102,100 @@ métodos multipaso}
   \end{enumerate}
 \end{exercise}
 \begin{sol}
-  El método de Heun es
-  \begin{equation}
-    u_{n+1} = u_n + \frac{h}{2}[f_n + f(t_{n+1},u_n+hf_n)]
-  .\end{equation}
-  Para el problema de prueba $y'=y$, tenemos $f(t,y)=\lambda y$, así
-  que
-  \begin{align}
-    f_n
-      &= f(t_n,u_n)
-       = \lambda u_n \\
-    f(t_{n+1},u_{n}+hf_n)
-      &= \lambda(u_{n}+hf_n)
-       = \lambda u_n + h\lambda^{2} u_n
-  .\end{align}
-  Luego, el método es
-  \begin{align}
-    u_{n+1}
-    &= u_n + \frac{h}{2}(2\lambda u_n + h\lambda^{2} u_n) \\
-    &= \left(1 + h\lambda + \frac{1}{2}(h\lambda)^{2}\right) u_n
-  \end{align}
-  con $u_0=1$.
-  Por lo tanto, la solución es
-  \begin{equation}
-    u_n = \left(1 + h\lambda + \frac{1}{2}(h\lambda)^{2}\right)^{n}
-  .\end{equation}
-  y la región de estabilidad absoluta del método consiste en los
-  $z\in\C$ tales que
-  \begin{equation}
-    \left(1 + z + \frac{1}{2}z^{2}\right)^{n} \to 0
-  .\end{equation}
-  Esto sucede si, y solo si, 
-  \begin{equation}
-    \left|1 + z + \frac{1}{2}z^{2}\right|^{n} \to 0
-  .\end{equation}
-  lo cual sucede exactamente cuando
-  \begin{equation}
-    \left|1 + z + \frac{1}{2}z^{2}\right|^{2}<1
-  .\end{equation}
-  \begin{align}
-    \left|1 + z + \frac{1}{2}z^{2}\right|^{2}
-    &=
-    \left(1 + z + \frac{1}{2}z^{2}\right)
-    \left(1 + \bar z + \frac{1}{2}\bar z^{2}\right)
-    \\
-    &=
-    1 + \bar z + \frac{1}{2}\bar z^{2}
-    + z + z\bar z + \frac{1}{2}z\bar z^{2}
-    + \frac{1}{2}z^{2} + \frac{1}{2}z^{2}\bar z + \frac{1}{4}z^{2}\bar z^{2}
-    \\
-    &=
-    1 + 2\Re(z) + \Re(z^{2})
-    + |z|^{2} + |z|^{2}\Re(z)
-    + \frac{1}{4}|z|^{4}
-    \\
-    &=
-    1 + 2x + x^{2}-y^{2}
-    + x^{2}+y^{2} + (x^{2}+y^{2})x
-    + \frac{1}{4}(x^{2}+y^{2})^{2}
-    \\
-    &=
-    1 + 2x + 2x^{2}
-    + (x^{2}+y^{2})x
-    + \frac{1}{4}(x^{2}+y^{2})^{2}
-  .\end{align}
-  
-  Si $x,y$ son las partes real e imaginaria de $z$, entonces esto es
-  \begin{equation}
-    (1+x+iy + (x^{2}-y^{2}) / 2 + ixy)
-    (1+x-iy + (x^{2}-y^{2}) / 2 - ixy) < 1
-  .\end{equation}
-  
-  
+  \begin{enumerate}
+    \item
+      El método de Heun es
+      \begin{equation}
+        u_{n+1} = u_n + \frac{h}{2}[f_n + f(t_{n+1},u_n+hf_n)]
+      .\end{equation}
+      Para el problema de prueba $y'=y$, tenemos $f(t,y)=\lambda y$, así
+      que
+      \begin{align}
+        f_n
+          &= f(t_n,u_n)
+          = \lambda u_n \\
+        f(t_{n+1},u_{n}+hf_n)
+          &= \lambda(u_{n}+hf_n)
+          = \lambda u_n + h\lambda^{2} u_n
+      .\end{align}
+      Luego, el método es
+      \begin{align}
+        u_{n+1}
+        &= u_n + \frac{h}{2}(2\lambda u_n + h\lambda^{2} u_n) \\
+        &= \left(1 + h\lambda + \frac{1}{2}(h\lambda)^{2}\right) u_n
+      \end{align}
+      con $u_0=1$.
+      Por lo tanto, la solución es
+      \begin{equation}
+        u_n = \left(1 + h\lambda + \frac{1}{2}(h\lambda)^{2}\right)^{n}
+      .\end{equation}
+      y la región de estabilidad absoluta del método consiste en los
+      $z\in\C$ tales que
+      \begin{equation}
+        \left(1 + z + \frac{1}{2}z^{2}\right)^{n} \to 0
+      .\end{equation}
+      Esto sucede si, y solo si, 
+      \begin{equation}
+        \left|1 + z + \frac{1}{2}z^{2}\right|^{n} \to 0
+      .\end{equation}
+      lo cual sucede exactamente cuando
+      \begin{equation}
+        \left|1 + z + \frac{1}{2}z^{2}\right|^{2}<1
+      .\end{equation}
+    %  \begin{align}
+    %    \left|1 + z + \frac{1}{2}z^{2}\right|^{2}
+    %    &=
+    %    \left(1 + z + \frac{1}{2}z^{2}\right)
+    %    \left(1 + \bar z + \frac{1}{2}\bar z^{2}\right)
+    %    \\
+    %    &=
+    %    1 + \bar z + \frac{1}{2}\bar z^{2}
+    %    + z + z\bar z + \frac{1}{2}z\bar z^{2}
+    %    + \frac{1}{2}z^{2} + \frac{1}{2}z^{2}\bar z + \frac{1}{4}z^{2}\bar z^{2}
+    %    \\
+    %    &=
+    %    1 + 2\Re(z) + \Re(z^{2})
+    %    + |z|^{2} + |z|^{2}\Re(z)
+    %    + \frac{1}{4}|z|^{4}
+    %    \\
+    %    &=
+    %    1 + 2x + x^{2}-y^{2}
+    %    + x^{2}+y^{2} + (x^{2}+y^{2})x
+    %    + \frac{1}{4}(x^{2}+y^{2})^{2}
+    %    \\
+    %    &=
+    %    1 + 2x + 2x^{2}
+    %    + (x^{2}+y^{2})x
+    %    + \frac{1}{4}(x^{2}+y^{2})^{2}
+    %  .\end{align}
+      
+    %  Si $x,y$ son las partes real e imaginaria de $z$, entonces esto es
+    %  \begin{equation}
+    %    (1+x+iy + (x^{2}-y^{2}) / 2 + ixy)
+    %    (1+x-iy + (x^{2}-y^{2}) / 2 - ixy) < 1
+    %  .\end{equation}
+    \item
+      El método BDF2 es
+      \begin{equation}
+        \frac{1}{2h}(u_{n-1} - 4 u_n + 3 u_{n+1}) - f_{n+1} = 0
+      .\end{equation}
+      Para el problema de prueba $f(t,y)=\lambda y$, tenemos
+      \begin{equation}
+        u_{n-1} - 4 u_n + 3 u_{n+1} - 2h\lambda u_{n+1} = 0
+      .\end{equation}
+      Así, el polinomio característico es
+      \begin{equation}
+        \pi(r;h\lambda) = \rho(r) - h\lambda \sigma(r)
+      \end{equation}
+      donde
+      \begin{align}
+        \rho(r) &= 1 - 4 r + 3 r^{2} \\
+        \sigma(r) &= 2r^{2}
+      .\end{align}
+      Por lo tanto,
+      
+  \end{enumerate}
+    
 \end{sol}
 
 \begin{exercise}
