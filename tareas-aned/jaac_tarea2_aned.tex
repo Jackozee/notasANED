@@ -38,57 +38,100 @@ métodos multipaso}
    \end{enumerate}
 \end{exercise}
 \begin{sol}
-  Dado que $u_n=(1+h)^{t_n/h}$, tenemos
-  \begin{align}
-    \ln u_n 
-    &= \frac{t_n}{h}\ln(1+h) \\
-    &= \frac{t_n}{h}\left(h-\frac{h^{2}}{2} + O(h^{3})\right) \\
-    &= t_n - t_n \frac{h}{2} + O(h^{2})
-  .\end{align}
-  Esto significa que tenemos una función $f(h)$, un $h_0>0$ y una
-  constante $C>0$ tales que, para todo $0<h<h_0$, se satisfacen
-  $|f(h)|\leq Ch^{2}$ y
-  \begin{equation}
-    \ln u_n = t_n - t_n \frac{h}{2} + f(h)
-  .\end{equation}
-  Notemos que, para $0<h<h_0$, tenemos
-  \begin{align}
-     \left| -t_n \frac{h}{2} + f(h) \right|^{2}
-     &\leq t_n^{2} \frac{h^{2}}{4} + t_n h |f(h)| + |f(h)|^{2} \\
-     &\leq T^{2} \frac{h^{2}}{4} + t_n h Ch^{2} + C^{2}h^{4} \\
-     &\leq \left(\frac{T^{2}}{4} + t_n h_0 C + C^{2}h_0 \right)h^{2}
-  .\end{align}
-  Por lo tanto,
-  \begin{equation}
-     \left( -t_n \frac{h}{2} + f(h) \right)^{2}
-     = O(h^{2})
-  .\end{equation}
-  
-   
-  Luego,
-  \begin{align}
-    u_n
-    &= e^{t_n}e^{-t_n \frac{h}{2} + f(h)} \\
-    &= e^{t_n}
-        \left(1
-         -t_n \frac{h}{2} + f(h)
-         + O\left(\left(
-         -t_n \frac{h}{2} + f(h)
-         \right)^{2}
-         \right)
-      \right) \\
-    &= 
-        e^{t_n}
-         -t_n \frac{h}{2}e^{t_n} + O(h^{2})
-  .\end{align}
-  Ahora, notando que la solución analítica es $y(t)=e^{t}$, tenemos
-  $y_n=e^{t_n}$, por lo cual
-  \begin{align}
-    y_n - u_n
-    &= e^{t_n} - u_n \\
-    &= t_n \frac{h}{2} e^{t_n} + O(h^{2})
-  ,\end{align}
-  como se quería.
+  Para este problema, supondremos que \emph{primero} se escoge el
+  instante de tiempo que será $t_n$ y \emph{después} se escogen $h$ y
+  $n$ tales que $t_n$ sea ese instante que se había escogido de
+  antemano, de modo que podamos tomar a $t_n$ como una constante dada.
+  \begin{enumerate}
+    \item
+      Dado que $u_n=(1+h)^{t_n/h}$, tenemos
+      \begin{align}
+        \ln u_n 
+        &= \frac{t_n}{h}\ln(1+h) \\
+        &= \frac{t_n}{h}\left(h-\frac{h^{2}}{2} + O(h^{3})\right) \\
+        &= t_n - t_n \frac{h}{2} + O(h^{2})
+      .\end{align}
+      Esto significa que tenemos una función $f(h)$, un $h_0>0$ y una
+      constante $C>0$ tales que, para todo $0<h<h_0$, se satisfacen
+      $|f(h)|\leq Ch^{2}$ y
+      \begin{equation}
+        \ln u_n = t_n - t_n \frac{h}{2} + f(h)
+      .\end{equation}
+      Notemos que, para $0<h<h_0$, tenemos
+      \begin{align}
+         \left| -t_n \frac{h}{2} + f(h) \right|^{2}
+         &\leq t_n^{2} \frac{h^{2}}{4} + t_n h |f(h)| + |f(h)|^{2} \\
+         &\leq T^{2} \frac{h^{2}}{4} + t_n h Ch^{2} + C^{2}h^{4} \\
+         &\leq
+         \left(\frac{T^{2}}{4} + t_n h_0 C + C^{2}h_0 \right)h^{2}
+      .\end{align}
+      Por lo tanto,
+      \begin{equation}
+         \left( -t_n \frac{h}{2} + f(h) \right)^{2}
+         = O(h^{2})
+      .\end{equation}
+      
+       
+      Luego,
+      \begin{align}
+        u_n
+        &= e^{t_n}e^{-t_n \frac{h}{2} + f(h)} \\
+        &= e^{t_n}
+            \left(1
+             -t_n \frac{h}{2} + f(h)
+             + O\left(\left(
+             -t_n \frac{h}{2} + f(h)
+             \right)^{2}
+             \right)
+          \right) \\
+        &= 
+            e^{t_n}
+             -t_n \frac{h}{2}e^{t_n} + O(h^{2})
+      .\end{align}
+      Ahora, notando que la solución analítica es $y(t)=e^{t}$,
+      tenemos $y_n=e^{t_n}$, por lo cual
+      \begin{align}
+        y_n - u_n
+        &= e^{t_n} - u_n \\
+        &= t_n \frac{h}{2} e^{t_n} + O(h^{2})
+      ,\end{align}
+      como se quería.
+    \item
+      Ahora supongamos que queremos aproximar $y(1)$ con una
+      tolerancia de $10^{-5}$. Es decir, aproximando en el intervalo
+      $[0,1]$, queremos que
+       \begin{equation}
+        |y_{N_h}-u_{N_h}| < 10^{-5}
+      \end{equation}
+      donde $N_h$ es el mayor entero con $hN_h\leq 1$.
+      Despreciando el término cuadrático en $h$, esto es
+       \begin{equation}
+        \frac{1}{2}he < 10^{-5}
+      \end{equation}
+      o bien,
+      \begin{equation}
+        h < 2e^{-1}10^{-5}
+      .\end{equation}
+      Por lo tanto,
+      \begin{equation}
+        N_h
+        = \left\lfloor \frac{1}{h} \right\rfloor
+        = \left\lfloor \frac{10^{5}e}{2} \right\rfloor
+        = 135914
+      .\end{equation}
+      En efecto, al aplicar el método con $h=7.5758\cdot 10^{-6}
+      \approx 2e^{-1}10^{-5}$ y graficar el error, obtenemos
+      \begin{center}
+      \includegraphics[width=0.7\textwidth]
+      {img/jaac_tarea2_ejercicio1.png}
+      \end{center}
+      aunque esto parece una mera casualidad, ya que al disminuir $h$ 
+      (por ejemplo, $h=7.5755\cdot 10^{-6}$, $h=7.5753\cdot 10^{-6}$)
+      el error aumenta y luego vuelve a subir. Supongo que esto es por
+      problemas de redondeo. Sin embargo, al menos el error se
+      mantiene en el mismo orden de magnitud, lo cual nos dice que la
+      teoría no está tan mal.
+  \end{enumerate}
 \end{sol}
 
 \begin{exercise}
@@ -108,8 +151,8 @@ métodos multipaso}
       \begin{equation}
         u_{n+1} = u_n + \frac{h}{2}[f_n + f(t_{n+1},u_n+hf_n)]
       .\end{equation}
-      Para el problema de prueba $y'=y$, tenemos $f(t,y)=\lambda y$, así
-      que
+      Para el problema de prueba $y'=y$, tenemos $f(t,y)=\lambda y$,
+      así que
       \begin{align}
         f_n
           &= f(t_n,u_n)
@@ -127,7 +170,8 @@ métodos multipaso}
       con $u_0=1$.
       Por lo tanto, la solución es
       \begin{equation}
-        u_n = \left(1 + h\lambda + \frac{1}{2}(h\lambda)^{2}\right)^{n}
+        u_n
+        = \left(1 + h\lambda + \frac{1}{2}(h\lambda)^{2}\right)^{n}
       .\end{equation}
       y la región de estabilidad absoluta del método consiste en los
       $z\in\C$ tales que
@@ -174,6 +218,12 @@ métodos multipaso}
     %    (1+x+iy + (x^{2}-y^{2}) / 2 + ixy)
     %    (1+x-iy + (x^{2}-y^{2}) / 2 - ixy) < 1
     %  .\end{equation}
+      No pude sacar una forma explícita para esta región pero hice un
+      muestreo aleatorio y obtuve la siguiente gráfica:
+      \begin{center}
+      \includegraphics[width=0.7\textwidth]{img/jaac_tarea2_ejercicio2.png}
+      \end{center}
+        
     \item
       El método BDF2 es
       \begin{equation}
@@ -183,7 +233,13 @@ métodos multipaso}
       \begin{equation}
         u_{n-1} - 4 u_n + 3 u_{n+1} - 2h\lambda u_{n+1} = 0
       .\end{equation}
-      Así, el polinomio característico es
+      Sustituyendo $u_n$ por $r^{n}$ del lado izquierdo y
+      tomando $n=1$ obtenemos el polinomio característico
+      \begin{align}
+        \pi(r;h\lambda)
+        &= r - 4 r + 3 r^{2} - 2h\lambda r^{2}
+      \end{align}
+      que se puede escribir como
       \begin{equation}
         \pi(r;h\lambda) = \rho(r) - h\lambda \sigma(r)
       \end{equation}
@@ -192,10 +248,7 @@ métodos multipaso}
         \rho(r) &= 1 - 4 r + 3 r^{2} \\
         \sigma(r) &= 2r^{2}
       .\end{align}
-      Por lo tanto,
-      
   \end{enumerate}
-    
 \end{sol}
 
 \begin{exercise}
@@ -208,11 +261,321 @@ métodos multipaso}
   \emph{Solución: $u_n=2^n(n / 4 -1) + 2^{(n-2) / 2}\sin(n\pi /
   4)+n+2$}.
 \end{exercise}
+\begin{sol}
+  El polinomio característico $p(r)$ de la ecuación homogénea asociada
+  se obtiene tomando el lado izquierdo, sustituyendo $u_n=r^{n}$ y
+  poniendo $n=0$:
+  \begin{equation}\label{eq:charpol}
+    p(r) = r^{4} - 6r^{3} + 14r^{2} - 16 r + 8 
+  \end{equation}
+  Por el teorema de las raíces racionales, las únicas posibles raíces
+  racionales son $r=\pm 1, 2, 4, 8$, pero solo $r=2$ anula al
+  polinomio. De hecho, es una raíz doble, pues la derivada
+  $p'(r)=4r^{3}-18r^{2}+24r-16$ también se anula en $r=2$.
+  Pongamos $r_{1,2}=2$.
+  Después de dividir \eqref{eq:charpol} entre $(r-2)^{2}$, obtenemos
+  \begin{equation}
+    r^{2}-2r+2
+  \end{equation}
+  que tiene raìces $r_{2,3}=1\pm i$.
+  Luego, la solución de la ecuación homogénea es
+  \begin{equation}
+    u_n
+    = (\gamma_1 + \gamma_2 n) 2^{n}
+    + \gamma_3(1+i)^{n}
+    + \gamma_4(1-i)^{n}
+  .\end{equation}
+  Para que la solución sea real, tomemos $\gamma_1$ y $\gamma_2$
+  reales y pidamos que $\gamma_4=\gamma_3$, de
+  modo que redefiniendo $\gamma_3$ como 
+\end{sol}
 
 \begin{exercise}
   Calcule el error de truncamiento local $\tau_{n+1}(h)$ y la
   constante de error del método de Adams-Moulton AM3.
 \end{exercise}
+\begin{sol}
+  El método es
+  \begin{equation}
+    u_{n+1} = u_n + \frac{h}{12}(5f_{n+1}+8f_n-f_{n-1})
+  .\end{equation}
+  Sustituyendo $u_n$ con $y_n$ y $f_n$ con $f(t_n,y_n)=y'_n$,
+  obtenemos la ecuación que satisface el error residual:
+  \begin{equation}
+    y_{n+1}
+    = y_n
+    + \frac{h}{12}[5y'_{n+1}+8y'_n-y'_{n-1}]
+    + \epsilon_{n+1}
+  .\end{equation}
+  Es decir,
+  \begin{equation}
+    \epsilon_{n+1}
+    = y_{n+1}
+    - y_n
+    - \frac{h}{12}[5y'_{n+1}+8y'_n-y'_{n-1}]
+  .\end{equation}
+  Expandiendo hasta orden $4$ en $h$, tenemos
+  \begin{align}
+    \epsilon_{n+1}
+    &= y_n + hy'_n
+      + \frac{h^{2}}{2}y''_n
+      + \frac{h^{3}}{3!}y'''_n
+      + \frac{h^{4}}{4!} y''''_n
+      - y_n
+    \\
+    &\quad
+      - \frac{5h}{12}
+      \left(
+        y'_{n}+hy''_n
+        + \frac{h^{2}}{2}y'''_n
+        + \frac{h^{3}}{3!}y''''_n
+      \right) \\
+    &\quad - \frac{8h}{12}y'_n \\
+    &\quad
+      + \frac{h}{12}
+      \left(
+        y'_{n}
+        - hy''_n
+        + \frac{h^{2}}{2}y'''_n
+        - \frac{h^{3}}{3!}y''''_n
+      \right)
+      + O(h^{5})
+    \\
+    &= \frac{h}{12}
+      \left(
+        12y'_n
+        + 6hy''_n
+        + 2h^{2}y'''_n
+        + \frac{h^{3}}{2} y''''_n
+      \right)
+    \\
+    &\quad
+      + \frac{h}{12}
+      \left(
+        - 5y'_{n}
+        - 5hy''_n
+        - \frac{5h^{2}}{2}y'''_n
+        - \frac{5h^{3}}{6}y''''_n
+      \right) \\
+    &\quad
+      - \frac{h}{12}8y'_n \\
+    &\quad
+      + \frac{h}{12}
+      \left(
+        y'_{n}
+        - hy''_n
+        + \frac{h^{2}}{2}y'''_n
+        - \frac{h^{3}}{6}y''''_n
+      \right)
+    + O(h^{5})
+    \\
+    &= -\frac{h^{4}}{24}
+      y''''_n
+    + O(h^{5})
+  .\end{align}
+  Por lo tanto, el error de truncamiento local es
+  \begin{equation}
+    \tau_{n+1} = \frac{\epsilon_{n+1}}{h}
+    = -\frac{h^{3}}{24}
+      y''''_n
+    + O(h^{4})
+  .\end{equation}
+  Así, el método tiene orden $3$ y la constante del error es
+  \begin{equation}
+    C_3 = -\frac{1}{24}
+  ,\end{equation}
+  ya que
+  \begin{equation}
+    \tau_{n+1} = C_3h^{3} y^{(4)}_n + O(h^{4})
+  .\end{equation}
+\end{sol}
+
+\begin{exercise}
+  Resuelva por su cuenta el ejemplo 11.9 de la página 507 del libro de
+  Quarteroni. Para esto, produzca una gráfica como la que se encuentra
+  en la figura 11.8, pero simplemente usando la implementación
+  $P(EC)^{m}$.
+\end{exercise}
+
+\begin{exercise}
+  Considere el método
+  \begin{equation}
+    u_{n+1}
+    = -\frac{3}{2}u_n + 3u_{n-1} - \frac{1}{2}u_{n-2} + 3hf_n
+  .\end{equation}
+
+  \begin{enumerate}
+    \item
+      Demuestre que el método tiene un error de truncamiento de orden
+      $3$.
+    \item
+      Este es un ejemplo de un método consistente que es divergente.
+      Muestre esto aplicando el método al problema $y'=-y$, $y(0)=1$.
+      \emph{Sugerencia:} trate el problema de aplicar el método a
+      dicha ecuación como una ecuación en diferencias. Concluya que el
+      polinomio característico es $\Pi(r;h)=r^{3}+(3/2+3h)r^{2}-3r+1 /
+      2$. Sean $r_j(h)$ las raíces de $\Pi$. Calcule $r_j(0)$ y
+      argumente que, para $h$ suficientemente pequeño,
+      $|r_j(h)-r_j(0)|$ se puede hacer arbitrariamente pequeño.
+      Finalmente, concluya que, si $r_0(h)$ es la raíz dominante,
+      entonces
+      \begin{equation}
+        u_N \approx \gamma_0[r_0(h)]^{T/h}
+      \end{equation}
+      es no acotada y oscila conforme $h\to 0$.
+  \end{enumerate}
+\end{exercise}
+\begin{sol}
+  \begin{enumerate}
+    \item
+      El error residual satisface
+      \begin{equation}
+        y_{n+1}
+        = -\frac{3}{2}y_n + 3y_{n-1} - \frac{1}{2}y_{n-2} + 3hy'_n
+        + \epsilon_{n+1}
+      .\end{equation}
+      Es decir,
+      \begin{equation}
+        \epsilon_{n+1}
+        =
+        y_{n+1}
+        +\frac{3}{2}y_n - 3y_{n-1} + \frac{1}{2}y_{n-2} - 3hy'_n
+      .\end{equation}
+      Para ver que el error de truncamiento es de orden $3$,
+      expandamos todo hasta orden $4$ en $h$:
+      \begin{align}
+        \epsilon_{n+1}
+        &=
+          y_{n}
+          + hy'_n
+          + \frac{h^{2}}{2} y''_n
+          + \frac{h^{3}}{6} y'''_n
+          + \frac{h^{4}}{24} y''''_n
+        \\
+        & \quad
+        + \frac{3}{2}y_n
+        \\
+        &\quad
+        - 3\left(
+          y_n
+          - h y'_n
+          + \frac{h^{2}}{2} y''_n
+          - \frac{h^{3}}{6} y'''_n
+          + \frac{h^{4}}{24} y''''_n
+          \right)
+          \\
+        &\quad
+        + \frac{1}{2}\left(
+          y_n
+          - 2h y'_n
+          + \frac{(2h)^{2}}{2} y''_n
+          - \frac{(2h)^{3}}{6} y'''_n
+          + \frac{(2h)^{4}}{24} y''''_n
+          \right)
+          \\
+        &\quad
+          - 3hy'_n
+          + O(h^{5})
+        \\
+        &=
+          y_{n}
+          + hy'_n
+          + \frac{h^{2}}{2} y''_n
+          + \frac{h^{3}}{6} y'''_n
+          + \frac{h^{4}}{24} y''''_n
+        \\
+        & \quad
+        + \frac{3}{2}y_n
+        \\
+        &\quad
+          - 3 y_n
+          + 3 h y'_n
+          - \frac{3h^{2}}{2} y''_n
+          + \frac{h^{3}}{2} y'''_n
+          - \frac{h^{4}}{8} y''''_n
+          \\
+        &\quad
+          + \frac{1}{2} y_n
+          - h y'_n
+          + h^{2} y''_n
+          - \frac{2h^{3}}{3} y'''_n
+          + \frac{h^{4}}{4} y''''_n
+          \\
+        &\quad
+          - 3hy'_n
+          + O(h^{5})
+        \\
+        &=
+          \frac{1}{6}
+          h^{4} y''''_n
+          + O(h^{5})
+      .\end{align}
+      Por lo tanto, el error de truncamiento local
+      $\tau_{n+1}=\epsilon_{n+1}/h$ es
+      \begin{equation}
+        \tau_{n+1}(h) = \frac{1}{6} h^{3} y^{(4)}_n + O(h^{4})
+      .\end{equation}
+      Luego, el método es de orden $3$ con constante de error
+      $C_3=\frac{1}{6}$.
+      En particular, suponiendo que $|y^{(4)}|<M$ en todo el
+      intervalo, el método es consistente, pues
+      \begin{equation}
+        \tau(h) \leq \frac{1}{6} h^{3} M + O(h^{4}) \to 0
+      \end{equation}
+      cuando $h\to 0$.
+
+    \item
+      Queremos ver que el método no es convergente. Como es
+      consistente, la convergencia es equivalente a la condición de la
+      raíz y la convergencia del error en los valores iniciales.
+      Por lo tanto, supongamos que el error en los valores iniciales
+      es nulo y veamos que el método no cumple la condición de la
+      raíz.
+
+      Cuando aplicamos el método al problema $y'=-y$, $y(0)=1$,
+      tenemos $f_n=-u_n$, de modo que
+      \begin{equation}
+        u_{n+1}
+        = -\frac{3}{2}u_n + 3u_{n-1} - \frac{1}{2}u_{n-2} - 3hu_n
+      .\end{equation}
+      El polinomio característico de esta ecuación en diferencias es
+      \begin{equation}
+        \pi(r;h)
+        =
+        r^{3}
+        + \frac{3}{2}r^2
+        - 3r
+        + \frac{1}{2}
+        + 3hr^2
+      .\end{equation}
+      Para $h=0$, el polinomio
+      \begin{equation}
+        \pi(r;0)
+        =\frac{1}{2}
+          (
+          2r^{3}
+          + 3r^2
+          - 6r
+          + 1
+          )
+      \end{equation}
+      tiene raíces
+      \begin{align}
+        r_0
+        &=
+        \frac{-5-\sqrt{33}}{4} \approx -2.6861\dots
+        \\
+        r_1
+        &=
+        \frac{-5+\sqrt{33}}{2} \approx 0.18614\dots
+        \\
+        r_2
+        &= 1
+      .\end{align}
+      Dado que $|r_0|>1$, el método no cumple la condición de la raíz,
+      así que no es convergente.
+  \end{enumerate}
+\end{sol}
 
 
 \end{document}
