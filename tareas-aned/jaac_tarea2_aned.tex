@@ -119,18 +119,19 @@ métodos multipaso}
         = \left\lfloor \frac{10^{5}e}{2} \right\rfloor
         = 135914
       .\end{equation}
-      En efecto, al aplicar el método con $h=7.5758\cdot 10^{-6}
+      En efecto, al aplicar el método con $h=7.3576\cdot 10^{-6}
       \approx 2e^{-1}10^{-5}$ y graficar el error, obtenemos
       \begin{center}
       \includegraphics[width=0.7\textwidth]
       {img/jaac_tarea2_ejercicio1.png}
       \end{center}
       aunque esto parece una mera casualidad, ya que al disminuir $h$ 
-      (por ejemplo, $h=7.5755\cdot 10^{-6}$, $h=7.5753\cdot 10^{-6}$)
-      el error aumenta y luego vuelve a subir. Supongo que esto es por
-      problemas de redondeo. Sin embargo, al menos el error se
-      mantiene en el mismo orden de magnitud, lo cual nos dice que la
-      teoría no está tan mal.
+      (por ejemplo, $h=7.3575\cdot 10^{-6}$, $h=7.3574\cdot 10^{-6}$,
+      $h=7.3573\cdot 10^{-6}$, $h=7.3573\cdot 10^{-6}$)
+      el error disminuye, vuelve a subir y luego vuelve a bajar.
+      Supongo que esto es por problemas de redondeo. Sin embargo, al
+      menos el error se mantiene en el mismo orden de magnitud, lo
+      cual nos dice que la teoría no está tan mal.
   \end{enumerate}
 \end{sol}
 
@@ -186,42 +187,11 @@ métodos multipaso}
       \begin{equation}
         \left|1 + z + \frac{1}{2}z^{2}\right|^{2}<1
       .\end{equation}
-    %  \begin{align}
-    %    \left|1 + z + \frac{1}{2}z^{2}\right|^{2}
-    %    &=
-    %    \left(1 + z + \frac{1}{2}z^{2}\right)
-    %    \left(1 + \bar z + \frac{1}{2}\bar z^{2}\right)
-    %    \\
-    %    &=
-    %    1 + \bar z + \frac{1}{2}\bar z^{2}
-    %    + z + z\bar z + \frac{1}{2}z\bar z^{2}
-    %    + \frac{1}{2}z^{2} + \frac{1}{2}z^{2}\bar z + \frac{1}{4}z^{2}\bar z^{2}
-    %    \\
-    %    &=
-    %    1 + 2\Re(z) + \Re(z^{2})
-    %    + |z|^{2} + |z|^{2}\Re(z)
-    %    + \frac{1}{4}|z|^{4}
-    %    \\
-    %    &=
-    %    1 + 2x + x^{2}-y^{2}
-    %    + x^{2}+y^{2} + (x^{2}+y^{2})x
-    %    + \frac{1}{4}(x^{2}+y^{2})^{2}
-    %    \\
-    %    &=
-    %    1 + 2x + 2x^{2}
-    %    + (x^{2}+y^{2})x
-    %    + \frac{1}{4}(x^{2}+y^{2})^{2}
-    %  .\end{align}
-      
-    %  Si $x,y$ son las partes real e imaginaria de $z$, entonces esto es
-    %  \begin{equation}
-    %    (1+x+iy + (x^{2}-y^{2}) / 2 + ixy)
-    %    (1+x-iy + (x^{2}-y^{2}) / 2 - ixy) < 1
-    %  .\end{equation}
       No pude sacar una forma explícita para esta región pero hice un
       muestreo aleatorio y obtuve la siguiente gráfica:
       \begin{center}
-      \includegraphics[width=0.7\textwidth]{img/jaac_tarea2_ejercicio2.png}
+        \includegraphics[width=0.7\textwidth]
+        {img/jaac_tarea2_ejercicio2a.png}
       \end{center}
         
     \item
@@ -233,27 +203,44 @@ métodos multipaso}
       \begin{equation}
         u_{n-1} - 4 u_n + 3 u_{n+1} - 2h\lambda u_{n+1} = 0
       .\end{equation}
-      Sustituyendo $u_n$ por $r^{n}$ del lado izquierdo y
-      tomando $n=1$ obtenemos el polinomio característico
+      Obtenemos el polinomio característico sustituyendo $u_n$ por
+      $r^{n}$ del lado izquierdo y tomando $n=1$:
       \begin{align}
         \pi(r;h\lambda)
-        &= r - 4 r + 3 r^{2} - 2h\lambda r^{2}
+        &= 1 - 4 r + 3 r^{2} - 2h\lambda r^{2}
       \end{align}
-      que se puede escribir como
+      % que se puede escribir como
+      % \begin{equation}
+      %   \pi(r;h\lambda) = \rho(r) - h\lambda \sigma(r)
+      % \end{equation}
+      % donde
+      % \begin{align}
+      %   \rho(r) &= 1 - 4 r + 3 r^{2} \\
+      %   \sigma(r) &= 2r^{2}
+      % .\end{align}
+      cuyas raíces son
       \begin{equation}
-        \pi(r;h\lambda) = \rho(r) - h\lambda \sigma(r)
+        r_{0,1}(h\lambda) = \frac{2\pm\sqrt{1+2h\lambda}}{3-2h\lambda}
       \end{equation}
-      donde
-      \begin{align}
-        \rho(r) &= 1 - 4 r + 3 r^{2} \\
-        \sigma(r) &= 2r^{2}
-      .\end{align}
+      cuando $h\lambda \neq \frac{3}{2}$.
+      Este caso de todos modos lo evitamos, pues buscamos que
+      $\Re(\lambda)<0$.
+      Dado que la condición absoluta de la raíz es equivalente a la
+      estabilidad absoluta, basta encontrar los $z=h\lambda$ tales
+      que las raíces $r_{0,1}(z)$ tengan norma menor a $1$.
+      De nuevo, hice un muestreo aleatorio y obtuve la siguiente
+      gráfica:
+      \begin{center}
+        \includegraphics[width=0.7\textwidth]
+        {img/jaac_tarea2_ejercicio2b.png}
+      \end{center}
+
   \end{enumerate}
 \end{sol}
 
 \begin{exercise}
   Resuelva la ecuación en diferencias
-  \begin{equation}
+  \begin{equation}\label{eq:problema}
     u_{n+4} - 6u_{n+3} + 14u_{n+2} - 16 u_{n+1} + 8u_{n} = n
   \end{equation}
   con las condiciones $u_0=1$, $u_1=2$, $u_2=3$, $u_3=4$.
@@ -262,32 +249,132 @@ métodos multipaso}
   4)+n+2$}.
 \end{exercise}
 \begin{sol}
-  El polinomio característico $p(r)$ de la ecuación homogénea asociada
-  se obtiene tomando el lado izquierdo, sustituyendo $u_n=r^{n}$ y
+  Primero resolvamos la ecuación homogénea asociada.
+  \begin{equation}\label{eq:homogeneo}
+    v_{n+4} - 6v_{n+3} + 14v_{n+2} - 16 v_{n+1} + 8v_{n} = 0
+  \end{equation}
+  El polinomio característico $\pi(r)$ de la ecuación
+  se obtiene tomando el lado izquierdo, sustituyendo $v_n=r^{n}$ y
   poniendo $n=0$:
   \begin{equation}\label{eq:charpol}
-    p(r) = r^{4} - 6r^{3} + 14r^{2} - 16 r + 8 
+    \pi(r) = r^{4} - 6r^{3} + 14r^{2} - 16 r + 8 
   \end{equation}
-  Por el teorema de las raíces racionales, las únicas posibles raíces
-  racionales son $r=\pm 1, 2, 4, 8$, pero solo $r=2$ anula al
-  polinomio. De hecho, es una raíz doble, pues la derivada
-  $p'(r)=4r^{3}-18r^{2}+24r-16$ también se anula en $r=2$.
-  Pongamos $r_{1,2}=2$.
-  Después de dividir \eqref{eq:charpol} entre $(r-2)^{2}$, obtenemos
+  Las raíces de este polinomio son
+  \begin{align}
+    r_{0,1} &= 2  \quad \text{(multiplicidad $2$)}\\
+    r_{2,3} &= 1 \pm i
+  ,\end{align}
+  por lo cual la solución general es de la forma
   \begin{equation}
-    r^{2}-2r+2
-  \end{equation}
-  que tiene raìces $r_{2,3}=1\pm i$.
-  Luego, la solución de la ecuación homogénea es
-  \begin{equation}
-    u_n
-    = (\gamma_1 + \gamma_2 n) 2^{n}
-    + \gamma_3(1+i)^{n}
-    + \gamma_4(1-i)^{n}
+    v_n
+    = (\gamma_0 + \gamma_1 n) 2^{n}
+    + \gamma_2(1+i)^{n}
+    + \gamma_3(1-i)^{n}
   .\end{equation}
-  Para que la solución sea real, tomemos $\gamma_1$ y $\gamma_2$
-  reales y pidamos que $\gamma_4=\gamma_3$, de
-  modo que redefiniendo $\gamma_3$ como 
+  Ahora encontremos una solución particular $w_n$ de la ecuación
+  \eqref{eq:problema}. Claramente, $w_n$ no puede ser una constante
+  $w_n=a$, pues en ese caso obtendríamos $a=n$. Entonces intentemos un
+  polinomio de grado $1$: supongamos que $w_n=a+bn$. Sustituyendo en
+  \eqref{eq:problema} , tenemos
+  \begin{equation}
+    a+b(n+4) - 6(a+b(n+3)) + 14(a+b(n+2)) - 16(a+b(n+1)) + 8(a+bn) = n
+  \end{equation}
+  Agrupando los términos constantes y los términos con $n$, obtenemos
+  \begin{equation}
+    bn + a+4b -18b +28b -16b = n
+  \end{equation}
+  Luego, $b=1$, por lo cual $a=-4+18-28+16=2$.
+  De este modo, obtenemos
+  \begin{align}
+    u_n
+    &= v_n + 2 + n \\
+    &= (\gamma_0 + \gamma_1 n) 2^{n}
+    + \gamma_2(1+i)^{n}
+    + \gamma_3(1-i)^{n}
+    + 2
+    + n
+  .\end{align}
+  Imponiendo las condiciones iniciales $u_0=1, u_1=2, u_2=3, u_3=4$,
+  obtenemos las ecuaciones
+  \begin{align}
+    \gamma_0
+    + \gamma_2
+    + \gamma_3
+    &= 1 - 2 - 0
+    \\
+    2\gamma_0 + 2\gamma_1
+    +
+    (1+i)
+    \gamma_2
+    +
+    (1-i)
+    \gamma_3
+    &= 2 - 2 - 1
+    \\
+    4\gamma_0 + 8\gamma_1
+    + 2i \gamma_2
+    - 2i\gamma_3
+    &= 3 - 2 - 2
+    \\
+    8\gamma_0 + 24\gamma_1
+    + (-2+2i)\gamma_2
+    + (-2-2i)\gamma_3
+    &= 4 - 2 - 3
+  .\end{align}
+  En términios matriciales, esto es
+  \begin{equation}
+    \begin{bmatrix}
+      1 & 0 & 1 & 1 \\
+      2 & 2 & 1+i & 1-i \\
+      4 & 8 & 2i & -2i \\
+      8 & 24 & -2+2i & -2-2i
+    \end{bmatrix}
+    \begin{bmatrix}
+      \gamma_0 \\
+      \gamma_1 \\
+      \gamma_2 \\
+      \gamma_3
+    \end{bmatrix}
+    =
+    \begin{bmatrix}
+      -1 \\
+      -1 \\
+      -1 \\
+      -1
+    \end{bmatrix}
+  \end{equation}
+  La solución de este sistema es
+  \begin{equation}
+    \begin{bmatrix}
+      \gamma_0 \\
+      \gamma_1 \\
+      \gamma_2 \\
+      \gamma_3
+    \end{bmatrix}
+    =
+    \begin{bmatrix}
+      -1 \\
+      \frac{1}{4} \\
+      -\frac{i}{4} \\
+      \frac{i}{4}
+    \end{bmatrix}
+  .\end{equation}
+  Es decir,
+  \begin{align}
+    u_n
+    &= (-1 + n / 4) 2^{n}
+    - \frac{i(1+i)^{n} - i(1-i)^{n}}{4}
+    + 2 + n
+    \\
+    &= (n / 4 - 1) 2^{n}
+    + \frac{2^{n / 2}e^{i\pi n / 4} - 2^{n / 2} e^{-i\pi n / 4}}{4i}
+    + 2 + n
+    \\
+    &= (n / 4 - 1) 2^{n}
+    + 2^{n / 2 - 1} \sin(\pi n / 4)
+    + 2 + n
+  ,\end{align}
+  como se quería.
 \end{sol}
 
 \begin{exercise}
