@@ -1,4 +1,4 @@
-# import numpy as np
+import numpy as np
 
 
 def predcor(coefcorra, coefcorrb, coefpreda, coefpredb,
@@ -26,6 +26,15 @@ def f(t, y):
     return y
 
 
-us = predcor([1], [1 / 2, 1 / 2], [1], [1], 0.1, f, 0, 1, [1], 1)
+atilde = [1]
+btilde = [1 / 2, 1 / 2]
+a = [1]
+b = [1]
+h = 0.1
+t0 = 0
+tf = 1
+condini = [1, np.exp(1 + h)]
+m = 1
+us = predcor(atilde, btilde, a, b, f, t0, tf, condini, m)
 
 print(us)

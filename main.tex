@@ -847,4 +847,132 @@ Al igual que en los métodos de un paso,
   
 \end{example}
 
+\subsection{Metodos Runge-Kutta}
+Nota: a partir de la serie de Taylor
+\begin{equation}
+  y(t+h) = y(t) + hy'(t) + \frac{h^{2}}{2}y''(t) + \dots
+.\end{equation}
+se pueden obtener métodos ``de Taylor''
+\begin{align}
+  u_{n+1} &= u_n + hf_n \\
+  u_{n+1} &= u_n
+  + hf_n
+  + \frac{h^{2}}{2}(\partial_1f_n + f_n \partial_2 f_n)
+.\end{align}
+Por construcción, estos métodos son de orden $1$ y orden $2$,
+respectivamente. La idea de los métodos Runge-Kutta es mantener esta
+propiedad sin tener que calcular las derivadas de $f$ directamente.
+Escribamos la expansión anterior en la forma
+\begin{align}\label{eq:orig}
+  y(t+h)
+  &= y(t)
+    + h f(t,y)
+    + \frac{h^{2}}{2}
+    \left[ (\partial_1 f + f \partial_2 f)|_{(t,y)} \right]
+    + O(h^{3}) \\
+  &= y(t)
+    + h f(t,y)
+    + \frac{h}{2}
+    \left[ (h\partial_1 f + h f \partial_2 f)|_{(t,y)} \right]
+    + O(h^{3})
+.\end{align}
+Ahora queremos comparar esto con una expansión en serie de potencias
+de dos variables:
+\begin{align}
+  f(t+h,y+k)
+  &=
+  f(t,y) + h \partial _1 f + k \partial _2 f + O(h^{2},hk,k^{2})
+  \\
+  &=
+  f(t,y) + h \partial _1 f + k \partial _2 f + O(h^{2},hk,k^{2}).
+\end{align}
+Poniendo $k=hf$, tenemos
+\begin{align}
+  f(t+h,y+hf)
+  &=
+  f(t,y) + h \partial _1 f + hf \partial _2 f
+  + O(h^{2}),
+\end{align}
+i.e.
+\begin{align}
+  h \partial _1 f + hf \partial _2 f
+  &=
+  f(t+h,y+hf) - f(t,y)
+  + O(h^{2},hk,k^{2}).
+\end{align}
+Sustituyendo en \eqref{eq:orig}, obtenemos
+\begin{align}\label{eq:sust}
+  y(t+h)
+  &= y(t)
+    + hf(t,y(t))
+    + \frac{h}{2}
+    \left[
+    f(t+h,y+hf) - f(t,y)
+    \right]
+    + O(h^{3})
+  \\
+  &= y(t)
+    + \frac{h}{2} f(t,y(t))
+    + \frac{h}{2} f(t+h,y+hf)
+    + O(h^{3})
+.\end{align}
+Esto nos sugiere el método
+\begin{equation}
+  y_{n+1} = y_n + \frac{h}{2} \left[
+    f_n + f(t_n + h, y_n + hf_n)
+  \right]
+,\end{equation}
+que reconocemos como el método de Heun.
+
+En general, los métodos Runge-Kutta son métodos de un paso
+\begin{equation}
+  u_{n+1} = u_n + h F(t_n,u_n,h,f)
+\end{equation}
+donde $F$ es una función que aproxima la pendiente como una
+combinación lineal
+\begin{align}
+  F
+    &=
+    \sum_{i=1}^{s}b_ik_i
+  \\[-3mm]
+  \text{donde} \quad
+  k_i
+    &= f(t_n+c_ih, u_n+h \sum_{j=1}^{s}a_{ij} k_j)
+    \\[-4mm]
+  \text{y} \quad
+  c_i
+    &= \sum_{j=1}^{s}a_{ij}
+.\end{align}
+El método Runge-Kutta  se puede identificar por medio del
+\emph{tablero de Butcher}
+\begin{equation}
+  \begin{array}{c|c}
+    c & A \\[3mm]
+    \hline \\[-2mm]
+      & b^{T}
+  \end{array}
+,\end{equation}
+donde $A$, $b$ y $c$ son los coeficientes $a_{ij}$, $b_i$, $c_i$.
+
+\begin{remark}
+  El método es
+  \begin{itemize}
+    \item
+      explícito si $A$ es estrictamente triangular inferior
+      ($a_{ij}=0$ siempre que $j\geq i$),
+    \item
+      semi-implícito si $A$ es triangular inferior ($a_{ij}=0$ para
+      $j>i$),
+    \item
+      implícito si $A$ es ``llena''.
+  \end{itemize}
+\end{remark}
+
+
+
+
+
+
+
+
 \end{document}
