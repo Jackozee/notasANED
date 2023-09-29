@@ -17,7 +17,7 @@ def predcor(coefcorra, coefcorrb, coefpreda, coefpredb,
     print(fs)
 
     # k = pasoscorpr
-    # for t in [t0 + n * h for n in range(pasoscorpr, N + 1)]:
+    # for t in ts[pasoscorpr:(N + 1)]:
     # ut = np.dot(coefpreda, u[k:k - pasospred + 1:-1])
     return us
 
@@ -26,15 +26,15 @@ def f(t, y):
     return y
 
 
-atilde = [1]
-btilde = [1 / 2, 1 / 2]
-a = [1]
-b = [1]
+atilde = [1]                # coeficientes predictor
+btilde = [1 / 2, 1 / 2]     #
+a = [1]                     # coeficientes corrector
+b = [1]                     #
 h = 0.1
 t0 = 0
 tf = 1
 condini = [1, np.exp(1 + h)]
 m = 1
-us = predcor(atilde, btilde, a, b, f, t0, tf, condini, m)
+us = predcor(a, b, atilde, btilde, h, f, t0, tf, condini, m)
 
 print(us)
