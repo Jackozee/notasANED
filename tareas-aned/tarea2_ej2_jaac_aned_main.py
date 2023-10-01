@@ -1,9 +1,6 @@
-import random as rd
 import numpy as np
 import matplotlib.pyplot as plt
-
-ws = []
-N = 15000
+import matplotlib.colors as col
 
 
 def cond1(z):
@@ -17,21 +14,28 @@ def cond2(z):
     return (abs(r0) < 1 and abs(r1) < 1)
 
 
-for n in range(1, N):
-    z = complex(8 * (rd.random() - 0.5), 8 * (rd.random() - 0.5))
-    if cond2(z):
-        ws.append(z)
+m = 1000
+n = 1000
 
+plt.title("(Amarillo) Región del plano complejo con |1+z+z²/2|<1")
+xmin, xmax = -3, 3
+ymin, ymax = -3, 3
+f = cond1
 
-def lmap(f, lst):
-    return [f(x) for x in lst]
+# plt.title("(Amarillo) Región del plano complejo con |r0(z)|<1 y |r1(z)|<1")
+# xmin, xmax = -4, 4
+# ymin, ymax = -3, 3
+# f = cond2
 
+xs, ys = np.meshgrid(np.linspace(xmin, xmax, m), np.linspace(ymin, ymax, n))
+zs = [[complex(xs[i, j], ys[i, j]) for j in range(0, m)] for i in range(0, n)]
+resultado = [[f(zs[i][j]) for j in range(0, m)] for i in range(0, n)]
 
-# plt.title("Región del plano complejo con |1+z+z²/2|<1")
-plt.title("Región del plano complejo con |r0(z)|<1 y |r1(z)|<1")
-plt.scatter(lmap(lambda x: x.real, ws), lmap(lambda x: x.imag, ws))
-plt.xlim([-4, 4])
-plt.ylim([-3, 3])
+plt.imshow(resultado,
+           extent=(xs.min(), xs.max(), ys.min(), ys.max()),
+           origin="lower",
+           cmap=col.ListedColormap(['#93E740', '#F2F226'])
+           )
 plt.xlabel("Re(z)")
 plt.ylabel("Im(z)")
 plt.show()

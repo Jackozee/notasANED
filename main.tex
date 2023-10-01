@@ -773,79 +773,117 @@ Al igual que en los métodos de un paso,
   \begin{equation}
     u_{n+1} = u_n + \frac{h}{2}(f_n + f(t_{n+1},u_{n+1})).
   \end{equation}
-  La idea es
-  \begin{itemize}
-    \item
-      primero hacer una estimación de $u_{n+1}$, digamos
-      $u_{n+1}^{(0)}$, usando un método explícto de $\tilde p+1$ pasos
-      (con coeficientes $\tilde a_j, \tilde b_j$). Con $\tilde p + 1$
-      datos iniciales
-      \begin{align}
-        u^{(m)}_0 &= u^{(m-1)}_0 = u_0, \\
-        u^{(m)}_1 &= u^{(m-1)}_1 = u_1, \\
-        \vdots \\
-        u^{(m)}_{\tilde p} &= u^{(m-1)}_{\tilde p} = u_{\tilde p}
-      ,\end{align}
-      podemos calcular
-      \begin{align}
-        f^{(m-1)}_0 &= f(t_0,u^{(m-1)}_0) = f_0, \\
-        f^{(m-1)}_1 &= f(t_1,u^{(m-1)}_1) = f_1, \\
-        \vdots \\
-        f^{(m-1)}_{\tilde p} &= f(t_{\tilde p},u^{(m-1)}_{\tilde p})
-        = f_{\tilde p}
-      ,\end{align}
-      \begin{align}
-        u_{\tilde p+1}^{(0)}
-        &=
-        \tilde a_{0} u_{\tilde p}^{(m)}
-        + \tilde a_{1} u_{\tilde p - 1}^{(m)}
-        + \dots +
-        \tilde a_{\tilde p} u_{0}^{(m)}
-        \\
-        &\quad
-        + h
-          [
-          \tilde b_0 f_{\tilde p}^{(m-1)}
-          +
-          \tilde b_1 f_{\tilde p-1}^{(m-1)}
-          + \dots +
-          \tilde b_{\tilde p} f_{0}^{(m-1)}
-          ]
-        \\
-        &=
-        \sum_{j=0}^{\tilde p}\tilde a_j u_{\tilde p-j}^{(1)}
-        + h \sum_{j=0}^{\tilde p}\tilde b_j f_{\tilde p-j}^{(0)}
-      .\end{align}
-      Luego, aplicamos el primer ciclo de evaluación y corrección:
-      \begin{align}
-        f_{\tilde p + 1}^{(k)}
-        &= f(t_{\tilde p+1},u_{\tilde p + 1}^{(k)})
-        \\
-        u_{\tilde p + 1}^{(k+1)}
-        &= \sum_{j=0}^{p}a_ju_{\tilde p-j}^{(m)}
-        + h b_{-1}f_{\tilde p+1}^{(k)}
-        + h \sum_{j=0}^{p}b_jf_{\tilde p-j}^{(m-1)}
-      \end{align}
-      ejecutando un cálculo y luego el otro, para $k=0,\dots,m-1$.
-      Esto nos permite usar $u_{\tilde p + 1}^{(0)}$ para calcular
-      $f^{(0)}_{\tilde p + 1}$, luego, usar
-      
-      ambos para crear una nueva
-      aproximación $u_{\tilde p + 1}^{(1)}$
-      
-      \begin{align}
-        u_{n+1}^{(0)}
-        &=
-        \sum_{j=0}^{\tilde p}\tilde a_j u_{n-j}^{(1)}
-        + h \sum_{j=0}^{\tilde p}\tilde b_j f_{n-j}^{(0)}
-      .\end{align}
-      
-      
-    \item
-      y luego usar un método de punto fijo con $m$ iteraciones
-  \end{itemize}
-  
 \end{example}
+
+La idea es
+\begin{itemize}
+  \item
+    Comenzar con $\tilde p + 1$ datos iniciales
+    \begin{equation}
+      u_0,u_1,\dots,u_{\tilde p}
+    \end{equation}
+    y a partir de estos generar los $\tilde p+1$ valores iniciales de
+    $f$:
+    \begin{align}
+      f_0 &= f(t_0,u_0) \\
+      f_1 &= f(t_1,u_1) \\
+      \vdots \\
+      f_{\tilde p} &= f(t_{\tilde p},u_{\tilde p})
+    .\end{align}
+  \item
+    Con esta información inicial, primero hacer una estimación de
+    $u_{n+1}$, digamos $u_{n+1}^{(0)}$, usando un método explícto de
+    $\tilde p+1$ pasos (con $\tilde p+1$ coeficientes $\tilde a_j,
+    \tilde b_j$, $0\leq j\leq \tilde p$).
+    %\begin{align}
+    %  u^{(m)}_0 &= u_0, \\
+    %  u^{(m)}_1 &= u_1, \\
+    %  \vdots \\
+    %  u^{(m)}_{\tilde p} &= u_{\tilde p}
+    %,\end{align}
+    %podemos calcular
+    %\begin{align}
+    %  f^{(m-1)}_0 &= f(t_0,u_0) = f_0, \\
+    %  f^{(m-1)}_1 &= f(t_1,u_1) = f_1, \\
+    %  \vdots \\
+    %  f^{(m-1)}_{\tilde p} &= f(t_{\tilde p},u_{\tilde p})
+    %  = f_{\tilde p}
+    %,\end{align}
+    \begin{align}
+      u_{\tilde p+1}^{(0)}
+      &=
+      \tilde a_{0} u_{\tilde p}
+      + \tilde a_{1} u_{\tilde p - 1}
+      + \dots +
+      \tilde a_{\tilde p} u_{0}
+      + h
+        [
+        \tilde b_0 f_{\tilde p}
+        +
+        \tilde b_1 f_{\tilde p-1}
+        + \dots +
+        \tilde b_{\tilde p} f_{0}
+        ]
+      \\
+      &=
+      \sum_{j=0}^{\tilde p}\tilde a_j u_{\tilde p-j}
+      + h \sum_{j=0}^{\tilde p}\tilde b_j f_{\tilde p-j}
+    .\end{align}
+  \item
+    Luego, aplicamos $m$ ciclos de evaluar $f$ y luego corregir con un
+    método implícito de $p+1$ pasos, donde  $p\leq\tilde p$.
+    \begin{align}
+      f_{\tilde p + 1}^{(0)}
+      &= f(t_{\tilde p+1},u_{\tilde p + 1}^{(0)}),
+      &
+        u_{\tilde p + 1}^{(1)}
+        &= \sum_{j=0}^{p}a_ju_{\tilde p-j}
+        + h b_{-1}f_{\tilde p+1}^{(0)}
+        + h \sum_{j=0}^{p}b_jf_{\tilde p-j},
+        \\
+      f_{\tilde p + 1}^{(1)}
+      &= f(t_{\tilde p+1},u_{\tilde p + 1}^{(1)}),
+      &
+        u_{\tilde p + 1}^{(2)}
+        &= \sum_{j=0}^{p}a_ju_{\tilde p-j}
+        + h b_{-1}f_{\tilde p+1}^{(1)}
+        + h \sum_{j=0}^{p}b_jf_{\tilde p-j},
+        \\
+      \vdots \nonumber
+      \\
+      f_{\tilde p + 1}^{(m-1)}
+      &= f(t_{\tilde p+1},u_{\tilde p + 1}^{(m-1)}),
+      &
+        u_{\tilde p + 1}^{(m)}
+        &= \sum_{j=0}^{p}a_ju_{\tilde p-j}
+        + h b_{-1}f_{\tilde p+1}^{(m-1)}
+        + h \sum_{j=0}^{p}b_jf_{\tilde p-j}.
+    \end{align}
+    Tomamos $u_{\tilde p+1}$ como el resultado de la $m$-ésima
+    iteración. Es decir, $u_{\tilde p+1} = u_{\tilde p + 1}^{(m)}$.
+  \item
+    Estos últimos dos pasos son el primer paso del siguiente ciclo:
+    Para cada $\tilde p\leq n\leq N-1$, se hace
+    \begin{align}
+      u_{n+1}^{(0)}
+      &=
+      \sum_{j=0}^{n}\tilde a_j u_{n-j}
+      + h \sum_{j=0}^{n}\tilde b_j f_{n-j}
+    ,\end{align}
+    seguido de las $m$ iteraciones siguientes, donde $0\leq k\leq
+    m-1$:
+    \begin{align}
+      f_{n + 1}^{(k)}
+      &= f(t_{n+1},u_{n + 1}^{(k)}),
+      &
+        u_{n + 1}^{(k+1)}
+        &= \sum_{j=0}^{p}a_ju_{n-j}
+        + h b_{-1}f_{n+1}^{(k-1)}
+        + h \sum_{j=0}^{p}b_jf_{n-j},
+    \end{align}
+    y luego se define $u_{n+1}=u_{n+1}^{(m)}$.
+\end{itemize}
+  
 
 \subsection{Metodos Runge-Kutta}
 Nota: a partir de la serie de Taylor

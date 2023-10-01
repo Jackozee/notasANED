@@ -1,40 +1,41 @@
 import numpy as np
 
 
-def predcor(coefcorra, coefcorrb, coefpreda, coefpredb,
+def dot(xs, ys):
+    return (
+        sum([xs[i] * ys[i] for i in range(0, min(len(xs), len(ys)))])
+    )
+
+
+def predcor(coefpreda, coefpredb, coefcorra, coefcorrb,
             h, f, t0, tf, condini, iteracionescorr):
     T = tf - t0
     N = round(T / h)
-    pasoscorr = max(len(coefcorra), len(coefcorrb) - 1)
-    pasospred = max(len(coefpreda), len(coefpredb) - 1)
-    pasoscorpr = max(pasoscorr, pasospred)
-    if (len(condini) < pasoscorpr):
+    pasospred = max(len(coefpreda) - 1, len(coefpredb) - 1)
+    pasoscorr = max(len(coefcorra) - 1, len(coefcorrb) - 2)
+    pasos = max(pasoscorr, pasospred)
+    if (len(condini) <= pasos):
         return [], []
-    us = condini[0:pasoscorpr]
-    # y = condini[0:pasoscorpr]
     ts = [t0 + n * h for n in range(0, N + 1)]
-    fs = [f(ts[i], us[i]) for i in range(0, pasoscorpr)]
-    print(fs)
-
-    # k = pasoscorpr
-    # for t in ts[pasoscorpr:(N + 1)]:
-    # ut = np.dot(coefpreda, u[k:k - pasospred + 1:-1])
-    return us
-
-
-def f(t, y):
-    return y
-
-
-atilde = [1]                # coeficientes predictor
-btilde = [1 / 2, 1 / 2]     #
-a = [1]                     # coeficientes corrector
-b = [1]                     #
-h = 0.1
-t0 = 0
-tf = 1
-condini = [1, np.exp(1 + h)]
-m = 1
-us = predcor(a, b, atilde, btilde, h, f, t0, tf, condini, m)
-
-print(us)
+    us = np.zeros(N + 1)
+    us[0:(pasos + 1)] = condini[0:(pasos + 1)]
+    fs = np.zeros(N + 1)
+    for i in range(0, pasos + 1):
+        fs[i] = f(ts[i], us[i])
+    for n in range(pasos, N):
+        us[n + 1] = (
+            dot(coefpreda, us[n::-1])
+            +
+            h *
+            dot(coefpredb, fs[n::-1])
+        )
+        for k in range(0, iteracionescorr):
+            fs[n + 1] = f(ts[n + 1], us[n + 1])  # f_{n+1}^{(k)}
+            us[n + 1] = (                        # u_{n+1}^{(k+1)}
+                dot(coefcorra, us[n::-1])
+                + h *
+                coefcorrb[0] * fs[n + 1]
+                + h *
+                dot(coefcorrb[1:], fs[n::-1])
+            )
+    return ts, us

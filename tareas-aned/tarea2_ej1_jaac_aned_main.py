@@ -36,7 +36,7 @@ def sol(t):
 #
 
 ts, ys = jaac.euler(f, y0=1, a=A, b=B, h=7.3576e-6)
-plt.plot(ts, abs(ys - sol(ts)), 'bo', label="Euler")
+plt.plot(ts, abs(ys - sol(ts)), 'b', label="Euler")
 
 plt.title("Error puntual")
 plt.xlabel("t")
