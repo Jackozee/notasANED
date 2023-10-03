@@ -15,6 +15,7 @@
 \newtheorem*{sol}{Solución}
 
 \newcommand\N{\mathbb N}
+\newcommand\ol\overline
 
 \title{Notas de análisis numérico para ecuaciones diferenciales}
 \author{Jorge Alfredo Álvarez Contreras}
@@ -1006,10 +1007,53 @@ donde $A$, $b$ y $c$ son los coeficientes $a_{ij}$, $b_i$, $c_i$.
   \end{itemize}
 \end{remark}
 
+\subsection{Estabilidad absoluta de los métodos Runge-Kutta}
 
-
-
-
+\begin{example}
+  El método de Heun es
+  \begin{align}
+    u_{n+1} &= u_n
+    + \left[ \frac{1}{2} K_1 + \frac{1}{2} K_2 \right], \\
+    K_1 &= f(t_n,u_n), \\
+    K_2 &= f(t_h+h,u_n+hK_1)
+  .\end{align}
+  En otras palabras:
+  \begin{align}
+    u_{n+1} &= u_n
+    + \left[ \frac{1}{2} K_1 + \frac{1}{2} K_2 \right], \\
+    K_1 &= f(t_n + 0 h,u_n + h(0 K_1 + 0 K_2)), \\
+    K_2 &= f(t_h + 1 h,u_n+h(1 K_1 + 0 K_2)
+  .\end{align}
+  Por lo tanto, el tablero de Butcher del método es
+  \begin{equation}
+    \begin{array}{c|c}
+      c & A \\[3mm]
+      \hline \\[-2mm]
+        & b^{T}
+    \end{array}
+    =
+    \begin{array}{c|cc}
+      0 & 0 & 0 \\[3mm]
+      1 & 1 & 0 \\[3mm]
+      \hline \\[-2mm]
+        & \frac{1}{2} & \frac{1}{2}
+    \end{array}
+  .\end{equation}
+  Así, la función de estabilidad es
+  \begin{align}
+    R(z)
+    &= \det(I - zA + z\ol{1}b^{T}) \\
+    &=
+    \det
+    \begin{bmatrix}
+      1 + \frac{z}{2} & \frac{z}{2} \\
+      -\frac{z}{2} & 1 + \frac{z}{2}
+    \end{bmatrix}
+    \\
+    &= 1 + z + \frac{z^{2}}{2}
+  \end{align}
+  y la región de estabilidad absoluta es la que cumple $|R(z)|<1$.
+\end{example}
 
 
 
