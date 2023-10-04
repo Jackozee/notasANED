@@ -1052,8 +1052,86 @@ donde $A$, $b$ y $c$ son los coeficientes $a_{ij}$, $b_i$, $c_i$.
     \\
     &= 1 + z + \frac{z^{2}}{2}
   \end{align}
-  y la región de estabilidad absoluta es la que cumple $|R(z)|<1$.
+  y la región de estabilidad absoluta es la que cumple $|R(z)|<1$,
+  como ya habíamos determinado antes.
 \end{example}
+
+\subsection{Tamaño de paso adaptativo}
+
+Existen varios métodos. Los más comunes son
+\begin{itemize}
+  \item
+    Métodos basados en usar un mismo método con tamaño de paso $h$ y
+    $\frac{h}{2}$ para combinarlas y obtener una mejor aproximación y
+    una estimación del error (extrapolación de Richardson).
+    Generalmente son más costosos que otras estrategias.
+  \item
+    Utilizar un par de métodos Runge-Kutta de órdenes $p,p+1$ y de
+    $s,s+1$ etapas, respectivamente, que tengan en común las primeras
+    $s$ filas de $A$. (La idea es que los mismos cálculos se puedan
+    usar para los dos métodos). Se usan los resultados para estimar el
+    error. (Métodos de Runge-Kutta Fehlberg).
+\end{itemize}
+
+\subsubsection{Método Runge-Kutta Fehlberg}
+
+\begin{align}
+  u_{n+1}
+    &= u_n + h\Phi(t_n,u_n,f_n;h)
+    \qquad
+    \text{(de orden $p$)} \\
+  \tilde u_{n+1}
+    &= \tilde u_n
+    + h\tilde \Phi(t_n,\tilde u_n,\tilde f_n;h)
+    \qquad
+    \text{(de orden $p+1$)}
+\end{align}
+que satisfacen
+\begin{align}
+  y(t_{n+1})
+  &=
+  y(t_n)
+  +
+  h
+  \Phi(t_n,y(t_n),f(t_n,y(t_n));h)
+  +
+  O(h^{p+1})
+  &
+  \implies \tau_{n+1}(h) &= O(h^p)
+  \\
+  y(t_{n+1})
+  &=
+  y(t_n)
+  +
+  h
+  \tilde \Phi(t_n,y(t_n),f(t_n,y(t_n));h)
+  +
+  O(h^{p+2})
+  &
+  \implies \tilde \tau_{n+1}(h) &= O(h^{p+1})
+.\end{align}
+Suponiendo que $u_n\approx\tilde u_{n}\approx y(u_n)$, tenemos
+\begin{align}
+  \tau_{n+1}(h)
+  &\approx \frac{y(t_{n+1})-u_n}{h} - \Phi(t_n,u_n,f(t_n,u_n);h) \\
+  &= \frac{y(t_{n+1})-[u_n+h\Phi(t_n,u_n,f(t_n,u_n);h)]}{h}  \\
+  &= \frac{y(t_{n+1})-u_{n+1}}{h}  \\
+  &= \frac{1}{h}e_{n+1}
+.\end{align}
+Similarmente, para el método de orden $p+1$, podemos obtener
+\begin{equation}
+  \tilde\tau_{n+1}(h)
+  \approx \frac{y(t_{n+1})-\tilde u_{n+1}}{h}
+  = \frac{1}{h}\tilde e_{n+1}
+.\end{equation}
+Por otro lado,
+\begin{align}
+  \tau_{n+1}(h)
+  &= \frac{1}{h}(y(t_{n+1})-u_{n+1}) \\
+  &= \frac{1}{h}(y(t_{n+1})-\tilde u_{n+1}+\tilde u_{n+1}-u_{n+1}) \\
+.\end{align}
+
+
 
 
 
