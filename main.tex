@@ -1,4 +1,4 @@
-\documentclass[11pt,letterpaper]{article}
+\documentclass[11pt,letterpaper]{report}
 \usepackage[left=3.5cm,right=3.5cm,top=2.5cm,bottom=2.5cm]{geometry}
 %\usepackage[spanish]{babel}
 
@@ -22,6 +22,9 @@
 
 \begin{document}
 \maketitle
+\tableofcontents
+
+\chapter{Problemas de valores iniciales}
 
 \section{Métodos de un paso}
 
@@ -1132,7 +1135,77 @@ Por otro lado,
 .\end{align}
 
 
+\subsection{Problema de tarea}
 
+Los métodos de Runge-Kutta son
+\begin{equation}
+  u_{n+1} = u_n + h F(t_n,u_n,h,f)
+\end{equation}
+\begin{align}
+  F
+    &=
+    \sum_{i=1}^{s}b_ik_i
+  \\[-3mm]
+  \text{donde} \quad
+  k_i
+    &= f(t_n+c_ih, u_n+h \sum_{j=1}^{s}a_{ij} k_j)
+    \\[-4mm]
+  \text{y} \quad
+  c_i
+    &= \sum_{j=1}^{s}a_{ij}
+.\end{align}
+
+Aplicado al problema de prueba $f(t,y)=\lambda y$, tenemos
+\begin{align}
+  k_i
+  &= \lambda(u_n+h \sum_{j=1}^{s}a_{ij} k_j) \\
+  &= \lambda u_n+z \sum_{j=1}^{s}a_{ij} k_j
+,\end{align}
+así que, poniendo los $k_i$ en un vector columna $K$, esto es
+\begin{align}
+  K = \lambda u_n\bar 1+zAK
+.\end{align}
+Despejando $K$, esto es
+\begin{equation}
+  K=\lambda (I-zA)^{-1}u_n\bar 1
+.\end{equation}
+
+\chapter{Problemas de valores en la frontera}
+
+El problema
+\begin{equation}
+  \left\{
+    \begin{aligned}
+      -u'' &= f, \\
+      u(0) &= 0, \\
+      u(1) &= 0,
+    \end{aligned}
+  \right.
+\end{equation}
+tiene solución general dada por
+\begin{equation}
+  u(x) = \int_{0}^{1}G(x,s)f(s)\,ds,
+\end{equation}
+donde $G(x,s)$ es la función de Green para este problema.
+Explícitamente, se puede calcular que
+\begin{equation}
+  G(x,s)
+  =
+  \begin{cases}
+    s(1-x), & 0\leq s\leq x, \\
+    x(1-s), & x\leq s\leq 1.
+  \end{cases}
+\end{equation}
+
+A partir de esta expresión para $u(x)$ podemos concluir que
+\begin{itemize}
+  \item
+    si $f\in C^{m}[0,1]$, entonces $u\in C^{m+2}[0,1]$,
+  \item
+    si $f\geq 0$ en $[0,1]$, entonces $u\geq 0$ en $[0,1]$,
+  \item
+    $\|u\|_{\infty}=\frac{1}{8}\|f\|_\infty$.
+\end{itemize}
 
 
 \end{document}

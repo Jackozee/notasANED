@@ -1,0 +1,74 @@
+\documentclass[11pt]{article}
+\usepackage[left=3.5cm,right=3.5cm,top=2.5cm,bottom=2.5cm]{geometry}
+%\usepackage[spanish]{babel}
+\overfullrule = 5mm
+
+\usepackage{amsmath,amsfonts,amsthm}
+\usepackage{enumitem,mathtools,graphicx}
+\setenumerate[0]{label=(\alph*)}
+
+\newtheorem{definition}{Definición}
+\newtheorem{exercise}{Ejercicio}
+\newtheorem*{sol}{Solución}
+\newtheorem*{theorem}{Teorema}
+
+\newcommand\N{\mathbb N}
+\newcommand\R{\mathbb R}
+\newcommand\C{\mathbb C}
+
+\title{Análisis numérico para ecuaciones diferenciales \\
+Tarea 3 - Métodos Runge-Kutta}
+\author{Jorge Alfredo Álvarez Contreras}
+
+\begin{document}
+\maketitle
+
+\begin{exercise}
+   Programar el método Runge-Kutta Fehlberg para resolver el problema
+   de valores iniciales
+   \begin{equation}
+     y'
+     =
+     (1-2x)y,
+     \quad y(0)=1,
+     \quad 0\leq x\leq 4
+   ,\end{equation}
+   tomando $h_\mathrm{max}=0.1$ y tolerancia $0.01$. Elaborar una
+   gráfica del error y una gráfica de $x_n$ contra $h_n$. (Marque con
+   un punto los pasos aceptados y con un asterisco los pasos
+   rechazados).
+\end{exercise}
+\begin{sol}
+\end{sol}
+
+\begin{exercise}
+  Considere la familia de métodos de Runge-Kutta correspondientes al
+  table\-ro de Butcher
+  \begin{equation}
+    \begin{array}{c|cc}
+      0 & 0 & 0 \\
+      \frac{1}{2\theta} & \frac{1}{2\theta} & 0 \\
+      \hline
+                        & 1-\theta & \theta
+    \end{array}
+  .\end{equation}
+\end{exercise}
+\begin{sol}
+\end{sol}
+
+\begin{exercise}
+\end{exercise}
+\begin{sol}
+\end{sol}
+
+\begin{exercise}
+\end{exercise}
+\begin{sol}
+\end{sol}
+
+\begin{exercise}
+\end{exercise}
+\begin{sol}
+\end{sol}
+
+\end{document}
