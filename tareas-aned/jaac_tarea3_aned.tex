@@ -15,6 +15,11 @@
 \newcommand\N{\mathbb N}
 \newcommand\R{\mathbb R}
 \newcommand\C{\mathbb C}
+\newcommand\ol\overline
+
+\usepackage{csquotes}
+\usepackage[style=authoryear]{biblatex}
+\addbibresource{references.bib}
 
 \title{Análisis numérico para ecuaciones diferenciales \\
 Tarea 3 - Métodos Runge-Kutta}
@@ -47,18 +52,158 @@ Tarea 3 - Métodos Runge-Kutta}
   \begin{equation}
     \begin{array}{c|cc}
       0 & 0 & 0 \\
-      \frac{1}{2\theta} & \frac{1}{2\theta} & 0 \\
-      \hline
-                        & 1-\theta & \theta
+      \frac{1}{2\theta} & \frac{1}{2\theta} & 0 \\[2mm]
+      \hline \\[-3mm]
+                        & 1-\theta & \theta.
     \end{array}
-  .\end{equation}
+  \end{equation}
+  Determine el orden del método y la función de estabilidad
+  $R(h\lambda)$. Elabore una gráfica de la región de estabilidad
+  absoluta.
 \end{exercise}
 \begin{sol}
 \end{sol}
 
 \begin{exercise}
+  Considere el método de Runge-Kutta con tablero de Butcher dado por
+  \begin{equation}
+    \begin{array}{c|c}
+      c & A \\
+      \hline \\[-3mm]
+        & b^T
+    \end{array}
+  \end{equation}
+  donde $A$ es una matríz estrictamente triangular inferior. Demuestre
+  que $R(h\lambda)$ es el polinomio en $z=h\lambda$ dado por 
+   \begin{equation}
+    R(z) = \det(I-zA+z\ol 1 b^T)
+  .\end{equation}
 \end{exercise}
 \begin{sol}
+  El método asociado al tablero de Butcher dado es
+  \begin{equation}
+    u_{n+1} = u_n + h F(t_n,u_n,h,f)
+  \end{equation}
+  donde
+  \begin{align}
+    F
+      &=
+      \sum_{i=1}^{s}b_ik_i
+    \\[-3mm]
+    k_i
+      &= f(t_n+c_ih, u_n+h \sum_{j=1}^{s}a_{ij} k_j)
+      \\[-4mm]
+    \text{y} \quad
+    c_i
+      &= \sum_{j=1}^{s}a_{ij}
+  .\end{align}
+  Aplicado este método al problema de prueba $f(t,y)=\lambda y$,
+  tenemos
+  \begin{align}
+    k_i
+    &= \lambda(u_n+h \sum_{j=1}^{s}a_{ij} k_j) \\
+    &= \lambda u_n+z \sum_{j=1}^{s}a_{ij} k_j
+  .\end{align}
+  Ahora definimos $K$ como la columna formada por los $k_i$. Es decir,
+  \begin{align}
+    K = \lambda u_n\bar 1+zAK
+  ,\end{align}
+  donde $\bar 1$ es una columna cuyas entradas son todas iguales a
+  $1$. Despejando $K$, esto es
+  \begin{equation}
+    K=\lambda (I-zA)^{-1}u_n\bar 1
+  .\end{equation}
+  Por lo tanto, $F=b^{T}K$ y
+  \begin{align}
+    u_{n+1}
+    &= u_n + hF(t_n,u_n,h,f) \\
+    &= u_n + hb^TK \\
+    &= u_n + h\lambda b^T(I-zA)^{-1}u_n\bar 1 \\
+    &= u_n[1 + h\lambda b^T(I-zA)^{-1}\bar 1]
+  .\end{align}
+  La función de estabilidad del método es la función
+  $R(z)=R(h\lambda)$ dentro del corchete, i.e.
+  \begin{equation}
+    R(z) = 1 + zb^T(I-zA)^{-1}\bar 1
+  .\end{equation}
+  
+  Debemos mostrar que
+   \begin{equation}
+    R(z) = \det(I-zA+z\ol 1 b^T)
+  .\end{equation}
+  La siguiente demostración está sacada de
+  \cite[p.213]{butcher2004numerical}.
+  Sean $v$ un vector de $n$ entradas y $v'$ el vector de $n-1$
+  entradas que se obtiene eliminando la primera entrada de $v$ y
+  denotemos como $I'$ a la matríz identidad de $(n-1)\times(n-1)$.
+  También denotemos $\ol 1'$ como el vector de $n-1$ entradas formado
+  por unos. Entonces la matríz $\ol 1v^{T}$ tiene polinomio
+  característico
+  \begin{align}
+    \chi(x)
+    &= 
+    \det(xI - \ol 1 v^T) \\
+    &= \det
+    \begin{bmatrix}
+      x-v_1 & -v_2 & -v_3 & \cdots & -v_n \\
+      -v_1 & x-v_2 & -v_3 & \cdots & -v_n \\
+      -v_1 & -v_2 & x-v_3 & \cdots & -v_n \\
+      \vdots & \vdots & \vdots & \ddots & \vdots \\
+      -v_1 & -v_2 & -v_3 & \cdots & x-v_n \\
+    \end{bmatrix}
+    \\
+    &= \det
+    \begin{bmatrix}
+      x-v_1 & -v_2 & -v_3 & \cdots & -v_n \\
+      -x & x & 0 & \cdots & 0 \\
+      -x & 0 & x & \cdots & 0 \\
+      \vdots & \vdots & \vdots & \ddots & \vdots \\
+      -x & 0 & 0 & \cdots & x \\
+    \end{bmatrix}
+    \\
+    &= \det
+    \left[
+      \begin{array}{c|c}
+        x-v_1 & -v'^T \\
+        \hline \\[-3mm]
+        -x\ol 1' & xI'
+      \end{array}
+  \right]
+    \\
+    &= [(x-v_1)-(v'^T)(xI')^{-1}(x\ol 1')]\det[xI'] \\
+    &= [x-v_1-v'^T\ol 1']\det[xI'] \\
+    &= [x-v^{T}\ol 1]\det[xI'] \\
+    &= x^{n-1}(x-v^{T}\ol 1)
+  .\end{align}
+  Luego, el polinomio característico de $I+\ol 1 v^{T}$ es
+  \begin{align}
+    \det(xI-(I+\ol 1v^{T}))
+    &= \det((x-1)I-\ol 1v^{T}) \\
+    &= \chi(x-1) \\
+    &= (x-1)^{n-1}(x-1-v^{T}\ol 1)
+  ,\end{align}
+  por lo cual el producto de las raíces es el determinante de $I+\ol
+  1v^{T}$
+  \begin{equation}
+    \det(I+\ol 1v^{T}) = 1+v^{T}\ol 1
+  .\end{equation}
+  Para $v=z(I-zA)^{-T}b$, tenemos $v^{T}=zb^{T}(I-zA)^{-1}$, así que
+  \begin{equation}
+    \det(I+z\ol 1b^{T}(I-zA)^{-1}) = 1+zb^{T}(I-zA)^{-1}\ol 1
+  ,\end{equation}
+  pero el lado derecho es $R(z)$, así que
+  \begin{align}
+    R(z)
+    &= \det(I+z\ol 1b^{T}(I-zA)^{-1}) \\
+    &= \frac{ \det(I+z\ol 1b^{T}(I-zA)^{-1})\det(I-zA)}{\det(I-zA)} \\
+    &= \frac{ \det((I-zA)+z\ol 1b^{T})}{\det(I-zA)}
+  .\end{align}
+  En particular, si $A$ es estrictamente triangular inferior,
+  $\det(I-zA)=1$, así que
+  \begin{equation}
+    R(z) = \det((I-zA)+z\ol 1b^{T})
+  ,\end{equation}
+  como se quería.
 \end{sol}
 
 \begin{exercise}
