@@ -8,6 +8,7 @@
 \setenumerate[0]{label=(\alph*)}
 
 \newtheorem{definition}{Definición}
+\newtheorem{reminder}{Recordatorio}
 \newtheorem{exercise}{Ejercicio}
 \newtheorem*{sol}{Solución}
 \newtheorem*{theorem}{Teorema}
@@ -27,6 +28,68 @@ Tarea 3 - Métodos Runge-Kutta}
 
 \begin{document}
 \maketitle
+
+\begin{reminder}
+  El método asociado al tablero de Butcher
+  \begin{equation}
+    \begin{array}{c|c}
+      c & A \\
+      \hline \\[-3mm]
+        & b^T
+    \end{array}
+  \end{equation}
+  es
+  \begin{equation}\label{eq:metodomultipaso}
+    u_{n+1} = u_n + h F(t_n,u_n,h,f),
+  \end{equation}
+  donde
+  \begin{align}
+    F
+      &= \sum_{i=1}^{s}b_ik_i
+      \\[-3mm]
+    k_i
+      &= f(t_n+c_ih, u_n+h \sum_{j=1}^{s}a_{ij} k_j)
+      \\[-4mm]
+    \text{y} \quad
+    c_i
+      &= \sum_{j=1}^{s}a_{ij}
+  .\end{align}
+\end{reminder}
+
+\begin{reminder}
+  Para analizar la estabilidad absoluta del método
+  \eqref{eq:metodomultipaso}, lo aplicamos al problema de prueba
+  $f(t,y)=\lambda y$, con lo que obtenemos
+  \begin{align}
+    k_i
+    &= \lambda(u_n+h \sum_{j=1}^{s}a_{ij} k_j) \\
+    &= \lambda u_n+z \sum_{j=1}^{s}a_{ij} k_j
+  .\end{align}
+  Ahora definimos $K$ como la columna formada por los $k_i$. Es decir,
+  \begin{align}
+    K = \lambda u_n\bar 1+zAK
+  ,\end{align}
+  donde $\bar 1$ es una columna cuyas entradas son todas iguales a
+  $1$. Despejando $K$, esto es
+  \begin{equation}
+    K=\lambda (I-zA)^{-1}u_n\bar 1
+  .\end{equation}
+  Por lo tanto, $F=b^{T}K$ y
+  \begin{align}
+    u_{n+1}
+    &= u_n + hF(t_n,u_n,h,f) \\
+    &= u_n + hb^TK \\
+    &= u_n + h\lambda b^T(I-zA)^{-1}u_n\bar 1 \\
+    &= u_n[1 + h\lambda b^T(I-zA)^{-1}\bar 1]
+  .\end{align}
+  La función de estabilidad del método es la función
+  $R(z)=R(h\lambda)$ dentro del corchete, i.e.
+  \begin{equation}
+    R(z) = 1 + zb^T(I-zA)^{-1}\bar 1
+  .\end{equation}
+\end{reminder}
+
+\section{Ejercicios}
 
 \begin{exercise}
    Programar el método Runge-Kutta Fehlberg para resolver el problema
@@ -62,6 +125,79 @@ Tarea 3 - Métodos Runge-Kutta}
   absoluta.
 \end{exercise}
 \begin{sol}
+  Para el tablero de Butcher del problema, tenemos
+  \begin{align}
+    F
+      &= (1-\theta)k_1 + \theta k_2, \\
+    k_1
+      &= f(t_n, u_n) \\
+      &= f_n \\
+    k_2
+      &= f(t_n+\tfrac{h}{2\theta}, u_n+\tfrac{h}{2\theta}k_1) \\
+      &= f(t_n+\tfrac{h}{2\theta}, u_n+\tfrac{h}{2\theta}f_n),
+  \end{align}
+  así que
+  \begin{align}
+    u_{n+1}
+    &= u_n + hF \\
+    &= u_n + h[(1-\theta)k_1 + \theta k_2] \\
+    &= u_n + h[(1-\theta)f_n
+    + \theta f(t_n+\tfrac{h}{2\theta}, u_n+\tfrac{h}{2\theta}f_n)].
+  \end{align}
+  Notemos que este método es de la forma
+  \begin{equation}
+    u_{n+1}
+    = u_n + h[af(t_n,u_n) + bf(t_n+\alpha h, u_n+\beta h f_n)]
+  \end{equation}
+  con $a+b=1$ y $\alpha=\beta=\frac{1}{2b}$, donde $b=\theta$. En el
+  problema 5 de la tarea 1 probamos que este método es de orden $2$.
+  La función de estabilidad es 
+  \begin{align}
+    R(z)
+    &= 1 + zb^T(I-zA)^{-1}\bar 1 \\
+    &= 1 + z
+      \begin{bmatrix}
+        1-\theta & \theta
+      \end{bmatrix}
+      \begin{bmatrix}
+        1 & 0 \\
+        -\frac{z}{2\theta} & 1
+      \end{bmatrix}
+      \begin{bmatrix}
+        1 \\ 1
+      \end{bmatrix}
+    \\
+    &= 1 + z
+      \begin{bmatrix}
+        1-\theta & \theta
+      \end{bmatrix}
+      \begin{bmatrix}
+        1 & 0 \\
+        \frac{z}{2\theta} & 1
+      \end{bmatrix}
+      \begin{bmatrix}
+        1 \\ 1
+      \end{bmatrix}
+    \\
+    &= 1 + z
+      \begin{bmatrix}
+        1-\theta & \theta
+      \end{bmatrix}
+      \begin{bmatrix}
+        1 \\
+        \frac{z}{2\theta} + 1
+      \end{bmatrix}
+    \\
+    &= 1 + z[(1-\theta)+\theta(\tfrac{z}{2\theta}+1)] \\
+    &= 1 + z(1+\tfrac{z}{2}) \\
+    &= 1 + z+\frac{z^{2}}{2}
+  .\end{align}
+  Esta es la misma función de estabilidad que la del problema 2
+  (inciso (a)) de la tarea 2. Por lo tanto, obtenemos la misma
+  gráfica de la región de estabilidad $|R(z)|<1$:
+   \begin{center}
+  \includegraphics[width=0.8\textwidth]{img/jaac_tarea2_ejercicio2a}
+  \end{center}
 \end{sol}
 
 \begin{exercise}
@@ -75,62 +211,16 @@ Tarea 3 - Métodos Runge-Kutta}
   \end{equation}
   donde $A$ es una matríz estrictamente triangular inferior. Demuestre
   que $R(h\lambda)$ es el polinomio en $z=h\lambda$ dado por 
-   \begin{equation}
+  \begin{equation}\label{eq:estabilidad_alt}
     R(z) = \det(I-zA+z\ol 1 b^T)
   .\end{equation}
 \end{exercise}
 \begin{sol}
-  El método asociado al tablero de Butcher dado es
-  \begin{equation}
-    u_{n+1} = u_n + h F(t_n,u_n,h,f)
-  \end{equation}
-  donde
-  \begin{align}
-    F
-      &=
-      \sum_{i=1}^{s}b_ik_i
-    \\[-3mm]
-    k_i
-      &= f(t_n+c_ih, u_n+h \sum_{j=1}^{s}a_{ij} k_j)
-      \\[-4mm]
-    \text{y} \quad
-    c_i
-      &= \sum_{j=1}^{s}a_{ij}
-  .\end{align}
-  Aplicado este método al problema de prueba $f(t,y)=\lambda y$,
-  tenemos
-  \begin{align}
-    k_i
-    &= \lambda(u_n+h \sum_{j=1}^{s}a_{ij} k_j) \\
-    &= \lambda u_n+z \sum_{j=1}^{s}a_{ij} k_j
-  .\end{align}
-  Ahora definimos $K$ como la columna formada por los $k_i$. Es decir,
-  \begin{align}
-    K = \lambda u_n\bar 1+zAK
-  ,\end{align}
-  donde $\bar 1$ es una columna cuyas entradas son todas iguales a
-  $1$. Despejando $K$, esto es
-  \begin{equation}
-    K=\lambda (I-zA)^{-1}u_n\bar 1
-  .\end{equation}
-  Por lo tanto, $F=b^{T}K$ y
-  \begin{align}
-    u_{n+1}
-    &= u_n + hF(t_n,u_n,h,f) \\
-    &= u_n + hb^TK \\
-    &= u_n + h\lambda b^T(I-zA)^{-1}u_n\bar 1 \\
-    &= u_n[1 + h\lambda b^T(I-zA)^{-1}\bar 1]
-  .\end{align}
-  La función de estabilidad del método es la función
-  $R(z)=R(h\lambda)$ dentro del corchete, i.e.
+  Debemos mostrar que la función de estabilidad
   \begin{equation}
     R(z) = 1 + zb^T(I-zA)^{-1}\bar 1
-  .\end{equation}
-  
-  Debemos mostrar que
-   \begin{equation}
-    R(z) = \det(I-zA+z\ol 1 b^T)
-  .\end{equation}
+  \end{equation}
+  es equivalente a la expresión \eqref{eq:estabilidad_alt}.
   La siguiente demostración está sacada de
   \cite[p.213]{butcher2004numerical}.
   Sean $v$ un vector de $n$ entradas y $v'$ el vector de $n-1$
@@ -207,13 +297,105 @@ Tarea 3 - Métodos Runge-Kutta}
 \end{sol}
 
 \begin{exercise}
+  Determine la función $R(h\lambda)$ para el método Runge-Kutta con
+  tablero de Butcher
+  \begin{equation}
+    \begin{array}{c|cc}
+      \frac{1}{2}-\gamma & \frac{1}{4} & \frac{1}{4} - \gamma \\[3mm]
+      \frac{1}{2}+\gamma & \frac{1}{4} + \gamma & \frac{1}{4} \\[3mm]
+      \hline \\[-3mm]
+                         & \frac{1}{2} & \frac{1}{2}
+    \end{array}
+  \end{equation}
+  donde $\gamma=\sqrt{3}/6$. Concluya que el método es $A$-estable.
 \end{exercise}
 \begin{sol}
+  Tenemos
+  \begin{align}
+    I-zA+z\ol 1b^T
+    &=
+    \begin{bmatrix}
+      1 & 0 \\
+      0 & 1
+    \end{bmatrix}
+    -z
+    \begin{bmatrix}
+      \frac{1}{4} & \frac{1}{4} - \gamma \\[3mm]
+      \frac{1}{4} + \gamma & \frac{1}{4}
+    \end{bmatrix}
+    +z
+    \begin{bmatrix}
+      \frac{1}{2} & \frac{1}{2} \\[3mm]
+      \frac{1}{2} & \frac{1}{2}
+    \end{bmatrix}
+    \\
+    &=
+    \begin{bmatrix}
+      1-z\frac{1}{4} + z \frac{1}{2}
+        & -z(\frac{1}{4} - \gamma) + z \frac{1}{2}
+        \\[3mm]
+      -z(\frac{1}{4} + \gamma) + z \frac{1}{2}
+        & 1-z\frac{1}{4} + z \frac{1}{2}
+    \end{bmatrix}
+    \\
+    &=
+    \begin{bmatrix}
+      1+\frac{z}{4}
+        & z(\frac{1}{4} + \gamma)
+        \\[3mm]
+      z(\frac{1}{4} - \gamma)
+        & 1+\frac{z}{4}
+    \end{bmatrix}
+    \\
+    I-zA
+    &=
+    \begin{bmatrix}
+      1 & 0 \\
+      0 & 1
+    \end{bmatrix}
+    -z
+    \begin{bmatrix}
+      \frac{1}{4} & \frac{1}{4} - \gamma \\[3mm]
+      \frac{1}{4} + \gamma & \frac{1}{4}
+    \end{bmatrix}
+    \\
+    &=
+    \begin{bmatrix}
+      1-\frac{z}{4}
+        & -z(\frac{1}{4} - \gamma)
+        \\[3mm]
+      -z(\frac{1}{4} + \gamma)
+        & 1-\frac{z}{4}
+    \end{bmatrix}
+  .\end{align}
+  Los determinantes son
+  \begin{align}
+    \det(I-zA+z\ol 1b^T)
+    &= \left(1+\frac{z}{4}\right)^{2}
+      - z^{2}\left(\frac{1}{16}-\gamma^{2}\right) \\
+    &= \left(1+\frac{z}{4}\right)^{2} + \frac{z^{2}}{48} \\
+    &= 1 + \frac{z}{2} + \frac{z^{2}}{12}
+    \\
+    \det(I-zA)
+    &= \left(1-\frac{z}{4}\right)^{2}
+      - z^{2}\left(\frac{1}{16} - \gamma^{2}\right) \\
+    &= \left(1-\frac{z}{4}\right)^{2} + \frac{z^{2}}{48} \\
+    &= 1 - \frac{z}{2} + \frac{z^{2}}{12}
+  .\end{align}
+  Así, la función de estabilidad es
+  \begin{align}
+    R(z)
+    &= \frac{\det(I-zA+z\ol 1b^T)}{\det(I-zA)}
+      \\
+    &= \frac
+      {\left(1+\frac{z}{4}\right)^{2} + \frac{z^{2}}{48}}
+      {\left(1-\frac{z}{4}\right)^{2} + \frac{z^{2}}{48}}
+      \\
+    &= \frac
+      {1 + \frac{z}{2} + \frac{z^{2}}{12}}
+      {1 - \frac{z}{2} + \frac{z^{2}}{12}}
+  .\end{align}
 \end{sol}
 
-\begin{exercise}
-\end{exercise}
-\begin{sol}
-\end{sol}
 
 \end{document}
