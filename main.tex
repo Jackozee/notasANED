@@ -1077,7 +1077,7 @@ Existen varios métodos. Los más comunes son
 \end{itemize}
 
 \subsubsection{Método Runge-Kutta Fehlberg}
-
+Consideremos dos métodos
 \begin{align}
   u_{n+1}
     &= u_n + h\Phi(t_n,u_n,f_n;h)
@@ -1089,51 +1089,69 @@ Existen varios métodos. Los más comunes son
     \qquad
     \text{(de orden $p+1$)}
 \end{align}
-que satisfacen
+Es decir, tenemos
 \begin{align}
-  y(t_{n+1})
+  y_{n+1}
   &=
-  y(t_n)
+  y_n
   +
   h
-  \Phi(t_n,y(t_n),f(t_n,y(t_n));h)
-  +
-  O(h^{p+1})
-  &
-  \implies \tau_{n+1}(h) &= O(h^p)
+  \Phi(t_n,y_n,f(t_n,y_n);h)
+  + h\tau_{n+1}(h)
   \\
-  y(t_{n+1})
+  y_{n+1}
   &=
-  y(t_n)
+  y_n
   +
   h
-  \tilde \Phi(t_n,y(t_n),f(t_n,y(t_n));h)
-  +
-  O(h^{p+2})
-  &
-  \implies \tilde \tau_{n+1}(h) &= O(h^{p+1})
-.\end{align}
-Suponiendo que $u_n\approx\tilde u_{n}\approx y(u_n)$, tenemos
+  \tilde \Phi(t_n,y_n,f(t_n,y_n);h)
+  + h\tilde\tau_{n+1}(h)
+,\end{align}
+donde $\tau_{n+1}(h) = O(h^p)$ y $\tilde \tau_{n+1}(h) = O(h^{p+1})$.
+Supongamos que la aproximación en $n$-ésimo paso es suficientemente
+buena: $u_n\approx\tilde u_{n}\approx y_n$. Entonces
 \begin{align}
-  \tau_{n+1}(h)
-  &\approx \frac{y(t_{n+1})-u_n}{h} - \Phi(t_n,u_n,f(t_n,u_n);h) \\
-  &= \frac{y(t_{n+1})-[u_n+h\Phi(t_n,u_n,f(t_n,u_n);h)]}{h}  \\
-  &= \frac{y(t_{n+1})-u_{n+1}}{h}  \\
-  &= \frac{1}{h}e_{n+1}
-.\end{align}
-Similarmente, para el método de orden $p+1$, podemos obtener
-\begin{equation}
-  \tilde\tau_{n+1}(h)
-  \approx \frac{y(t_{n+1})-\tilde u_{n+1}}{h}
-  = \frac{1}{h}\tilde e_{n+1}
-.\end{equation}
-Por otro lado,
+  y_{n+1}
+    &\approx
+    u_n
+    + h\Phi(t_n,u_n,f(t_n,u_n);h)
+    + h\tau_{n+1}(h)
+  \\
+  y_{n+1}
+    &\approx
+    \tilde u_n
+    + h\tilde \Phi(t_n,\tilde u_n,\tilde f(t_n,\tilde u_n);h)
+    + h \tilde\tau_{n+1}(h)
+\end{align}
+i.e.
 \begin{align}
-  \tau_{n+1}(h)
-  &= \frac{1}{h}(y(t_{n+1})-u_{n+1}) \\
-  &= \frac{1}{h}(y(t_{n+1})-\tilde u_{n+1}+\tilde u_{n+1}-u_{n+1}) \\
+  y_{n+1}
+    &\approx
+    u_{n+1}
+    + h\tau_{n+1}(h)
+  \\
+  y_{n+1}
+    &\approx
+    \tilde u_{n+1}
+    + h\tilde\tau_{n+1}(h)
 .\end{align}
-
+En particular, de la primera de estas aproximaciones
+tenemos $e_{n+1} = y_{n+1} - u_{n+1} \approx h \tau_{n+1}(h)$. Así,
+\begin{align}
+  u_{n+1} - \tilde u_{n+1}
+  &\approx (y_{n+1} - h\tau_{n+1}(h)) - (y_{n+1} -
+  h\tilde\tau_{n+1}(h))
+  \\
+  &= - h\tau_{n+1}(h) + h\tilde\tau_{n+1}(h) \\
+  &= - h\tau_{n+1}(h) + O(h^{p+2}).
+\end{align}
+Notemos que, entonces
+\begin{align}
+  |u_{n+1} - \tilde u_{n+1}|
+  &= h|\tau_{n+1}(h)| \\
+  &= |y_{n+1} - u_{n+1}| \\
+  &= |e_{n+1}|.
+\end{align}
 
 \subsection{Problema de tarea}
 

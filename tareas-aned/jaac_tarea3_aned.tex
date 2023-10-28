@@ -101,13 +101,31 @@ Tarea 3 - Métodos Runge-Kutta}
      \quad y(0)=1,
      \quad 0\leq x\leq 4
    ,\end{equation}
-   tomando $h_\mathrm{max}=0.1$ y tolerancia $0.01$. Elaborar una
-   gráfica del error y una gráfica de $x_n$ contra $h_n$. (Marque con
-   un punto los pasos aceptados y con un asterisco los pasos
-   rechazados).
+   tomando $h_\mathrm{max}=0.1$ y tolerancia $\epsilon = 0.01$.
+   Elaborar una gráfica del error y una gráfica de $x_n$ contra $h_n$.
+   (Marque con un punto los pasos aceptados y con un asterisco los
+   pasos rechazados).
 \end{exercise}
 \begin{sol}
+  Se incluye una gráfica de la solución obtenida:
+  \begin{center}
+  \includegraphics[width=0.9\textwidth]{img/jaac_tarea3_ejercicio1a}
+  \end{center}
+  \newpage
+  El error se comporta como sigue:
+  \begin{center}
+  \includegraphics[width=0.9\textwidth]{img/jaac_tarea3_ejercicio1b}
+  \end{center}
+  Finalmente, se ilustran los tamaños de paso intentados en cada punto
+  del tiempo $t$. Las cruces son rechazos de tamaño de paso y los
+  puntos indican cuando el tamaño de paso produce una aproximación que
+  pasa la tolerancia.
+  \begin{center}
+  \includegraphics[width=0.9\textwidth]{img/jaac_tarea3_ejercicio1c}
+  \end{center}
 \end{sol}
+
+\newpage
 
 \begin{exercise}
   Considere la familia de métodos de Runge-Kutta correspondientes al
@@ -394,7 +412,75 @@ Tarea 3 - Métodos Runge-Kutta}
     &= \frac
       {1 + \frac{z}{2} + \frac{z^{2}}{12}}
       {1 - \frac{z}{2} + \frac{z^{2}}{12}}
+      \\
+    &= \frac
+      {12 + 6z + z^{2}}
+      {12 - 6z + z^{2}}
   .\end{align}
+  \begin{align}
+    |12 \pm 6z + z^{2}|^{2}
+    &= |12 \pm 6x \pm 6iy + x^{2}-y^{2}+2ixy|^{2} \\
+    &= |(12 \pm 6x + x^{2}-y^{2}) + i(\pm 6y +2xy)|^{2} \\
+    &= (12 \pm 6x + x^{2}-y^{2})^{2} + (\pm 6y +2xy)^{2} \\
+    &= (12 + x^{2}-y^{2})^{2} + 36x^{2} \pm 12x(12 + x^{2}-y^{2}) \\
+      &\quad + 36y^2 + 4x^{2}y^{2} \pm 24xy^{2} \\
+    &= (12 + x^{2}-y^{2})^{2} + 4(9x^{2} + 9y^2 + x^{2}y^{2})
+    \\
+      &\quad \pm 12x(12 + x^{2} + y^{2})
+  .\end{align}
+  Es decir,
+  \begin{align}
+    |12 + 6z + z^{2}|
+    &= \sqrt{(12 + x^{2}-y^{2})^{2} + 4(9x^{2} + 9y^2 + x^{2}y^{2})
+    + 12x(12 + x^{2} + y^{2})}
+    \\
+    |12 - 6z + z^{2}|
+    &= \sqrt{(12 + x^{2}-y^{2})^{2} + 4(9x^{2} + 9y^2 + x^{2}y^{2})
+    - 12x(12 + x^{2} + y^{2})}
+  .\end{align}
+  Dado que los dos primeros términos dentro de la raíz son positivos
+  ($\geq 0$), entonces
+  \begin{equation}
+    \left\{
+      \begin{aligned}
+          |12 + 6z + z^{2}|
+          &>
+        |12 - 6z + z^{2}|, & \text{para } x> 0
+        \\
+          |12 + 6z + z^{2}|
+          &=
+          |12 - 6z + z^{2}|, & \text{para } x= 0
+        \\
+          |12 + 6z + z^{2}|
+          &<
+          |12 - 6z + z^{2}|, & \text{para } x<0
+      \end{aligned}
+    \right.
+  \end{equation}
+  Se sigue que
+  \begin{equation}
+    \left\{
+      \begin{aligned}
+        |R(z)|
+          &= \frac{|12 + 6z + z^{2}|}
+          {|12 - 6z + z^{2}|}
+        > 1, & \text{para } x> 0,
+        \\
+        |R(z)|
+          &= \frac{|12 + 6z + z^{2}|}
+          {|12 - 6z + z^{2}|}
+        = 1, & \text{para } x= 0,
+        \\
+        |R(z)|
+          &= \frac{|12 + 6z + z^{2}|}
+          {|12 - 6z + z^{2}|}
+        < 1, & \text{para } x< 0.
+      \end{aligned}
+    \right.
+  \end{equation}
+  Así, la región de estabilidad absoluta del método es el semiplano
+  abierto $\Im(z)<0$. En otras palabras, el método es A-estable,
+  como se quería mostrar.
 \end{sol}
 
 
