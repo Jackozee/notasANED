@@ -15,6 +15,7 @@
 \newtheorem*{sol}{Solución}
 
 \newcommand\N{\mathbb N}
+\newcommand\R{\mathbb R}
 \newcommand\ol\overline
 
 \title{Notas de análisis numérico para ecuaciones diferenciales}
@@ -1224,6 +1225,179 @@ A partir de esta expresión para $u(x)$ podemos concluir que
   \item
     $\|u\|_{\infty}=\frac{1}{8}\|f\|_\infty$.
 \end{itemize}
+
+\subsection{Diferencias finitas}
+Consideremos el problema en el intervalo $[0,1]$. Aproximaremos la
+solución en los puntos equiditsantes $x_0,x_1,\dots,x_n,x_{n+1}$,
+donde $x_0=0$ y $x_{n+1}=1$. Es decir, $x_j=jh$ para
+$j=0,1,\dots,n,n+1$, donde $h=\frac{1}{n+1}$.
+Denotaremos como $u$ a la función a aproximar. Las aproximaciones en
+los $x_j$ se denotarán como $u_j$. Entonces la versión discreta de
+$-u''=f$ es
+\begin{equation}
+  - \left( \frac{u_{j-1}-2u_j+u_{j+1}}{h^{2}} \right)
+    =
+    f(x_j), \quad j=1,\dots,n
+.\end{equation}
+Es decir,
+\begin{equation}
+  - u_{j-1}+2u_j-u_{j+1}
+    =
+    h^{2} f(x_j), \quad j=1,\dots,n
+.\end{equation}
+
+Sin consideramos las condiciones de frontera más generales
+\begin{equation}
+  u(a)=\alpha
+  \qquad u(b)=\beta
+  \qquad x_j = a+jh, \quad j=0,1,\dots,n,n+1,
+  \text{ donde } h = \frac{b-a}{n+1}
+.\end{equation}
+En este caso, tenemos $u_0=\alpha$, $u_{n+1}=\beta$ y obtenemos las
+ecuaciones
+\begin{align}
+  -u_0+2u_1-u_2 &= h^{2}f(x_1) \\
+  -u_1+2u_2-u_3 &= h^{2}f(x_2) \\
+                &\vdots \nonumber \\
+  -u_{n-1}+2u_n-u_{n+1} &= h^{2}f(x_n)
+.\end{align}
+Este es un sistema de ecuaciones
+\begin{equation}
+  \begin{bmatrix}
+    2 & -1 \\
+    -1 & 2 & -1 \\
+       & -1 & 2 & -1 \\
+       & & -1 & 2 & -1 \\
+       &&&\ddots &\ddots &\ddots \\
+       &&& & -1 & 2 & -1 \\
+       &&&& & -1 & 2
+  \end{bmatrix}
+  \begin{bmatrix}
+    u_1 \\ u_2 \\ u_3 \\ u_4 \\ \vdots \\ u_{n-2} \\ u_{n-1} \\ u_n
+  \end{bmatrix}
+  =
+  h^{2}
+  \begin{bmatrix}
+    f(x_1) \\ f(x_2) \\ f(x_3) \\ f(x_4) \\
+    \vdots \\ f(x_{n-1}) \\ f(x_n)
+  \end{bmatrix}
+  +
+  \begin{bmatrix}
+    \alpha \\ 0 \\ 0 \\ 0 \\ \vdots \\ 0 \\ \beta
+  \end{bmatrix}
+.\end{equation}
+El problema tiene solución única, ya que la matríz de la izquierda es
+simétrica y definida positiva. Consideraciones acerca de qué metodos
+son adecuados para resolverlo (e.g., factorización de Cholesky)
+se pueden encontrar en el libro de álgebra lineal de James Demmel.
+
+
+\subsection{Consistencia}
+
+Sea $L_h$ el operador dado como
+\begin{equation}
+  (L_hw)(x_j)
+  =
+  -\frac{w_{j-1}-2w_j+w_{j+1}}{h^{2}}, \quad j=1,\dots,n
+.\end{equation}
+Consideramos el dominio de $L_h$ como
+\begin{equation}
+  V_{h}^{\circ} =
+  \left\{
+    w=(w_0,w_1,\dots,w_n,w_{n+1}) \mid w_0=w_{n+1}=0
+  \right\}
+.\end{equation}
+También podemos considerar las $w\in V_h^{\circ}$ como funciones
+$\{x_0,x_1,\dots,x_n,x_{n+1}\}\to\R$.
+El operador $L_h$ es la versión discreta del operador $-\partial^{2}$
+en $C^{2}[0,1]$. Partiendo de la ecuación
+\begin{equation}
+  -u''(x) = f(x)
+,\end{equation}
+definimos el error de truncamiento local como la diferencia
+\begin{equation}
+  (L_h u)(x_j) = f(x_j) + \tau_h(x_j), \quad j=1,\dots,n
+.\end{equation}
+Para un punto interior ($j=1,\dots,n$), el operador $L_h$ es
+\begin{align}
+  (L_hu)(x_j)
+  &= -\frac{1}{h^{2}}[u(x_{j-1})-2u(x_j)+u(x_{j+1})] \\
+  &= -\frac{1}{h^{2}}
+  \Big[
+    u(x_j)
+    - hu'(x_j)
+    + \frac{h^{2}}{2}u''(x_j)
+    - \frac{h^{3}}{3!} u'''(x_j)
+    + \frac{h^{4}}{4!}u''''(\xi_i)  \\
+  &\hspace{10mm} - 2u(x_j) \\
+  &\hspace{10mm}
+    + u(x_j)
+    + hu'(x_j)
+    + \frac{h^{2}}{2}u''(x_j)
+    + \frac{h^{3}}{3!} u'''(x_j)
+    + \frac{h^{4}}{4!}u''''(\eta_i)
+  \Big]
+  \\
+  &= -\frac{1}{h^{2}}
+  \left[
+    h^{2}u''(x_j)
+    + \frac{h^{4}}{4!}u''''(\xi_i)
+    + \frac{h^{4}}{4!}u''''(\eta_i)
+  \right] \\
+  &=
+  -
+    u''(x_j)
+  -
+    \frac{h^{2}}{4!} [ u''''(\xi_i) + u''''(\eta_i) ]
+,\end{align}
+donde $\xi_i\in(x_{j-1},x_{j})$ y $\eta_j\in(x_{j},x_{j+1})$.
+Si $u$ es la solución exacta a la ecuación $-u''=f$, entonces también
+tenemos $u''''=-f''$, así que
+\begin{equation}
+  (L_hu)(x_j)
+  =
+  f(x_j) + \frac{h^{2}}{4!} [ f''(\xi_i) + f''(\eta_i) ]
+,\end{equation}
+por lo cual
+\begin{align}
+  \tau_{h}(x_j)
+  &= (L_hu)(x_j) - f(x_j) \\
+  &=
+    \frac{h^{2}}{4!} [ f''(\xi_i) + f''(\eta_i) ]
+.\end{align}
+Si $\|f''\|_{\infty}\leq M$, entonces cada una de estos términos está
+acotado por $h^{2}M/12$, así que podemos acotar el error de
+truncamiento (global) como
+\begin{align}
+  \tau_{h}
+  &= \max_{j=1,\dots,n} |\tau_{h}(x_j)| \\
+  &\leq \frac{h^{2}M}{12}
+.\end{align}
+Concluimos que el método es consistente de orden $2$.
+
+\subsection{Estabilidad}
+
+La norma cuadrada de la función $u$
+\begin{equation}
+  \|u\|^{2}_2 = \int_{0}^{1}u^{2}(x)\,dx
+\end{equation}
+se puede discretizar como
+\begin{equation}
+  \|u\|^{2}_h = h\sum_{k=0}^{n+1}c_ku_k
+  \qquad \text{ donde }
+  c_1=c_2=\dots=c_n=1 
+  \text{ y }
+  c_0=c_{n+1}=\frac{1}{2}.
+\end{equation}
+El resultado de estabilidad que tenemos es
+\begin{equation}
+  \|u_h\|_h \leq \frac{1}{2} \|f_h\|_h
+.\end{equation}
+
+
+
+
+
 
 
 \end{document}
