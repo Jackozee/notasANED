@@ -1,0 +1,92 @@
+\documentclass[11pt,letterpaper]{article}
+\usepackage[left=3.5cm,right=3.5cm,top=2.5cm,bottom=2.5cm]{geometry}
+%\usepackage[spanish]{babel}
+
+\usepackage{amsmath,amsfonts,amsthm}
+\usepackage{enumitem,mathtools}
+\setenumerate[0]{label=(\alph*)}
+
+\newtheorem{exercise}{Ejercicio}
+\newtheorem*{sol}{Solución}
+
+\newcommand\N{\mathbb N}
+
+\title{Primer examen parcial - Análisis numérico para ecuaciones
+diferenciales}
+\author{Jorge Alfredo Álvarez Contreras}
+
+\begin{document}
+\maketitle
+
+\begin{exercise}
+  Considere el problema de valores iniciales
+  \begin{equation}
+    y' = \frac{y+t}{y-t}, \quad y(0)=1
+  ,\end{equation}
+  cuya solución es $y(t)=t+\sqrt{1+2t^{2}}$. Utilice $h=0.1$ para
+  \begin{enumerate}
+    \item
+      realizar dos pasos del método de Euler explícito
+    \item
+      realizar dos pasos del método de Euler implícito (utilice
+      iteración Newton-Raphson con una tolerancia de $10^{-5}$).
+  \end{enumerate}
+\end{exercise}
+\begin{sol}
+  \begin{enumerate}
+    \item
+      Para $h=0.1$, tenemos $t_0=0$, $t_1=h=0.1$, así que el método de
+      Euler explícito
+      \begin{equation}
+        u_{n+1} = u_n + hf_n
+      \end{equation}
+      comienza con $u_0=y(0)=1$ y produce las aproximaciones
+      \begin{align}
+        u_1
+        &= u_0+hf_0 \\
+        &= u_0+h \frac{u_0+t_0}{u_0-t_0} \\
+        &= 1+h \\
+        &= 1.1,
+        \\
+        u_2
+        &= u_1+hf_1 \\
+        &= u_1+h \frac{u_1+t_1}{u_1-t_1} \\
+        &= 1.1+h \frac{1.1+0.1}{1.1-0.1} \\
+        &= 1.1+(0.1)(1.2) \\
+        &= 1.1 + 0.12 \\
+        &= 1.22
+      .\end{align}
+    \item
+      Para el método de Euler implícito,
+      \begin{equation}
+        u_{n+1} = u_n + hf_{n+1}
+      ,\end{equation}
+      también tenemos $t_0=0$ y
+      $t_1=h=0.1$ y comenzamos con $u_0=y(0)=1$.
+      Así, debemos resolver las ecuaciones
+      \begin{equation}
+        \left\{
+          \begin{aligned}
+            u_1 &= u_0 + hf_{1},
+            \\
+            u_2 &= u_1 + hf_{2}.
+          \end{aligned}
+        \right.
+      \end{equation}
+      Esto es
+      \begin{equation}
+        \left\{
+          \begin{aligned}
+            u_1 &= u_0 + h \frac{u_1+t_1}{u_1-t_1}
+            \\
+            u_2 &= u_1 + h \frac{u_2+t_2}{u_2-t_2}
+          \end{aligned}
+        \right.
+      \end{equation}
+      
+      
+  \end{enumerate}
+\end{sol}
+
+
+\end{document}
