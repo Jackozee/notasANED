@@ -10,6 +10,7 @@
 \newtheorem*{sol}{Solución}
 
 \newcommand\N{\mathbb N}
+\newcommand\tol{\mathrm{tol}}
 
 \title{Primer examen parcial - Análisis numérico para ecuaciones
 diferenciales}
@@ -61,8 +62,8 @@ diferenciales}
       \begin{equation}
         u_{n+1} = u_n + hf_{n+1}
       ,\end{equation}
-      también tenemos $t_0=0$ y
-      $t_1=h=0.1$ y comenzamos con $u_0=y(0)=1$.
+      también tenemos $t_0=0$, $t_1=h=0.1$
+      y comenzamos con $u_0=y(0)=1$.
       Así, debemos resolver las ecuaciones
       \begin{equation}
         \left\{
@@ -83,9 +84,500 @@ diferenciales}
           \end{aligned}
         \right.
       \end{equation}
+      O bien
+      \begin{equation}
+        \left\{
+          \begin{aligned}
+            u_1 - u_0 - h \frac{u_1+t_1}{u_1-t_1} &= 0
+            \\
+            u_2 - u_1 - h \frac{u_2+t_2}{u_2-t_2} &= 0
+          \end{aligned}
+        \right.
+      \end{equation}
+      es decir, hay que encontrar las raíces de
+      \begin{equation}\label{eq:func_objetivo}
+        \phi(u_n) = u_{n} - u_{n-1} - h \frac{u_n+t_n}{u_n-t_n}
+      ,\end{equation}
+      para $n=1,2$. Para esto usaremos el método de Newton-Raphson.
+      Recordemos que este es un método iterativo para encontrar
+      aproximaciones sucesivas $x^{(1)},x^{(2)},x^{(3)},\dots$ a una
+      solución $x$ de la ecuación $\phi(x)=0$, comenzando
+      con un valor inicial $x^{(0)}$ y definiendo
+      \begin{equation}
+        x^{(k+1)} = x^{(k)} - \frac{\phi(x^{(k)})}{\phi'(x^{(k)})}
+      .\end{equation}
+      El método se detiene cuando $|x^{(k+1)}-x^{(k)}|<\tol$.
+      En este caso, la función de la cual queremos obtener raíces es
+      \eqref{eq:func_objetivo},
+      donde $u_{n-1}, t_n$ y $h$ son conocidas.
+      Así, la derivada de $\phi$ es
+      \begin{align}
+        \phi'(u_n)
+        &= 1 - h \frac{(u_n-t_n)-(u_n+t_n)}{(u_n-t_n)^{2}} \\
+        &= 1 + \frac{2ht_n}{(u_n-t_n)^{2}}
+      ,\end{align}
+      y las aproximaciones sucesivas
+      $u_n^{(1)},u_n^{(2)},u_{n}^{3},\dots$ se calculan a partir de
+      $u_{n}^{(0)}$como
+      \begin{align}
+        u_{n}^{(k+1)}
+        &= u_{n}^{(k)} - \frac{\phi(u_n^{(k)})}{\phi'(u_n^{(k)})} \\
+        &= u_{n}^{(k)}
+        - \frac
+        {
+          \displaystyle
+          u_{n}^{(k)}
+          - u_{n-1}
+          - h \frac{u_n^{(k)}+t_n}{u_n^{(k)}-t_n}
+        }
+        {
+          \displaystyle
+          1
+          + \frac{2ht_n}{(u_n^{(k)}-t_n)^{2}}
+        } \\
+        &= u_{n}^{(k)}
+        - \frac
+        {
+          (u_n^{(k)}-t_n)^{2}(u_{n}^{(k)} - u_{n-1})
+          - h ((u_n^{(k)})^{2}-t_n^{2})
+        }
+        {
+          (u_n^{(k)}-t_n)^{2} + 2ht_n
+        }
+      .\end{align}
+      Comencemos con $u_1$. Calcularemos nuestro valor inicial con el
+      método de Euler explícito:
+      \begin{equation}
+        u_1^{(0)}=u_0 + h f_0 = 1 + (0.1)(1)=1.1
+      .\end{equation}
+      En este caso, las aproximaciones sucesivas se calculan como
+      \begin{align}
+        u_1^{(k+1)}
+        &=
+          u_{1}^{(k)}
+          - \frac
+          {
+            (u_1^{(k)}-t_1)^{2}(u_{1}^{(k)} - u_{0})
+            - h ((u_1^{(k)})^{2}-t_1^{2})
+          }
+          {
+            (u_1^{(k)}-t_1)^{2} + 2ht_1
+          }
+          \\
+        &=
+          u_{1}^{(k)}
+          - \frac
+          {
+            (u_1^{(k)}-0.1)^{2}(u_{1}^{(k)} - 1)
+            - (0.1) ((u_1^{(k)})^{2}-0.01)
+          }
+          {
+            (u_1^{(k)}-0.1)^{2} + 0.02
+          }
+      .\end{align}
+      Usando el valor inicial $u_1^{(0)}=1.1$, tenemos, a 6
+      decimales,
+      \begin{align}
+        u_1^{(1)}
+        &=
+          u_1^{(0)}
+          - \frac
+          {
+            (u_1^{(k)}-0.1)^{2}(u_{1}^{(k)} - 1)
+            - (0.1) ((u_1^{(k)})^{2}-0.01)
+          }
+          {
+            (u_1^{(k)}-0.1)^{2} + 0.02
+          }
+          \\
+        &= u_1^{(0)} - \frac { 0.1 - 0.12 } { 1.02 } \\
+        &\approx
+          u_1^{(0)} + 0.019608 \\
+        &= 1.119608
+      .\end{align}
+      Notemos que $|u_{1}^{(1)}-u_1^{(0)}| = 0.019608 > \tol =
+      0.00001$, así que calculamos otra iteración. A 6 decimales,
+      tenemos
+      \begin{align}
+        u_1^{(2)}
+        &=
+          u_{1}^{(1)}
+          - \frac
+          {
+            (u_1^{(1)}-0.1)^{2}(u_{1}^{(1)} - 1)
+            - (0.1) ((u_1^{(1)})^{2}-0.01)
+          }
+          {
+            (u_1^{(1)}-0.1)^{2} + 0.02
+          }
+          \\
+        &=
+          u_{1}^{(1)} - \frac { 0.124345 - 0.124352} { 1.059600 }
+          \\
+        &\approx u_{1}^{(1)} + 0.000007 \\
+        &= 1.119615
+      .\end{align}
+      La diferencia es
+      $|u_{1}^{(2)}-u_1^{(1)}|=0.000007<\tol=0.00001$, así que
+      podemos aceptar el valor $u_1^{(2)}=1.119615$ como $u_1$.
+
+      Ahora aproximaremos $u_2$. Para estimar el valor inicial,
+      usaremos un paso del método de Euler explícito:
+      \begin{align}
+        u_2^{(0)}
+        &= u_1 + hf_1 \\
+        &= u_1 + h \frac{u_1+t_1}{u_1-t_1} \\
+        &= 1.119615 + (0.1)\frac{1.219615}{1.019615} \\
+        &\approx 1.239230
+      ,\end{align}
       
-      
+      Las aproximaciones sucesivas de $u_2$ 
+      se calculan como
+      \begin{align}
+        u_2^{(k+1)}
+        &=
+          u_{2}^{(k)}
+          - \frac
+          {
+            (u_2^{(k)}-t_2)^{2}(u_{2}^{(k)} - u_{1})
+            - h ((u_2^{(k)})^{2}-t_2^{2})
+          }
+          {
+            (u_2^{(k)}-t_2)^{2} + 2ht_2
+          }
+          \\
+        &=
+          u_{2}^{(k)}
+          - \frac
+          {
+            (u_2^{(k)}-0.2)^{2}(u_{2}^{(k)} - 1.119615)
+            - (0.1)((u_2^{(k)})^{2}-0.04)
+          }
+          {
+            (u_2^{(k)}-0.2)^{2} + 0.04
+          }
+      .\end{align}
+      Calculando hasta 6 decimales, tenemos
+      \begin{align}
+        u_2^{(1)}
+        &=
+          u_{2}^{(0)}
+          - \frac
+          {
+            (u_2^{(0)}-0.2)^{2}(u_{2}^{(0)} - 1.119615)
+            - (0.1)((u_2^{(0)})^{2}-0.04)
+          }
+          {
+            (u_2^{(0)}-0.2)^{2} + 0.04
+          }
+          \\
+        &\approx
+          u_{2}^{(0)} - \frac { 0.129184 - 0.149569} { 1.12 } \\
+        &\approx u_{2}^{(0)} + 0.018201 \\
+        &= 1.257431
+      .\end{align}
+      Luego, $|u_2^{(1)}-u_2^{(0)}|=0.018201>\tol=0.00001$, así que
+      calculamos otra iteración.
+      \begin{align}
+        u_2^{(2)}
+        &=
+          u_{2}^{(1)}
+          - \frac
+          {
+            (u_2^{(1)}-0.2)^{2}(u_{2}^{(1)} - 1.119615)
+            - (0.1)((u_2^{(1)})^{2}-0.04)
+          }
+          {
+            (u_2^{(0)}-0.2)^{2} + 0.04
+          }
+          \\
+        &\approx
+          u_{2}^{(0)} - \frac { 0.154100 - 0.154113 } { 1.158160 } \\
+        &\approx u_{2}^{(0)} + 0.000011 \\
+        &= 1.257442
+      .\end{align}
+      Tenemos $|u_2^{(2)}-u_2^{(1)}|=0.000011>\tol=0.00001$.
+      Calculamos otra iteración:
+      \begin{align}
+        u_2^{(3)}
+        &=
+          u_{2}^{(2)}
+          - \frac
+          {
+            (u_2^{(2)}-0.2)^{2}(u_{2}^{(2)} - 1.119615)
+            - (0.1)((u_2^{(2)})^{2}-0.04)
+          }
+          {
+            (u_2^{(0)}-0.2)^{2} + 0.04
+          }
+          \\
+        &\approx
+          u_{2}^{(0)} - \frac { 0.154116 - 0.154116 } { 1.158184 } \\
+        &\approx u_{2}^{(0)} + 0.000000 \\
+        &= 1.257442
+      .\end{align}
+      Así, $|u_2^{(3)}-u_2^{(2)}|=0.000000<\tol=0.00001$. Luego,
+      podemos aceptar $u_2^{(3)}=1.257442$ como valor para $u_2$.
   \end{enumerate}
+  Los resultados obtenidos se resumen en la siguiente tabla.
+  \begin{equation}
+    \begin{array}{c|c|c|c}
+      & u_0 & u_1 & u_2 \\
+      \hline
+      \text{Euler explícito}
+        & 1 & 1.1 & 1.22 \\
+      \hline
+      \text{Euler implícito + Newton-Raphson}
+        & 1 & 1.119615 & 1.257442
+    \end{array}
+  \end{equation}
+\end{sol}
+
+\begin{exercise}
+  Considere el problema de valores iniciales
+  \begin{equation}
+    \left\{
+      \begin{aligned}
+        y' &= -y
+        \\
+        y(0) &= 1
+      \end{aligned}
+    \right.
+  \end{equation}
+  Sean $h=\frac{1}{2}$ y $u_1=\frac{1}{2}$. Aplique el método
+  $u_{n+2}=u_n + 2hf(t_{n+1},u_{n+1})$ y determine una fórmula
+  explícita para $u_n$. Muestre que $u_n$ diverge cuando $n\to\infty$.
+\end{exercise}
+\begin{sol}
+  Dado que $f(t,y)=-y$, el método se reduce a
+  \begin{equation}
+    u_{n+2}=u_n - 2hu_{n+1}
+  .\end{equation}
+  Considerando soluciones de la forma $u_n=r^{n}$, con $r\neq 0$,
+  tenemos
+  \begin{equation}
+    r^{2} = 1 - 2hr
+  .\end{equation}
+  Dado que $h=\frac{1}{2}$, esto es $r^{2}+r-1=0$, así que las
+  soluciones son
+  \begin{align}
+    r_{1,2} &= \frac{-1 \pm \sqrt{5}}{2}
+  ,\end{align}
+  Por lo tanto, la solución general es de la forma
+  \begin{equation}
+    u_n = \gamma_1 
+    \left(\frac{-1 - \sqrt{5}}{2}\right)^{n}
+    + \gamma_2
+    \left(\frac{-1 + \sqrt{5}}{2}\right)^{n}
+  .\end{equation}
+  Así, para satisfacer las condiciones iniciales $u_0=y(0)=1$ y
+  $u_1=\frac{1}{2}$, debemos resolver el sistema
+  \begin{equation}
+    \left\{
+      \begin{aligned}
+          1
+          &= \gamma_1 
+          + \gamma_2
+        \\
+          \frac{1}{2}
+          &= \gamma_1 
+          \frac{-1 - \sqrt{5}}{2}
+          + \gamma_2
+          \frac{-1 + \sqrt{5}}{2}
+      \end{aligned}
+    \right.
+  \end{equation}
+  Cancelando los denominadores de la segunda ecuación, tenemos
+  \begin{align}
+    1
+    &= \gamma_1 (-1 - \sqrt{5}) + \gamma_2 (-1 + \sqrt{5}) \\
+    &= -\gamma_1 -\gamma_1  \sqrt{5} -\gamma_2 +\gamma_2  \sqrt{5} \\
+    &= -(\gamma_1+\gamma_2) -(\gamma_1-\gamma_2) \sqrt{5}
+  .\end{align}
+  Ahora, usando la primera ecuación, tenemos $\gamma_1+\gamma_2=1$ y
+  $\gamma_1-\gamma_2=1-2\gamma_2$, así que
+  \begin{equation}
+    1 = -1 -(1-2\gamma_2) \sqrt{5}
+  .\end{equation}
+  Luego,
+  \begin{equation}
+     \gamma_2
+     = \frac{1}{2} + \frac{1}{\sqrt 5}
+     = \frac{\sqrt 5 + 2}{2\sqrt 5}
+  \end{equation}
+  y, por lo tanto,
+  \begin{equation}
+    \gamma_1
+    = \frac{1}{2}- \frac{1}{\sqrt 5}
+     = \frac{\sqrt 5 - 2}{2\sqrt 5}
+  ,\end{equation}
+  Así, obtenemos una fórmula explícita para los $u_n$.
+  \begin{align}
+    u_n
+    &=
+    \frac{\sqrt 5 - 2}{2\sqrt 5}
+    \frac{(-1)^{n}(1 + \sqrt{5})^{n}}{2^n}
+    + \frac{\sqrt 5 + 2}{2\sqrt 5}
+      \frac{(-1)^{n}(1 - \sqrt{5})^{n}}{2^n}
+      \\
+    &=
+    \frac{(-1)^{n}}{2\sqrt 5}
+    \left[
+    (\sqrt 5 - 2)
+    \frac{(1 + \sqrt{5})^{n}}{2^n}
+    + (\sqrt 5 + 2)
+      \frac{(1 - \sqrt{5})^{n}}{2^n}
+      \right]
+  .\end{align}
+  Nótese que los primeros valores de la sucesión son
+  \begin{equation}
+    \frac{2}{2}, \frac{1}{2}, \frac{1}{2}, 0, \frac{1}{2},
+    -\frac{1}{2}, \frac{2}{2},
+    -\frac{3}{2}, \frac{5}{2}, -\frac{8}{2}, \frac{13}{2},
+    -\frac{21}{2}, \frac{33}{2}, \dots
+  .\end{equation}
+  Así, parece que la sucesión $u_n$ es tan solo la sucesión de
+  Fibonacci, desplazada, con signos alternantes y dividida entre dos.
+  Podemos demostrar esto notando que
+  \begin{equation}
+    \left(
+      \frac{1\pm\sqrt 5}{2}
+    \right)^{3}
+    = 2 \pm \sqrt 5
+  .\end{equation}
+  Por lo tanto, tenemos
+  \begin{align}
+    u_{n+3}
+    &=
+      \frac{(-1)^{n+3}}{2\sqrt 5}
+      \left[
+      (\sqrt 5 - 2)
+      \frac{(1 + \sqrt{5})^{n+3}}{2^{n+3}}
+      + (\sqrt 5 + 2)
+      \frac{(1 - \sqrt{5})^{n+3}}{2^{n+3}}
+      \right]
+      \\
+    &=
+      \frac{(-1)^{n+1}}{2\sqrt 5}
+      \left[
+      (\sqrt 5 - 2)
+      (2+\sqrt 5)
+      \frac{(1 + \sqrt{5})^{n}}{2^{n}}
+      + (\sqrt 5 + 2)
+      (2-\sqrt 5)
+      \frac{(1 - \sqrt{5})^{n}}{2^{n}}
+      \right]
+      \\
+    &=
+      \frac{(-1)^{n+1}}{2\sqrt 5}
+      \left[
+      \frac{(1 + \sqrt{5})^{n}}{2^{n}}
+      -
+      \frac{(1 - \sqrt{5})^{n}}{2^{n}}
+      \right]
+      \\
+    &=
+      \frac{(-1)^{n+1}}{2} F_n,
+  \end{align}
+  donde $F_n$ es el $n$-ésimo número de Fibonacci, dado por
+  \begin{equation}
+    F_n = 
+      \frac{1}{\sqrt 5}
+      \left[
+      \frac{(1 + \sqrt{5})^{n}}{2^{n}}
+      -
+      \frac{(1 - \sqrt{5})^{n}}{2^{n}}
+      \right]
+  .\end{equation}
+  Dado que sabemos que los números de Fibonacci crecen
+  indefinidamente, concluimos que
+  \begin{equation}
+    |u_{n+3}| = \frac{1}{2}|F_n| \to \infty
+  ,\end{equation}
+  cuando $n\to\infty$.
+\end{sol}
+
+\begin{exercise}
+  Determine el error de truncamiento local $\tau_{n+1}(h)$ para el
+  método de punto medio dado por
+  \begin{equation}
+    u_{n+1} = u_n + hf \left(
+      t_n + \frac{h}{2} , u_n + \frac{h}{2} f_n
+    \right)
+  .\end{equation}
+  Adicionalmente, considere el problema de valores iniciales $y'=-2t$,
+  $y(0)=0$. Muestre que, cuando el método es aplicado a dicho
+  problema, este produce la solución exacta.
+\end{exercise}
+
+\begin{sol}
+  Para calcular el error de truncamiento local, consideremos primero
+  el error residual $\epsilon_{n+1}$, que se define por la ecuación:
+  \begin{equation}
+    y_{n+1} = y_n + h f\left(t_n + \frac{h}{2}, y_n +
+    \frac{h}{2}f(t_n,y_n)\right) + \epsilon_{n+1}
+  .\end{equation}
+  Es decir,
+  \begin{equation}
+    \epsilon_{n+1}
+    =
+    y_{n+1} - y_n - h f\left(t_n + \frac{h}{2}, y_n + \frac{h}{2}f(t_n,y_n)\right)
+  ,\end{equation}
+  de modo que
+  \begin{equation}\label{eq:etl}
+    \tau_{n+1}(h)
+    = \frac{\epsilon_{n+1}}{h}
+    = \frac{y_{n+1} - y_n}{h}
+    - f\left(t_n + \frac{h}{2}, y_n + \frac{h}{2}y'_n\right)
+  ,\end{equation}
+  donde sustituimos $y'_n = f(t_n,y_n)$. Dado que también tenemos
+  \begin{equation}
+    y''_n = Df(t_n,y_n)((1,y'_n))
+  ,\end{equation}
+  podemos expandir la ecuación \eqref{eq:etl} hasta orden $2$ 
+  en $h$ y obtener
+  \begin{align}
+    \tau_{n+1}(h) 
+    &=
+    y'_n + \frac{h}{2}y''_n + \frac{h^{2}}{6}y'''_n
+    - f\left(t_n + \frac{h}{2}, y_n + \frac{h}{2}y'_n\right) +
+    O(h^{3})
+    \\
+    &=
+    y'_n + \frac{h}{2}y''_n + \frac{h^{2}}{6}y'''_n
+    - f(t_n, y_n) - \frac{h}{2}Df(t_n,y_n)((1,y'_n))+
+    O(h^{3})
+    \\
+    &=
+    \frac{h^{2}}{6}y'''_n + O(h^{3})
+  .\end{align}
+  Luego, el método es consistente de orden $2$ y el error de
+  truncamiento está acotado como
+  \begin{equation}
+    \tau(h)
+    \leq \frac{h^{2}}{6}M + O(h^{3})
+  ,\end{equation}
+  donde $M$ es una constante con $|y'''(t)|\leq M$ para todo $t$ en el
+  intervalo de tiempo considerado.
+  Nótese que el tèrmino $O(h^{3})$ dependerá de las derivadas de orden
+  superior de $y$ y de $f$.
+  Para el problema $y'=-2t$, tenemos $f(t,y)=-2t$, así que
+  \begin{align}
+    y'''(t)
+    &= \frac{d}{dt}Df(t,y(t))((1,y'(t))) \\
+    &= \frac{d}{dt}Df(t,y(t))((1,-2t)) \\
+    &= \frac{d}{dt}(-2,0)\cdot (1,-2t) \\
+    &= \frac{d}{dt}(-2) \\
+    &= 0
+  .\end{align}
+  Por lo tanto, todas las derivadas superiores de $y$ también son
+  cero. Similarmente, las derivadas $D^{n}f$ son cero para $n\geq 2$.
+  así que, de hecho, para este problema particular el término de error
+  $O(h^{3})$ se anula. Dado que el término principal también se anula
+  (pues está acotado por $y'''=0$) se sigue que
+  $\tau_{n+1}(h)=0$ para todo $n$ y todo $h$, es decir, no hay error
+  de truncamiento local, así que el método produce la solución
+  exacta.
 \end{sol}
 
 
