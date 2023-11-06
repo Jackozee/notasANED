@@ -17,6 +17,7 @@
 \newcommand\N{\mathbb N}
 \newcommand\R{\mathbb R}
 \newcommand\ol\overline
+\renewcommand\phi\varphi
 
 \title{Notas de análisis numérico para ecuaciones diferenciales}
 \author{Jorge Alfredo Álvarez Contreras}
@@ -1395,9 +1396,109 @@ El resultado de estabilidad que tenemos es
 .\end{equation}
 
 
+\chapter{Diferencias finitas}
 
+Supongamos que queremos encontrar una solución de la ecuación de
+Poisson en 2 dimensiones
+\begin{equation}
+  -\Delta u = f
+\end{equation}
+en el interior cuadrado unitario $\Omega=[0,1]^{2}$, con condiciones
+de frontera $u|\partial\Omega = g$.
 
+Discretizaremos el espacio con puntos equiespaciados
+\begin{equation}
+  (x_i,y_j)=(ih,jh) \quad \text{donde} \quad i,j=0,1,\dots,n+1
+.\end{equation}
+Así, tenemos $n+1$ intervalos en cada lado, de modo que
+$h=\frac{1}{n+1}$.
+El operador laplaciano es $\Delta u = u_{xx}+u_{yy}$. Discretizaremos
+la ecuación $-\Delta u = f$ como
+\begin{equation}
+  -\frac{u_{i-1,j} - 2u_{i,j} + u_{i+1,j}}{h^{2}}
+  -\frac{u_{i,j-1} - 2u_{i,j} + u_{i,j+1}}{h^{2}}
+  =
+  f(x_i,y_j),
+  \qquad
+  1\leq i,j\leq n
+,\end{equation}
+y nos restringiremos al caso $u|_{\partial\Omega}=0$.
+Las variables $u_{i,j}$ se pueden vectorizar. Este punto de vista se
+toma en el libro Applied Numerical Linear Algebra, de James W.
+Demmel.
 
+\section{Método del elemento finito}
 
+Consideremos el problema
+\begin{equation}
+  \left\{
+    \begin{aligned}
+      -(\alpha u')' + \beta u' + \gamma u &= f, \quad x\in (0,1),
+      \\
+      u(0) = 0, \quad u(1) = 0, &
+    \end{aligned}
+  \right.
+\end{equation}
+donde $\alpha,\beta,\gamma$ son continuas y $\alpha$ está acotada por
+abajo por una constante positiva $\alpha_0$.
+Para cualquier función $v$ continuamente diferenciable en $[0,1]$ con
+$v(0)=v(1)=0$, tenemos
+\begin{equation}
+       \int_0^{1} \alpha u'v' + \int_0^{1} \beta u'v + \int_0^{1} \gamma u v
+      = \int_0^{1} fv
+.\end{equation}
+Más generalmente, supongamos que $v$ está en el espacio
+\begin{equation}
+  V
+  = H^{1}_0(0,1)
+  = \{ v \in H^{1}(0,1) \mid v(0)=v(1)=1 \}.
+\end{equation}
+Aquí, $H^{1}(0,1)$ es el espacio de Sobolev
+\begin{equation}
+  H^{1}(0,1)
+  =
+  \{v\in L^{2}(0,1) \mid v' \text{ existe en } L^{2}(0,1) \}
+,\end{equation}
+donde $v'$ es la derivada débil de $v$. En otras palabras,
+$H^{1}(0,1)$ consiste en los elementos $v\in L^{2}(0,1)$ tales que
+existe una función $v'\in L^{2}(0,1)$ con
+\begin{equation}
+    \int_{0}^{1} \psi' v
+    =
+    - \int_{0}^{1} \psi v'
+,\end{equation}
+para toda $\psi\in C^{\infty}[0,1]$ con $\psi(0)=\psi(1)=0$.
+
+Definamos el operador bilineal en $V=H^{1}_0(0,1)$ dado por
+\begin{equation}
+  a(u,v)
+  = 
+  \int_0^{1} \alpha u'v' + \int_0^{1} \beta u'v + \int_0^{1} \gamma u v
+.\end{equation}
+Así, podemos reformular el problema original como el de encontrar
+$u\in V$ tal que
+\begin{equation}
+  \forall v\in V,\quad a(u,v) = (f,v)
+.\end{equation}
+El método de Galerkin consiste en fijar un subespacio de dimensión
+finita $V_h$ de $V$ y encontrar $u_h\in V_h$ tal que
+\begin{equation}
+  \forall v\in V_h, \quad a(u_h,v) = (f,v)
+.\end{equation}
+Así, si $\phi_1,\dots,\phi_N$ es una base de $V_h$, entonces basta
+pedir que
+\begin{equation}
+  a(u_h,\phi_i) = (f,\phi_i), \quad i=1,\dots,N
+.\end{equation}
+Expresando $u_h$ en términos de la misma base
+\begin{equation}
+  u_h = \sum_{j=1}^{N}u_j\phi_j
+\end{equation}
+tenemos
+\begin{equation}
+  \sum_{j=1}^{N} u_j a(\phi_j,\phi_i) = (f,\phi_i), \quad i=1,\dots,N
+.\end{equation}
+Este es un problema de dimensión finita, que se puede resolver por
+métodos matriciales.
 
 \end{document}
