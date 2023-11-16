@@ -1501,4 +1501,36 @@ tenemos
 Este es un problema de dimensión finita, que se puede resolver por
 métodos matriciales.
 
+\begin{example}
+  \begin{equation}
+    a(\phi_j,\phi_i)
+    = \int_{0}^{1} \alpha\phi_j'\phi_i'
+    +
+    \int_{0}^{1}\beta\phi_j'\phi_i
+    +
+    \int_{0}^{1}\gamma\phi_j\phi_i
+  .\end{equation}
+  Consideremos el caso en que $\phi_i$ ($i=1,\dots,n$) son las
+  interpolaciones lineales a trozos definidas por
+  $\phi_i(x_j)=\delta_{ij}$. Entonces $\phi_i$ tiene soporte en
+  $[x_{i-1},x_{i+1}]$.
+  La primera integral es
+  \begin{equation}\label{eq:phiiphij}
+    \int_{0}^{1} \alpha\phi_j'\phi_i'
+  .\end{equation}
+  Si suponemos que $\alpha$ es aproximadamente
+  constante en $[x_{i-1},x_{i+1}]$, entonces resulta útil definir
+  $\alpha_{i}=\alpha(x_i^{*})$, donde $x_i^{*}$ el punto
+  medio de $[x_i,x_{i+1}]$. La integral \eqref{eq:phiiphij}
+  se puede tratar por casos.
+  \begin{align}
+    \text{(para $i=j$)}\quad
+    \int_{0}^{1} \alpha\phi_j'\phi_i'
+    &= \int_{x_{i-1}}^{x_{i+1}}\alpha\phi_i'^{2} \\
+    &= \int_{x_{i-1}}^{x_{i}}\alpha\phi_i'^{2}
+    + \int_{x_{i}}^{x_{i+1}}\alpha\phi_i'^{2} \\
+    &\approx \frac{\alpha_{i-1}}{h_{i-1}} + \frac{\alpha_i}{h_i}
+  ,\end{align}
+\end{example}
+
 \end{document}

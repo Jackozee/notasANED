@@ -1,0 +1,100 @@
+\documentclass[11pt]{article}
+\usepackage[left=3.5cm,right=3.5cm,top=2.5cm,bottom=2.5cm]{geometry}
+%\usepackage[spanish]{babel}
+\overfullrule = 5mm
+
+\usepackage{amsmath,amsfonts,amsthm}
+\usepackage{enumitem,mathtools,graphicx}
+\setenumerate[0]{label=(\alph*)}
+
+\newtheorem{definition}{Definición}
+\newtheorem{reminder}{Recordatorio}
+\newtheorem{exercise}{Ejercicio}
+\newtheorem*{sol}{Solución}
+\newtheorem*{theorem}{Teorema}
+
+\newcommand\fd{\mathrm{fd}}
+\newcommand\N{\mathbb N}
+\newcommand\R{\mathbb R}
+\newcommand\C{\mathbb C}
+\newcommand\ol\overline
+
+%\usepackage{csquotes}
+%\usepackage[style=authoryear]{biblatex}
+%\addbibresource{references.bib}
+
+\title{Análisis numérico para ecuaciones diferenciales \\
+Tarea 4 - Diferencias finitas}
+\author{Jorge Alfredo Álvarez Contreras}
+
+\begin{document}
+\maketitle
+
+\begin{reminder}
+\end{reminder}
+
+\section*{Ejercicios}
+
+\begin{exercise}
+  Considere el problema de valores en la frontera
+  \begin{equation}
+    \left\{
+      \begin{aligned}
+        u''(x) - p(x)u'(x) - q(x)u(x) &= f(x), \quad x\in(a,b)
+        \\
+        u(a) = \alpha, \quad u(b)=\beta, &
+      \end{aligned}
+    \right.
+  \end{equation}
+  donde $q(x)\geq q_0>0$ para $x\in[a,b]$. Desarrolle una
+  discretización en diferencias finitas usando diferencias centradas
+  para aproximar $u''$ y $u'$.
+  \begin{enumerate}
+    \item
+      Estime el error de truncamiento local.
+    \item
+      Demuestre que el problema discreto tiene solución para $h$ 
+      suficientemente pequeño.
+    \item
+      Utilice el método desarrollado en este ejercicio para resolver
+      el problema
+      \begin{equation}
+        \left\{
+          \begin{aligned}
+            -u'' + \alpha u' + u &= 0,
+            \\
+            u(0) = 0,\quad u(1)=1,
+          \end{aligned}
+        \right.
+      \end{equation}
+      para diferentes valores de la constante $\alpha>0$. Muestre sus
+      resultados de manera gráfica (solución v.s. aproximación y error
+      puntual).
+  \end{enumerate}
+\end{exercise}
+
+\begin{exercise}
+  Implemente en Python la solución numérica con diferencias finitas
+  del siguiente problema de valores en la frontera
+  \begin{equation}
+    \left\{
+      \begin{aligned}
+        -\nabla u &= 2\pi^{2}\sin(\phi x)\sin(\pi y),
+        \quad \text{ en } \Omega = (0,1) ^{2},
+        \\
+        u &= 0 
+        \quad \text{ en } \partial\Omega
+      \end{aligned}
+    \right.
+  \end{equation}
+  para $h=0.25,0.1,0.05$ y grafique $u_h,u-u_h$ y calcule
+  $\|u-u_h\|_{h,\infty}$ tomando en cuenta que la solución es
+  $u(x,y)=\sin(\pi x)\sin(\pi y)$.
+\end{exercise}
+
+\begin{exercise}
+  Demuestre que la matríz $A_{\fd}$ obtenida de discretizar la EDP de
+  Poisson es simétrica y definida positiva para el caso 1D y 2D.
+\end{exercise}
+
+\end{document}
