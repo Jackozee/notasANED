@@ -1533,4 +1533,233 @@ métodos matriciales.
   ,\end{align}
 \end{example}
 
+\textbf{Sobre la convergencia de elementos finitos para}
+\begin{equation}
+  \left\{
+    \begin{aligned}
+      & -u'' = f
+      \\
+      & u(0) = u(1)=0.
+    \end{aligned}
+  \right.
+\end{equation}
+Sean $u\in H_{0}^{1}(0,1)$ la solución exacta y $u_h\in V_h$ su
+aproximación de elementos finitos usando las bases polinomiales a
+trozos continuas en $[0,1]$ de grado $k\geq 1$. Suponga que, además,
+$u\in H^{s}(0,1)$ para algún $s\geq 2$. Entonces
+\begin{equation}
+  \|u-u_h\|_{H^{1}_0(0,1)}
+  \leq
+  \frac{M}{\alpha_0} Ch^l\|u\|_{H^{(l+1)}(0,1)}
+,\end{equation}
+donde $l=\min(k,s-1)$. Más aún,
+\begin{equation}
+  \|u-u_h\|_{L^{2}(0,1)}
+  \leq
+  Ch^{l+1}\|u\|_{H^{l+1}(0,1)}
+.\end{equation}
+
+\section{Ecuaciones parabólicas e hiperbólicas}
+
+Consideremos el problema
+\begin{equation}
+  \left\{
+    \begin{aligned}
+      & u_t = \nu u_{xx} + f(x,t), && x\in (0,1),
+      \\
+      & u(0,t) = u(1,t) = 0, && \text{(C.F.)}
+      \\
+      & u(x,0) = g(x), && \text{(C.I.)}
+    \end{aligned}
+  \right.
+\end{equation}
+donde $\nu$ es una constante, llamada constante de disipación.
+Para aplicar el método de diferencias finitas, primero discretizamos
+la variable espacial en puntos $x_0,\dots,x_{n+1}$, de modo
+que obtenemos
+\begin{align}
+  \partial_t u_{i}
+    &= \nu \frac{u_{i-1} -2u_{i} + u_{i+1}}{h^{2}} + f_i,
+    \quad i=1,\dots,n
+  \\
+    u_i(0) = g_i
+,\end{align}
+donde $f_i(t)=f(x_i,t)$, $g_i=g(x_i)$ y definimos $u_0=u_1=0$ para
+satisfacer las condiciones de frontera.
+Con esto obtenemos un sistema de ecuaciones
+\begin{align}
+    \partial_t u_{1}
+    &= -\frac{\nu }{h^{2}}(2u_{1} - u_{2}) + f_1,
+  \\
+    \partial_t u_{2}
+    &= -\frac{\nu }{h^{2}}(-u_{1} +2u_{2} - u_{3}) + f_2,
+  \\
+    \vdots
+  \\
+    \partial_t u_{n-1}
+    &= -\frac{\nu }{h^{2}}(-u_{n-2} +2u_{n-1} - u_{n}) + f_{n-1},
+  \\
+    \partial_t u_{n}
+    &= -\frac{\nu }{h^{2}}(-u_{n-1} +2u_{n}) + f_n,
+.\end{align}
+Introduciremos la notación $U=(u_1,\dots,u_n)$, $F=(f_1,\dots,f_n)$ y
+$G=(g_1,\dots,g_n)$, de modo que
+\begin{equation}
+  \left\{
+    \begin{aligned}
+      U' &= -\frac{\nu}{h^{2}}AU + F,
+      \\
+      U(0) &= G,
+    \end{aligned}
+  \right.
+\end{equation}
+donde
+\begin{equation}
+  A
+  =
+  \begin{bmatrix}
+    2 & -1 \\
+    -1 & 2 & -1 \\[-1mm]
+       & -1 & 2 & \ddots \\[-1mm]
+       & & \ddots & \ddots & \ddots \\[-1mm]
+       & & & \ddots & 2 & -1 \\
+       & & & & -1 & 2 & -1 \\
+       & & & & & -1 & 2
+  \end{bmatrix}
+\end{equation}
+Esta ecuación se puede resolver usando el llamado \emph{método
+$\theta$}. Introduciendo $t^{k}=t_0+k\delta t$, $U^{k}=U(t^{k})$,
+$F^{k}=F(t^{k})$, el método propone discretizar como
+\begin{equation}
+  \frac{U^{k+1}-U^k}{\Delta t}
+  =
+  \theta
+  \left( -\frac{\nu}{h^{2}}AU^{k+1} + F^{k+1}, \right)
+  +
+  (1-\theta)
+  \left( -\frac{\nu}{h^{2}}AU^{k} + F^{k} \right)
+.\end{equation}
+Luego, despejando $U_{k+1}$ tenemos
+\begin{equation}
+  \left( I
+    +
+    \Delta t
+    \frac{\theta\nu}{h^{2}}A
+  \right)
+  U^{k+1}
+  =
+    \left(
+      I-
+      \Delta t
+      (1-\theta)
+      \frac{\nu}{h^{2}}A
+    \right)
+    U^k
+    +
+    \Delta t[
+    (1-\theta)
+    F^{k}
+    +
+    \theta
+    F^{k+1}]
+,\end{equation}
+el cual se puede resolver explícitamente con valores iniciales
+$U^{0}=U(0)=G$.
+Escribiendo $M,N,P$ para estas tres matrices, tenemos
+\begin{equation}
+  \left\{
+    \begin{aligned}
+      M U^{k+1} &= NU^{k} + P
+      \\
+      U^{0} &= G
+    \end{aligned}
+  \right.
+\end{equation}
+
+\subsection{Estabilidad}
+
+La estabilidad se estudia aplicando el método al problema de
+prueba
+\begin{equation}
+  u_t = \nu u_{xx}
+,\end{equation}
+es decir, el problema con $f=0$.
+Ahora procederemos por casos.
+\begin{itemize}
+  \item
+    Si $\theta=0$, entonces el método se
+    puede escribir explícitamente como
+    \begin{equation}
+      U^{k}
+      =
+        \left(
+          I-
+          \Delta t
+          \frac{\nu}{h^{2}}A
+        \right)^k
+        G
+    .\end{equation}
+    Observemos que $U^{k}\to 0$ si, y solo si, el radio espectral de esta
+    matríz satisface
+    \begin{equation}
+      \rho
+        \left(
+          I-
+          \Delta t
+          \frac{\nu}{h^{2}}A
+        \right) < 1
+    ,\end{equation}
+    lo cual ocurre si, y solo si, $\Delta t < \frac{1}{2\nu}h^{2}$,
+    de modo que el método es condicionalmente estable.
+
+  \item
+    Por otro lado, si $\theta =1$, entonces
+    \begin{equation}
+      U^{k}
+      =
+      \left( I
+        +
+        \Delta t
+        \frac{\nu}{h^{2}}A
+      \right)^{-1}
+      G
+    ,\end{equation}
+    de modo que $U^{k}\to 0$ si, y solo si, el radio espectral de
+    esta inversa es menor a $1$, o bien si
+    \begin{equation}
+      \rho
+      \left( I
+        +
+        \Delta t
+        \frac{\nu}{h^{2}}A
+      \right)
+      >1
+    ,\end{equation}
+    lo cual siempre sucede porque la matríz tiene autovalores
+    positivos y mayores a $1$. Así, el método es incondicionalmente
+    estable.
+\end{itemize}
+
+En general, el método $\theta$ es
+\begin{itemize}
+  \item
+    incondicionalmente estable si $\frac{1}{2}\leq \theta\leq 1$.
+  \item
+    condicionalmente estable si $1\leq\theta<\frac{1}{2}$.
+\end{itemize}
+y el error de truncamiento local es
+\begin{align}
+  \tau_n(h)
+  =
+  \begin{cases}
+    O(\Delta t + h^{2}) & \text{ si } \theta \neq 1 / 2 \\
+    O((\Delta t)^{2} + h^{2}) & \text{ si } \theta = 1 / 2 \\
+  \end{cases}
+,\end{align}
+
+
+
+
+
+
 \end{document}
