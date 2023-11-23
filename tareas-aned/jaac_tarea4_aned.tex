@@ -73,8 +73,8 @@ Tarea 4 - Diferencias finitas}
   \end{enumerate}
 \end{exercise}
 \begin{sol}
-  Supongamos que $u_i$ es la solución al problema discreto, que se
-  obtiene haciendo las sustituciones
+  Discretizamos el espacio en $n+2$ puntos $x_0,\dots,x_{n+1}$. Para
+  los puntos interiores, las diferencias centradas son
   \begin{align}
     u(x_i)
     &\to
@@ -88,21 +88,8 @@ Tarea 4 - Diferencias finitas}
     &\to
     \frac{u_{i+1}-2u_{i}+u_{i-1}}{h^{2}}
   .\end{align}
-  Si $\|u'''\|\leq M$ y $\|u''''\|\leq N$, entonces tenemos
-  \begin{align}
-    u'(x_i)
-    &= 
-    \frac{u_{i+1}-u_{i-1}}{2h}
-    - \frac{h^{2}}{6}M
-    + O(h^{3})
-    \\
-    u''(x_i)
-    &=
-    \frac{u_{i+1}-2u_{i}+u_{i-1}}{h^{2}}
-    - \frac{h^{2}}{12}N
-    + O(h^{3})
-  .\end{align}
-  Entonces el problema discretizado es
+  Sustituyendo en el problema original, obtenemos
+  el problema discretizado
   \begin{equation}
     \frac{u_{i+1}-2u_{i}+u_{i-1}}{h^{2}}
     - p_i
@@ -110,72 +97,315 @@ Tarea 4 - Diferencias finitas}
     - q_i
     u_i
     =
-    f_i, \quad i=1,\dots,n
+    f_i,
+    \quad i=1,\dots,n
   ,\end{equation}
-  donde $x_0=a$, $x_{n+1}=b$, $p_i=p(x_i)$ y $q_i=q(x_i)$.
-  Entonces
-  \begin{equation}
-    (2-p_ih)u_{i+1}-(4-2h^{2}q_i)u_{i}+(2 + p_i h)u_{i-1}
-    =
-    2h^{2}f_i
-  .\end{equation}
-  Así
-  obtenemos un sistema de ecuaciones
+  donde $x_0=a$, $x_{n+1}=b$, $p_i=p(x_i)$, $q_i=q(x_i)$ y
+  $f_i=f(x_i)$. Así, obtenemos un sistema de ecuaciones
   \begin{align}
-    (2-p_1h)u_{2}-(4-2h^{2}q_1)u_{1}+(2 + p_1 h)u_{0}
-    &=
-    2h^{2}f_1
+      \frac{1}{h^{2}}(u_{2}-2u_{1}+u_{0})
+      - 
+      \frac{p_1}{2h}(u_{2}-u_{0})
+      - q_1
+      u_1
+      &=
+      f_1,
     \\
-    (2-p_2h)u_{3}-(4-2h^{2}q_2)u_{2}+(2 + p_2 h)u_{1}
-    &=
-    2h^{2}f_2
+      \frac{1}{h^{2}}(u_{3}-2u_{2}+u_{1})
+      - 
+      \frac{p_2}{2h}(u_{3}-u_{1})
+      - q_2
+      u_2
+      &=
+      f_2,
     \\
-    &\vdots
+      &\vdots \nonumber
     \\
-    (2-p_{n-1}h)u_{n}-(4-2h^{2}q_{n-1})u_{n-1}+(2 + p_{n-1} h)u_{n-2}
-    &=
-    2h^{2}f_{n-1}
+      \frac{1}{h^{2}}(u_{n}-2u_{n-1}+u_{n-2})
+      - 
+      \frac{p_{n-1}}{2h}(u_{n}-u_{n-2})
+      - q_{n-1}
+      u_{n-1}
+      &=
+      f_{n-1},
     \\
-    (2-p_nh)u_{n+1}-(4-2h^{2}q_n)u_{n}+(2 + p_n h)u_{n-1}
-    &=
-    2h^{2}f_n
+      \frac{1}{h^{2}}(u_{n+1}-2u_{n}+u_{n-1})
+      - 
+      \frac{p_n}{2h}(u_{n+1}-u_{n-1})
+      - q_n
+      u_n
+      &=
+      f_n.
   \end{align}
-  Aplicando las condiciones iniciales $u_0=\alpha$, $u_{n+1}=\beta$,
+  Aplicando las condiciones de frontera $u_0=\alpha$, $u_{n+1}=\beta$,
   obtenemos
   \begin{align}
-    (2-p_1h)u_{2}-(4-2h^{2}q_1)u_{1}
-    &=
-    2h^{2}f_1
-    -(2 + p_1 h)\alpha
+      - \frac{1}{h^{2}}(-u_{2}+2u_{1})
+      - \frac{p_1}{2h}u_{2}
+      - q_1 u_1
+      &=
+      f_1 - \frac{1}{h}\left(\frac{1}{h} + \frac{p_1}{2}\right)\alpha,
     \\
-    (2-p_2h)u_{3}-(4-2h^{2}q_2)u_{2}+(2 + p_2 h)u_{1}
-    &=
-    2h^{2}f_2
+      - \frac{1}{h^{2}}(-u_{3}+2u_{2}-u_{1})
+      - \frac{p_2}{2h}(u_{3}-u_{1})
+      - q_2 u_2
+      &=
+      f_2,
     \\
-    &\vdots
+      &\vdots \nonumber
     \\
-    (2-p_{n-1}h)u_{n}-(4-2h^{2}q_{n-1})u_{n-1}+(2 + p_{n-1} h)u_{n-2}
-    &=
-    2h^{2}f_{n-1}
+      - \frac{1}{h^{2}}(-u_{n}+2u_{n-1}-u_{n-2})
+      - \frac{p_{n-1}}{2h}(u_{n}-u_{n-2})
+      - q_{n-1} u_{n-1}
+      &=
+      f_{n-1},
     \\
-    -(4-2h^{2}q_n)u_{n}+(2 + p_n h)u_{n-1}
-    &=
-    2h^{2}f_n
-    -(2-p_nh)\beta
+      - \frac{1}{h^{2}}(2u_{n}-u_{n-1})
+      + \frac{p_n}{2h}u_{n-1}
+      - q_n u_n
+      &=
+      f_n - \frac{1}{h}\left(\frac{1}{h} - \frac{p_n}{2}\right)\beta.
   \end{align}
   que se puede resumir en la ecuación matricial
   \begin{equation}
-    \begin{bmatrix}
-      -(4-2h^{2}q_1) & (2-p_1h) \\
-      (2+p_2h) & -(4-2h^{2}q_2) & (2-p_2h) \\
-               & (2+p_3h) & -(4-2h^{2}q_3) & (2-p_3h) \\
-               & & & & \ddots \\
-               &&&&& (2+p_{n-1}h) & -(4-2h^{2}q_{n-1}) & (2-p_{n-1}h) \\
-    \end{bmatrix}
+    -\frac{1}{h^{2}}AU - \frac{1}{2h}PU - QU = F - \frac{1}{h}E
+  \end{equation}
+  o, equivalentemente,
+  \begin{equation}\label{eq:metodo_matr}
+    \left(A + \frac{1}{2}hP + h^{2}Q\right)U = -h^{2}F + hE
   ,\end{equation}
-  
-  
-  
+  donde $E$ y $F$ son los vectores
+  \begin{equation}
+      F =
+      \begin{bmatrix}
+        f_1 \\ \vdots \\ f_n
+      \end{bmatrix},
+      \qquad\qquad
+      E =
+      \begin{bmatrix}
+        \left(\frac{1}{h} + \frac{p_1}{2}\right)\alpha
+        \\
+        0 \\
+        \vdots \\
+        0 \\
+        \left(\frac{1}{h} - \frac{p_n}{2}\right)\beta
+      \end{bmatrix}
+  \end{equation}
+  y $A,P,Q$ son las matrices
+  \begin{align}
+      A
+      &=
+      \begin{bmatrix}
+        2 & -1 \\
+        -1 & 2 & -1 \\[-2mm]
+           & -1 & 2 & \ddots \\
+           & & \ddots & \ddots & \ddots \\
+           &  & & \ddots & 2 & -1 \\
+           &&&& -1 & 2 & -1 \\
+           &&&& & -1 & 2 \\
+      \end{bmatrix}
+    \\
+      P
+      &=
+      \begin{bmatrix}
+        0 & p_1 \\
+        -p_2 & 0 & p_2 \\[-2mm]
+           & -p_3 & 0 & \ddots \\
+           & & \ddots & \ddots & \ddots \\
+           &  & & \ddots & 0 & p_{n-2} \\
+           &&&& -p_{n-1} & 0 & p_{n-1} \\
+           &&&& & -p_n & 0
+      \end{bmatrix}
+    \\
+      Q
+      &=
+      \begin{bmatrix}
+        q_1 \\
+        & q_2 \\
+        & & \ddots \\
+        & & & q_{n-1} \\
+        & & & & q_{n}
+      \end{bmatrix}
+  .\end{align}
+  \begin{enumerate}
+    \item
+      El método obtenido está dado por la solución a la ecuación en
+      diferencias
+      \begin{equation}
+        \frac{u_{i+1}-2u_{i}+u_{i-1}}{h^{2}}
+        - p_i
+        \frac{u_{i+1}-u_{i-1}}{2h}
+        - q_i
+        u_i
+        =
+        f_i,
+        \quad i=1,\dots,n
+      .\end{equation}
+      Denotemos el lado izquierdo por $L_hu_i$, de modo que
+      \begin{equation}
+        L_hu_i = f_i,
+        \quad i=1,\dots,n
+      .\end{equation}
+      Entonces el error de truncamiento local
+      $\tau_{i}(h)$ está definido por
+      \begin{equation}
+        L_hu(x_i) = f_i + \tau_{i}(h)
+      ,\end{equation}
+      donde $u(x)$ es la solución exacta al problema continuo.
+      Recordemos que, si tenemos cotas $\|u'''\|\leq M$ y
+      $\|u''''\|\leq N$, entonces los esquemas de diferencias
+      centradas satisfacen
+      \begin{align}
+        \frac{u(x_{i+1})-u(x_{i-1})}{2h}
+        &= 
+        u'(x_i)
+        + \frac{h^{2}}{6}M
+        + O(h^{3})
+        \\
+        \frac{u(x_{i+1})-2u(x_{i})+u(x_{i-1})}{h^{2}}
+        &=
+        u''(x_i)
+        + \frac{h^{2}}{12}N
+        + O(h^{3})
+      .\end{align}
+      Por lo tanto,
+      \begin{align}
+        L_hu(x_i)
+          &=
+          \frac{u(x_{i+1})-2u(x_{i})+u(x_{i-1})}{h^{2}}
+          - p_i
+          \frac{u(x_{i+1})-u(x_{i-1})}{2h}
+          - q_i
+          u(x_i)
+        \\
+        &=
+          \left(
+            u''(x_i)
+            + \frac{h^{2}}{12}N
+            + O(h^{3})
+          \right)
+        - p_i
+          \left(
+            u'(x_i)
+            + \frac{h^{2}}{6}M
+            + O(h^{3})
+          \right)
+        - q_i
+        u(x_i)
+        \\
+        &=
+          \left( u''(x_i) - p_i u'(x_i) - q_i u(x_i) \right)
+          + \frac{h^{2}}{12}N
+          - p_i \frac{h^{2}}{6}M
+            + O(h^{3})
+        \\
+        &=
+          f_i
+          +
+          \left( \frac{N}{2} - p_i M \right)
+          \frac{h^{2}}{6}
+            + O(h^{3})
+      .\end{align}
+      Así,
+      \begin{equation}
+        \tau_i(h)
+        =
+        \left( \frac{N}{2} - p_i M \right)
+        \frac{h^{2}}{6}
+        + O(h^{3})
+      ,\end{equation}
+      con lo cual el método es consistente de orden $2$.
+    \item
+      El problema tiene solución si podemos resolver para $U$ de la
+      ecuación
+      \begin{equation}
+        \left(A + \frac{1}{2}hP + h^{2}Q\right)U = -h^{2}F + hE
+      ,\end{equation}
+      donde $A,P,Q,F$ y $E$ están dadas arriba.
+      Para esto, basta ver que la matríz entre paréntesis es
+      invertible para $h$ suficientemente pequeño.
+      Para esto, consideremos la función
+      \begin{equation}
+        \phi(h) = \det \left(A + \frac{1}{2}hP + h^{2}Q\right)
+      .\end{equation}
+      Notemos que $\phi(0)=\det A >0$, pues $A$ es definida positiva.
+      Como el determinante de una matríz $n$ por $n$ es una función
+      polinomial en sus $n^{2}$ entradas, entonces $\phi$ es una
+      función continua de $h$ (aquí estamos considerando que $h$ puede
+      variar aún cuando ya tenemos una $n$ fija).
+      Por lo tanto, para $\epsilon=(\det A) / 2>0$, podemos obtener
+      $\delta>0$ tal que toda $h$ con $|h|<\delta$ satisface
+      \begin{equation}
+        |\phi(h)-\phi(0)|<(\det A) / 2
+      ,\end{equation}
+      por lo cual
+      \begin{equation}
+        0 < \det A = \phi(0) = |-\phi(0)| = 
+        |\phi(h) - \phi(0) - \phi(h)|
+        \leq (\det A) / 2 + |\phi(h)|
+      .\end{equation}
+      Luego, si $|h|<\delta$, entonces
+      \begin{equation}
+        |\phi(h)| \geq (\det A) / 2 > 0
+      ,\end{equation}
+      de donde se sigue que
+      \begin{equation}
+        \phi(h) = \det \left(A + \frac{1}{2}hP + h^{2}Q\right) \neq 0
+      ,\end{equation}
+      así que $A + \frac{1}{2}hP + h^{2}Q$ es invertible y el problema
+      tiene solución
+       \begin{equation}
+        U = \left(A + \frac{1}{2}hP + h^{2}Q\right)^{-1}
+        (-h^{2}F + hE)
+      .\end{equation}
+    \item
+      Para el problema
+      \begin{equation}
+        \left\{
+          \begin{aligned}
+            -u'' + \alpha u' + u &= 0,
+            \\
+            u(0) = 0,\quad u(1)=1,
+          \end{aligned}
+        \right.
+      \end{equation}
+      tenemos $p_i=\alpha$, $q_i=1$, $f_i=0$, $\alpha=0$ y $\beta=1$,
+      así que
+      \begin{align}
+          A
+          &=
+          \begin{bmatrix}
+            2 & -1 \\
+            -1 & 2 & -1 \\[-2mm]
+               & -1 & 2 & \ddots \\
+               & & \ddots & \ddots & \ddots \\
+               &  & & \ddots & 2 & -1 \\
+               &&&& -1 & 2 & -1 \\
+               &&&& & -1 & 2 \\
+          \end{bmatrix}
+        \\
+          P
+          &=
+          \alpha
+          \begin{bmatrix}
+            0 & 1 \\
+            -1 & 0 & 1 \\[-2mm]
+               & -1 & 0 & \ddots \\
+               & & \ddots & \ddots & \ddots \\
+               &  & & \ddots & 0 & 1 \\
+               &&&& -1 & 0 & 1 \\
+               &&&& & -1 & 0
+          \end{bmatrix}
+        \\
+          Q
+          &= I
+      .\end{align}
+      
+      
+      
+      
+  \end{enumerate}
+
 \end{sol}
 
 \begin{exercise}
@@ -184,11 +414,10 @@ Tarea 4 - Diferencias finitas}
   \begin{equation}
     \left\{
       \begin{aligned}
-        -\nabla u &= 2\pi^{2}\sin(\phi x)\sin(\pi y),
-        \quad \text{ en } \Omega = (0,1) ^{2},
+        -\Delta u &= 2\pi^{2}\sin(\phi x)\sin(\pi y)
+        && \text{ en } \Omega = (0,1) ^{2},
         \\
-        u &= 0 
-        \quad \text{ en } \partial\Omega
+        u &= 0 && \text{ en } \partial\Omega
       \end{aligned}
     \right.
   \end{equation}
