@@ -3,7 +3,7 @@
 %\usepackage[spanish]{babel}
 
 \usepackage{amsmath,amsfonts,amsthm}
-\usepackage{enumitem,mathtools}
+\usepackage{enumitem,mathtools,hyperref}
 \usepackage[english]{isodate}
 \setenumerate[0]{label=(\alph*)}
 
@@ -18,17 +18,161 @@
 \newcommand\R{\mathbb R}
 \newcommand\ol\overline
 \renewcommand\phi\varphi
+\renewcommand\contentsname{Contenido}
+\renewcommand\chaptername{Capítulo}
 
-\title{Notas de análisis numérico para ecuaciones diferenciales}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=cyan,
+    citecolor=blue,     
+    urlcolor=cyan,
+    pdftitle={tesis-jorge-alfredo-conjuntos-sobre-marcos},
+    }
+
+\title{Análisis numérico para ecuaciones diferenciales
+  \\ \vspace{5mm}
+\large Notas de clase}
 \author{Jorge Alfredo Álvarez Contreras}
 
 \begin{document}
 \maketitle
 \tableofcontents
 
-\chapter{Problemas de valores iniciales}
+\section*{Referencias}
+
+\begin{itemize}
+  \item
+    Numerical mathematics - A. Quarteroni
+  \item
+    Numerical analysis - Burden
+  \item
+    Finite differences for differential equations - LeVeque
+  \item
+    Theory of ordinary differential equations - Coddington
+  \item
+    P.D.E in mathematical physics - Evans
+  \item
+    P.D.E in action - Salsa
+\end{itemize}
+
+\chapter{Problemas de valores iniciales de E.D.O.}
+
+El problema a tratar es
+\begin{equation}
+  \left\{
+    \begin{aligned}
+      y'(t) &= f(t,y(t)), \quad t \in [t_0,t_0+T]
+      \\
+      y(t_0) &= y_0
+    \end{aligned}
+  \right.
+\end{equation}
 
 \section{Métodos de un paso}
+
+Un método es explícito si $u_{n+1}$ solo depende de $u_n$.
+
+Cualquier método explícito de un paso se puede expresar como
+\begin{equation}
+  u_{n+1} = u_n + h \Phi(t_n,u_n,f_n;h)
+,\end{equation}
+donde $\Phi$ se conoce como la función de incremento.
+El \emph{error residual} $\epsilon_{n+1}$ se define por la ecuación
+\begin{equation}
+  y_{n+1}
+  =
+  y_n + h\Phi(t_n,y_n,f(t_n,y_n);h) + \epsilon_{n+1}
+,\end{equation}
+donde $y_n = y(t_n)$ son los valores en $t_n$ de la solución exacta
+$y(t)$.
+Reacomodando esta ecuación, tenemos
+\begin{equation}
+  \frac{y_{n+1} - y_n}{h}
+  =
+  \Phi(t_n,y_n,f(t_n,y_n);h) + \frac{\epsilon_{n+1}}{h}
+.\end{equation}
+Al término $\tau_{n+1}(h)=\epsilon_{n+1}/h$ se le conoce como
+\emph{error de truncamiento local}. Es decir,
+\begin{equation}
+  \tau_{n+1}(h)
+  =
+  \frac{y_{n+1} - y_n}{h} -\Phi(t_n,y_n,f(t_n,y_n);h)
+.\end{equation}
+El error de truncamiento es
+\begin{equation}
+  \tau(h) = \sup_{0\leq n\leq N_h} |\tau_{n}(h)|
+,\end{equation}
+
+\subsection{Consistencia}
+
+Decimos que un método es consistente si
+\begin{equation}
+  \lim_{h\to 0}\tau(h) = 0
+.\end{equation}
+Más específicamente, decimos que un método consistente tiene orden
+$p$ si
+\begin{equation}
+  \tau(h) = O(h^p) \quad \text{cuando} \quad h\to 0
+.\end{equation}
+
+\begin{example}
+  Para el método de Euler
+  \begin{equation}
+    u_{n+1} = u_n + hf_n
+  ,\end{equation}
+  tenemos $\Phi = f$, así que
+  \begin{align}
+    \tau_{n+1}(h)
+    &= \frac{y_{n+1}-y_n}{h}-\Phi(t_n,y_n,f(t_n,y_n);h) \\
+    &= \frac{y_{n+1}-y_n}{h}-f(t_n,y_n) \\
+    &= \frac{y_{n+1}-y_n}{h}-y'_n \\
+    &= \frac{hy'_n + O(h^2)}{h}-y'_n \\
+    &= y'_n + O(h)-y'_n \\
+    &= O(h)
+  ,\end{align}
+  de modo que el método tiene orden $1$.
+\end{example}
+
+\begin{example}
+  El método
+  \begin{equation}
+    u_{n+1} = u_n + \frac{h}{2}
+    \left[ f_n + f(t_{n+1},u_n + hf_n) \right]
+  \end{equation}
+  tiene orden $2$.
+\end{example}
+
+\subsection{Estabilidad cero}
+
+Consideremos el método de un paso
+\begin{equation}
+  \left\{
+    \begin{aligned}
+      u_{n+1} &= u_n + h\Phi(t_n,u_n,f_n;h),
+      \\
+      u_0 &= y_0.
+    \end{aligned}
+  \right.
+\end{equation}
+Si introducmos perturbaciones $\delta_0,\dots,\delta_{N_h}$,
+obtendremos un método perturbado
+\begin{equation}
+  \left\{
+    \begin{aligned}
+      z_{n+1} &= z_n + h[\Phi(t_n,z_n,f(t_n,z_n);h) + \delta_{n+1}],
+      \\
+      z_0 &= y_0 + \delta_0.
+    \end{aligned}
+  \right.
+\end{equation}
+Decimos que el método es \emph{cero-estable} si, para todo
+$\epsilon>0$ existen $h_0,C>0$ tales que, si las perturbaciones
+cumplen $|\delta_n|\leq\epsilon$ y $0<h\leq h_0$, entonces
+\begin{equation}
+  |z_n - u_n| \leq C\epsilon, \quad n=0,1,\dots,N_h
+.\end{equation}
+
 
 \subsection{Estabilidad absoluta}
 
@@ -1190,7 +1334,7 @@ Despejando $K$, esto es
   K=\lambda (I-zA)^{-1}u_n\bar 1
 .\end{equation}
 
-\chapter{Problemas de valores en la frontera}
+\chapter{Problemas de valores en la frontera (elípticas)}
 
 El problema
 \begin{equation}
@@ -1227,9 +1371,9 @@ A partir de esta expresión para $u(x)$ podemos concluir que
     $\|u\|_{\infty}=\frac{1}{8}\|f\|_\infty$.
 \end{itemize}
 
-\subsection{Diferencias finitas}
+\section{Diferencias finitas en dimensión 1}
 Consideremos el problema en el intervalo $[0,1]$. Aproximaremos la
-solución en los puntos equiditsantes $x_0,x_1,\dots,x_n,x_{n+1}$,
+solución en los puntos equidistantes $x_0,x_1,\dots,x_n,x_{n+1}$,
 donde $x_0=0$ y $x_{n+1}=1$. Es decir, $x_j=jh$ para
 $j=0,1,\dots,n,n+1$, donde $h=\frac{1}{n+1}$.
 Denotaremos como $u$ a la función a aproximar. Las aproximaciones en
@@ -1396,7 +1540,7 @@ El resultado de estabilidad que tenemos es
 .\end{equation}
 
 
-\chapter{Diferencias finitas}
+\section{Diferencias finitas en dimensión 2}
 
 Supongamos que queremos encontrar una solución de la ecuación de
 Poisson en 2 dimensiones
@@ -1533,7 +1677,10 @@ métodos matriciales.
   ,\end{align}
 \end{example}
 
-\textbf{Sobre la convergencia de elementos finitos para}
+\subsection{Convergencia}
+
+Estudiaremos la convergencia del método de elemento finito para el
+problema
 \begin{equation}
   \left\{
     \begin{aligned}
@@ -1559,7 +1706,7 @@ donde $l=\min(k,s-1)$. Más aún,
   Ch^{l+1}\|u\|_{H^{l+1}(0,1)}
 .\end{equation}
 
-\section{Ecuaciones parabólicas e hiperbólicas}
+\chapter{Ecuaciones parabólicas e hiperbólicas}
 
 Consideremos el problema
 \begin{equation}
@@ -1676,7 +1823,7 @@ Escribiendo $M,N,P$ para estas tres matrices, tenemos
   \right.
 \end{equation}
 
-\subsection{Estabilidad}
+\section{Estabilidad}
 
 La estabilidad se estudia aplicando el método al problema de
 prueba
