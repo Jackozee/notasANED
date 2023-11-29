@@ -3,7 +3,7 @@
 %\usepackage[spanish]{babel}
 
 \usepackage{amsmath,amsfonts,amsthm}
-\usepackage{enumitem,mathtools,hyperref}
+\usepackage{enumitem,mathtools,hyperref,todonotes}
 \usepackage[english]{isodate}
 \setenumerate[0]{label=(\alph*)}
 
@@ -11,12 +11,15 @@
 \newtheorem{exercise}{Ejercicio}
 \newtheorem{example}{Ejemplo}
 \newtheorem{theorem}{Teorema}
+\newtheorem{lemma}{Lema}
 \newtheorem{remark}{Observación}
 \newtheorem*{sol}{Solución}
 
 \newcommand\N{\mathbb N}
 \newcommand\R{\mathbb R}
+\newcommand\C{\mathbb C}
 \newcommand\ol\overline
+\newcommand\fd{\mathrm{fd}}
 \renewcommand\phi\varphi
 \renewcommand\contentsname{Contenido}
 \renewcommand\chaptername{Capítulo}
@@ -62,16 +65,50 @@ El problema a tratar es
 \begin{equation}
   \left\{
     \begin{aligned}
-      y'(t) &= f(t,y(t)), \quad t \in [t_0,t_0+T]
+      y'(t) &= f(t,y(t)), \quad t \in (t_0,t_0+T)
       \\
       y(t_0) &= y_0
     \end{aligned}
   \right.
 \end{equation}
 
+Partiremos el intervalo $(t_0,t_0+T)$ en subintervalos
+$[t_n,t_{n+1}]$ para $n=0,\dots,N_h$, donde $t_n=t_0+nh$ y
+$N_h=\max\{n\mid nh\leq T\}$.
+
+Consideraremos métodos numéricos $u_n$ que aproximan los valores
+$y_n=y(t_n)$ de la solución exacta $y(t)$ en $t=t_n$.
+
+\begin{example}
+  Todos estos métodos comienzan definiendo $u_0=y(t_0)=y_0$. La
+  diferencia está en cómo se calculan los valores $u_n$ sucesivos:
+  \begin{enumerate}
+    \item
+      Euler (explícito):
+      \begin{equation}
+        u_{n+1} = u_n + hf_n
+      \end{equation}
+    \item
+      Euler implícito:
+      \begin{equation}
+        u_{n+1} = u_n + hf_{n+1}
+      \end{equation}
+    \item
+      Crank-Nicholson:
+      \begin{equation}
+        u_{n+1} = u_n + \frac{h}{2}(f_n + f_{n+1})
+      \end{equation}
+    \item
+      Heun:
+      \begin{equation}
+        u_{n+1} = u_n + \frac{h}{2}[f_n + f(t_{n+1},u_n+hf_n)]
+      \end{equation}
+  \end{enumerate}
+\end{example}
+
 \section{Métodos de un paso}
 
-Un método es explícito si $u_{n+1}$ solo depende de $u_n$.
+Un método de un paso es explícito si $u_{n+1}$ solo depende de $u_n$.
 
 Cualquier método explícito de un paso se puede expresar como
 \begin{equation}
@@ -110,8 +147,8 @@ Decimos que un método es consistente si
 \begin{equation}
   \lim_{h\to 0}\tau(h) = 0
 .\end{equation}
-Más específicamente, decimos que un método consistente tiene orden
-$p$ si
+Más específicamente, decimos que un método consistente es
+\emph{consistente de orden $p$} si
 \begin{equation}
   \tau(h) = O(h^p) \quad \text{cuando} \quad h\to 0
 .\end{equation}
@@ -173,6 +210,73 @@ cumplen $|\delta_n|\leq\epsilon$ y $0<h\leq h_0$, entonces
   |z_n - u_n| \leq C\epsilon, \quad n=0,1,\dots,N_h
 .\end{equation}
 
+\begin{lemma}[Desigualdad de Gronwall]
+  Sean $k_n,g_0,p_n\geq 0$. Supongamos que $\phi_n$ son tales que
+  \begin{enumerate}
+    \item
+      $\phi_0\leq g_0$,
+    \item
+      $\phi_n\leq
+      g_0+\sum_{s=0}^{n-1}p_s+\sum_{s=0}^{n-1}k_s\phi_s$ para $n\geq
+      1$.
+  \end{enumerate}
+  Entonces
+  \begin{equation}
+    p_n \leq
+    \Big(g_0+\sum_{s=0}^{n-1}p_s\Big)
+    \exp\Big(\sum_{s=0}^{n-1}k_s\Big)
+  .\end{equation}
+\end{lemma}
+
+\begin{theorem}[de estabilidad cero]
+  Consideremos el método explícito de un paso
+  \begin{equation}
+    \left\{
+      \begin{aligned}
+        u_{n+1} &= u_n + h\Phi(t_n,u_n,f_n;h)
+        \\
+        u_0 &= y_0
+      \end{aligned}
+    \right.
+  \end{equation}
+  para resolver el PVI $y'(t)=f(t,y(t))$ con $y(t_0)=y_0$.
+  Si $\Phi$ es Lipschitz continua con respecto al segundo argumento,
+  con constante de Lipstchitz $\Lambda$ (independiente de $h$ y $t_n$
+  ) entonces el método es cero-estable.
+\end{theorem}
+
+\begin{example}
+  El método de Euler explícito tiene $\Phi=f$. Si $f(t,y)$ es
+  Lipschitz en $y$, entonces el método es cero-estable.
+\end{example}
+
+\subsection{Convergencia}
+
+Un método es convergente si, para todo $n=0,\dots,N_h$,
+\begin{equation}
+  y_n = u_n + O(h^p) \quad \text{ cuando } h\to 0
+\end{equation}
+para algún $p\geq 1$. En este caso, decimos que el método es
+convergente de orden $p$.
+
+\begin{theorem}[de convergencia]
+  Bajo las mismas hipótesis del teorema de estabilidad cero, se
+  satisface
+  \begin{equation}
+    |y_n-u_n| \leq (|y_0-u_0|+hn\tau(h))e^{nh\Lambda},
+    \quad n=1,\dots,N_h
+  .\end{equation}
+  Por lo tanto, si el método es consistente ($\tau(h)\to 0$ cuando
+  $h\to 0$) y $u_0\to y_0$, entonces el método es convergente.
+  Además, si $\tau(h)=O(h^{p})$ (el método es consistente de orden
+  $p$) entonces $y_n = u_n + O(h^p)$ (el método es convergente de
+  orden $p$).
+\end{theorem}
+
+\begin{theorem}[de equivalencia de Lax]
+  Un método consistente es cero estable si, y solo si, es
+  convergente.
+\end{theorem}
 
 \subsection{Estabilidad absoluta}
 
@@ -187,7 +291,6 @@ cumplen $|\delta_n|\leq\epsilon$ y $0<h\leq h_0$, entonces
     \right.
   \end{equation}
   La solución es, claramente, $y(t)=e^{-2t}$.
-
   El método de Euler es
   \begin{equation}
     \left\{
@@ -200,24 +303,115 @@ cumplen $|\delta_n|\leq\epsilon$ y $0<h\leq h_0$, entonces
   Es decir, la función de incremento es simplemente $\Phi=f$.
   Como $\Phi(t,y)=f(t,y)=-2y$ es Lipschitz en su segundo argumento
   podemos concluir que el método es consistente (de orden $1$).
-  También es convergente.
+  Por los teoremas de arriba, también es convergente.
+  El método
   \begin{equation}
     \left\{
     \begin{aligned}
-      u_{n+1} &= u_n + -2u_nh = (1-2h)u_n \\
-      u_0 &= 1
+      u_{n+1} &= u_n + h(-2u_n) = (1-2h)u_n, \\
+      u_0 &= 1.
     \end{aligned}
     \right.
-  .\end{equation}
-  
-
+  \end{equation}
+  tiene solución explícita $u_n=(1-2h)^{n}$. Por lo tanto, $u_n\to 0$
+  si, y solo si, $|1-2h|<1$, i.e. $0<h<1$.
 \end{example}
 
-\begin{remark}
-  No todos los métodos implicitos son inconcidionalmente estables.
+\begin{definition}
+  Consideremos un método numérico
+  \begin{equation}
+    \left\{
+      \begin{aligned}
+        u_{n+1} &= u_n + h\Phi(t_n,y_n,f_n;h)
+        \\
+        u_0 &= y_0
+      \end{aligned}
+    \right.
+  \end{equation}
+  para el problema $y'(t)=f(t,y(t))$, $y(t_0)=y_0$.
+  Decimos que el método es absolutamente estable para $\lambda\in\C$,
+  $\Re\lambda<0$ y $h>0$, si, al aplicarlo al problema de prueba
+  \begin{equation}
+    \left\{
+      \begin{aligned}
+        y' &= \lambda y
+        \\
+        y(0) &= 1
+      \end{aligned}
+    \right.
+  \end{equation}
+  la solución numérica satisface $u_n\to 0$ cuando $n\to\infty$.
+
+  Si la aproximación $u_n$ obtenida al aplicar el método al problema
+  de prueba depende solo de $z=h\lambda$, definimos la región de
+  estabilidad absoluta del método como
+  \begin{equation}
+    \mathcal A
+    =
+    \{z \in \C^{-}\mid u_n\to 0 \text{ cuando } n\to \infty\}
+  ,\end{equation}
+  donde $\C^{-}$ consiste en los $z$ con $\Re z<0$.
+\end{definition}
+
+\begin{remark}\leavevmode
+  \begin{itemize}
+    \item
+      Todos los métodos explícitos son condicionalmente estables.
+    \item
+      No todos los métodos implicitos son inconcidionalmente
+      estables.
+  \end{itemize}
 \end{remark}
 
-\subsection{Ecuaciones en diferencias }
+\section{Métodos multipaso}
+
+Un método de $q$ pasos (implícito o explícito) es aquel en que
+$u_{n+1}$ depende de los $q$ valores anteriores a $u_{n+1}$
+(es decir, $u_n,u_{n-1},\dots,u_{n-q+1}$), pero no de $u_k$
+con $k<n-q+1$.
+
+\begin{example}
+  El método
+  \begin{equation}
+    \frac{ u_{n+1}-u_{n-1} }{2h} = f_n
+  ,\end{equation}
+  o bien
+  \begin{equation}
+    u_{n+1} = u_{n-1} + 2hf_n
+  ,\end{equation}
+  es un método de $2$ pasos. Con valores iniciales $u_0,u_1$, el
+  método calcula $u_2,u_3,\dots$. Si se conoce solo $u_0$, entonces
+  $u_1$ se puede aproximar con algún otro método.
+\end{example}
+
+En general, consideraremos métodos de $p+1$ pasos de la forma
+\begin{equation}
+  u_{n+1}
+  =
+  \sum_{j=0}^{p}a_ju_{n-j}
+  +h \sum_{j=0}^{p}b_jf_{n-j}
+  +hb_{-1}f_{n+1}, \quad n=p,p+1,p+1,\dots
+\end{equation}
+(con $a_p,b_p\neq 0$), donde se necesitan $p+1$ valores iniciales
+\begin{equation}
+  u_0,u_1,\dots,u_{p-1}
+.\end{equation}
+Si $b_{-1}=0$, el método es explícito. De otro modo, el método es
+implícito.
+
+Existen dos familias importantes de métodos multipaso
+que se obtienen integrando un polinomio interpolador de $f$:
+\begin{itemize}
+  \item
+    Métodos Adams-Bashforth (explícitos),
+  \item
+    Métodos Adams-Moulton (implícitos).
+\end{itemize}
+
+Antes de pasar a estos métodos, recordaremos un poco de cómo resolver
+ecuaciones en diferencias.
+
+\subsection{Ecuaciones en diferencias}
 
 Consideremos ecuaciones en diferencias de la forma
 \begin{equation}\label{eq:ec_diferencias}
@@ -343,9 +537,7 @@ grado $m-1$.
   .\end{equation}
 \end{example}
 
-\section{Métodos multipaso}
-
-\section{Métodos Adams}
+\subsection{Métodos Adams}
 
 El problema de valor inicial
 \begin{equation}
@@ -356,18 +548,18 @@ El problema de valor inicial
     \end{aligned}
   \right.
 \end{equation}
-en $I=[t_0,t_N]$, es equivalente a las ecuaciones integrales
+en $I=[t_0,t_N]$, es equivalente a las $N$ ecuaciones integrales
 \begin{equation}
   y(t_{n+1}) = y(t_n) + \int_{t_n}^{t_{n+1}}\! f(t,y(t))\,dt
 \end{equation}
-para $n=0,\dots,N-1$.
-
-La aproximación se construye como
+para $n=0,\dots,N-1$. Los métodos Adams se obtienen al resolver para
+$u_n$ de las ecuaciones
 \begin{equation}
   u_{n+1} = u_n + \int_{t_n}^{t_{n+1}}\Pi(t)\,dt,
 \end{equation}
-donde $\Pi(t)$ es el polinomio interpolador de $f(t,y(t))$.
-
+donde $\Pi(t)$ es un polinomio interpolador de $f(t,y(t))$.
+La diferencia entre los métodos Adams-Bashforth y Adams-Moulton
+radica en los puntos que se toman para interpolar.
 
 \subsection{Metodos Adams-Bashforth (explícitos)}
 Interpolar en $t_{n},t_{n-1},\dots,t_{n-p}$.
@@ -487,7 +679,7 @@ Interpolar con $t_{n+1},t_n,\dots,t_{n-p}$.
     + \frac{h}{6}(\Pi(t_{n})+4\Pi(t_n + h / 2)+\Pi(t_{n+1})) \\
     &= u_{n}
     + \frac{h}{6}(f_{n}+4\Pi(t_n + h / 2)+f_{n+1}) \\
-    &= 
+    &= \dots
   \end{align}
 \end{example}
 
@@ -546,7 +738,7 @@ de distintos órdenes (usando $t_{n+1},t_{n},t_{n-1},\dots,t_{n-p}$).
         f_{n+1} = \frac{1}{2h}[u_{n-1} - 4u_n + 3u_{n+1}]
       .\end{equation}
   \end{enumerate}
-\end{example}o
+\end{example}
 
 \subsection{Análisis de los métodos multipaso}
 El método multipaso
@@ -560,36 +752,50 @@ El método multipaso
   \quad
   n=p, p+1,\dots
 \end{equation}
-tiene error de truncamiento local
+tiene error residual $\epsilon_{n+1}$ definido por
 \begin{equation}
-  \tau_{n+1}
+  y_{n+1}
+  =
+  \sum_{j=0}^{p}a_jy_{n-j}
+  +
+  h
+  \sum_{j=0}^{p}b_jy'_{n-j} + b_{-1}y'_{n+1}
+  +\epsilon_{n+1}
+\end{equation}
+para $n=p, p+1,\dots,N-1$, donde $y_{k}=y(t_{k})$,
+$y'_{k}=y'(t_{k})=f(t_{k},y(t_{k}))$.
+Por lo tanto, el error de truncamiento local
+$\tau_{n+1}(h) = \epsilon_{n+1}/h$ es
+\begin{equation}
+  \tau_{n+1}(h)
   =
   \frac{1}{h}
   \left[
     y_{n+1}
     -
     \sum_{j=0}^{p} a_jy_{n-j}
-    +
+    -
     h
     \sum_{j=1}^{p}b_{j}y'_{n-j}
-    +
-    b_{-1}f_{n+1}
+    -
+    b_{-1}y'_{n+1}
   \right]
-,\end{equation}
-donde $y_{n-j}=y(t_{n-j})$,
-$y'_{n-j}=y'(t_{n-j})=f(t_{n-j},y(t_{n-j}))$.
-El error de truncamiento global es
+.\end{equation}
+
+\subsubsection{Consistencia}
+
+El método es consistente si $\lim_{h\to 0}\tau(h)=0$, donde $\tau(h)$
+es el error de truncamiento global definido por
 \begin{equation}
   \tau(h) = \max_n |\tau_{n}(h)|
 .\end{equation}
 
-El método es consistente si $\lim_{h\to 0}\tau(h)=0$.
-El método tiene orden $q$ si $\tau(h)=O(h^{q})$ para algún $q\geq 1$.
-Si el método tiene orden $q$, entonces
+El método es consistente de orden $q\geq 1$ si $\tau(h)=O(h^{q})$.
+En este caso,
 \begin{equation}
   \tau_{n+1}(h) = C_qh^qy^{(q+1)}(t_n) + O(h^{q+1})
-.\end{equation}
-La constante $C_q$ se llama constante de error.
+\end{equation}
+y la constante $C_q$ se llama constante de error.
 
 \begin{example}
   Método de Euler:
@@ -668,7 +874,7 @@ La constante $C_q$ se llama constante de error.
   cuando $h\to 0$.
 \end{proof}
 
-\subsection{Condiciones de la raíz}
+\subsubsection{Condiciones de la raíz}
 
 El problema de prueba
 \begin{equation}
@@ -866,7 +1072,7 @@ convergencia.
   raíz y, por los teoremas, se sigue que los métodos son convergentes.
 \end{example}
 
-\subsection{Estabilidad absoluta}
+\subsubsection{Estabilidad absoluta}
 Al aplicar el método multipaso al problema de prueba $y'=\lambda y$,
 $y(0)=1$, los métodos multipaso se reducen a una ecuación en
 diferencias con soluciones de la forma
@@ -1033,6 +1239,43 @@ La idea es
     \end{align}
     y luego se define $u_{n+1}=u_{n+1}^{(m)}$.
 \end{itemize}
+
+\subsection{Sobre la convergencia de los métodos predictor -
+corrector}
+
+Sean $\tilde q$ y $q$ los órdenes del método predictor y corrector,
+respectivamente. Si $y\in C^{\hat q+1}$, donde $\hat q=\max(\tilde
+q,q)$, entonces
+\begin{align}
+  y_{n+1}
+  - \sum_{j=0}^{\tilde p}\tilde a_j y_{n-j}
+  - h \sum_{j=0}^{\tilde p} \tilde b_j y'_{n-j}
+  = \tilde C_{\tilde q + 1}h^{\tilde q + 1}y^{(\tilde q + 1)}_{n-p}
+  + O(h^{\tilde q + 2}),
+  \\
+  y_{n+1}
+  - \sum_{j=0}^{p}a_j y_{n-j}
+  - h \sum_{j=0}^{p} b_j y'_{n-j}
+  = C_{q + 1}h^{q + 1}y^{(q + 1)}_{n-p}
+  + O(h^{q + 2})
+,\end{align}
+donde $\tilde C_{q+1}$ y $C_{q+1}$ son las constantes de error de los
+métodos predictor y corrector, respectivamente.
+
+Para $P(EC)^{m}$, se cumple
+\begin{itemize}
+  \item
+    si $\tilde q\geq q$ (o $\tilde q<q$ con $m<q-\tilde q$ ),
+    entonces el método tiene el mismo orden y error principal de
+    truncamiento local.
+  \item
+    si $\tilde q<q$ y $m=q-\tilde q$, el método tiene el mismo orden
+    que el corrector pero distinto error principal de truncamiento
+    local.
+  \item
+    si $\tilde q < q$ y $m\leq q-\tilde q - 1$, entonces el método
+    tiene orden $\tilde q + m$ (y, por lo tanto, menor a $q$).
+\end{itemize}
   
 
 \subsection{Metodos Runge-Kutta}
@@ -1158,6 +1401,70 @@ donde $A$, $b$ y $c$ son los coeficientes $a_{ij}$, $b_i$, $c_i$.
 
 \subsection{Estabilidad absoluta de los métodos Runge-Kutta}
 
+Los métodos de Runge-Kutta son
+\begin{equation}
+  u_{n+1} = u_n + h F(t_n,u_n,h,f)
+\end{equation}
+\begin{align}
+  F
+    &=
+    \sum_{i=1}^{s}b_ik_i
+  \\[-3mm]
+  \text{donde} \quad
+  k_i
+    &= f(t_n+c_ih, u_n+h \sum_{j=1}^{s}a_{ij} k_j)
+    \\[-4mm]
+  \text{y} \quad
+  c_i
+    &= \sum_{j=1}^{s}a_{ij}
+.\end{align}
+
+Aplicado al problema de prueba $f(t,y)=\lambda y$, tenemos
+\begin{align}
+  k_i
+  &= \lambda(u_n+h \sum_{j=1}^{s}a_{ij} k_j) \\
+  &= \lambda u_n+h\lambda \sum_{j=1}^{s}a_{ij} k_j
+,\end{align}
+así que, poniendo los $k_i$ en un vector columna $K$, esto es
+\begin{align}
+  K = \lambda u_n\bar 1+zAK
+.\end{align}
+Despejando $K$, esto es
+\begin{equation}
+  K=\lambda (I-h\lambda A)^{-1}u_n\bar 1
+.\end{equation}
+Luego,
+\begin{align}
+  u_{n+1} 
+  &= u_n + h F \\
+  &= u_n + h b^{T}K \\
+  &= u_n + h \lambda b^{T}(I-h\lambda A)^{-1}u_n\bar 1 \\
+  &= (1 + h \lambda b^{T}(I-h\lambda A)^{-1}\bar 1)u_n
+,\end{align}
+por lo cual
+\begin{equation}
+  u_n = 
+  (1 + h \lambda b^{T}(I-h\lambda A)^{-1}\bar 1)^{n}
+.\end{equation}
+Se sigue que $u_n\to 0$ si, y solo si,
+\begin{equation}
+  |1+zb^{T}(I-zA)^{-1}\bar 1|<1
+,\end{equation}
+donde $z=h\lambda$. La función
+ \begin{equation}
+  R(z) = 1+zb^{T}(I-zA)^{-1}\bar 1
+\end{equation}
+se llama función de estabilidad.
+Se puede demostrar que
+\begin{equation}
+  R(z) = \frac{\det(I-zA+z\bar 1 b^{T})}{\det(I-zA)}
+.\end{equation}
+En particular, si el método es explícito, entonces $\det(I-zA)=1$,
+así que
+\begin{equation}
+  R(z) = \det(I-zA+z\bar 1 b^{T})
+.\end{equation}
+
 \begin{example}
   El método de Heun es
   \begin{align}
@@ -1204,6 +1511,26 @@ donde $A$, $b$ y $c$ son los coeficientes $a_{ij}$, $b_i$, $c_i$.
   y la región de estabilidad absoluta es la que cumple $|R(z)|<1$,
   como ya habíamos determinado antes.
 \end{example}
+
+\begin{remark}\leavevmode
+  \begin{itemize}
+    \item
+      El orden de un método Runge-Kutta explícito de $s$ etapas es
+      $\leq s$. De hecho,
+      \begin{equation}
+        \begin{array}{c|cccccccc|c}
+          \text{orden}
+            & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & q\geq 9 \\
+          \hline
+          \text{\# mínimo de etapas}
+            & 1 & 2 & 3 & 4 & 6 & 7 & 9 & 11 & \geq q+3.
+        \end{array}
+      \end{equation}
+    \item
+      El orden de un método Runge-Kutta implicito de $s$ etapas es
+      $\leq 2s$.
+  \end{itemize}
+\end{remark}
 
 \subsection{Tamaño de paso adaptativo}
 
@@ -1298,41 +1625,8 @@ Notemos que, entonces
   &= |y_{n+1} - u_{n+1}| \\
   &= |e_{n+1}|.
 \end{align}
-
-\subsection{Problema de tarea}
-
-Los métodos de Runge-Kutta son
-\begin{equation}
-  u_{n+1} = u_n + h F(t_n,u_n,h,f)
-\end{equation}
-\begin{align}
-  F
-    &=
-    \sum_{i=1}^{s}b_ik_i
-  \\[-3mm]
-  \text{donde} \quad
-  k_i
-    &= f(t_n+c_ih, u_n+h \sum_{j=1}^{s}a_{ij} k_j)
-    \\[-4mm]
-  \text{y} \quad
-  c_i
-    &= \sum_{j=1}^{s}a_{ij}
-.\end{align}
-
-Aplicado al problema de prueba $f(t,y)=\lambda y$, tenemos
-\begin{align}
-  k_i
-  &= \lambda(u_n+h \sum_{j=1}^{s}a_{ij} k_j) \\
-  &= \lambda u_n+z \sum_{j=1}^{s}a_{ij} k_j
-,\end{align}
-así que, poniendo los $k_i$ en un vector columna $K$, esto es
-\begin{align}
-  K = \lambda u_n\bar 1+zAK
-.\end{align}
-Despejando $K$, esto es
-\begin{equation}
-  K=\lambda (I-zA)^{-1}u_n\bar 1
-.\end{equation}
+\dots
+\todo{jiji}
 
 \chapter{Problemas de valores en la frontera (elípticas)}
 
@@ -1368,7 +1662,7 @@ A partir de esta expresión para $u(x)$ podemos concluir que
   \item
     si $f\geq 0$ en $[0,1]$, entonces $u\geq 0$ en $[0,1]$,
   \item
-    $\|u\|_{\infty}=\frac{1}{8}\|f\|_\infty$.
+    $\|u\|_{\infty}=\frac{1}{8}\|f\|_\infty$ (principio del máximo).
 \end{itemize}
 
 \section{Diferencias finitas en dimensión 1}
@@ -1430,12 +1724,16 @@ Este es un sistema de ecuaciones
   \begin{bmatrix}
     \alpha \\ 0 \\ 0 \\ 0 \\ \vdots \\ 0 \\ \beta
   \end{bmatrix}
+,\end{equation}
+o bien
+\begin{equation}
+  A_{\fd}U = h^{2}F + B
 .\end{equation}
-El problema tiene solución única, ya que la matríz de la izquierda es
-simétrica y definida positiva. Consideraciones acerca de qué metodos
-son adecuados para resolverlo (e.g., factorización de Cholesky)
-se pueden encontrar en el libro de álgebra lineal de James Demmel.
-
+El problema tiene solución única, ya que la matríz $A_\fd$ de la
+izquierda es simétrica y definida positiva. Consideraciones acerca de
+qué metodos son adecuados para resolverlo (e.g., factorización de
+Cholesky) se pueden encontrar en el libro de álgebra lineal de James
+Demmel.
 
 \subsection{Consistencia}
 
@@ -1459,7 +1757,7 @@ en $C^{2}[0,1]$. Partiendo de la ecuación
 \begin{equation}
   -u''(x) = f(x)
 ,\end{equation}
-definimos el error de truncamiento local como la diferencia
+definimos el error de truncamiento local a partir de la ecuación
 \begin{equation}
   (L_h u)(x_j) = f(x_j) + \tau_h(x_j), \quad j=1,\dots,n
 .\end{equation}
@@ -1510,7 +1808,7 @@ por lo cual
   &=
     \frac{h^{2}}{4!} [ f''(\xi_i) + f''(\eta_i) ]
 .\end{align}
-Si $\|f''\|_{\infty}\leq M$, entonces cada una de estos términos está
+Si $\|f''\|_{\infty}\leq M$, entonces cada $\tau_h(x_j)$ está
 acotado por $h^{2}M/12$, así que podemos acotar el error de
 truncamiento (global) como
 \begin{align}
@@ -1528,7 +1826,7 @@ La norma cuadrada de la función $u$
 \end{equation}
 se puede discretizar como
 \begin{equation}
-  \|u\|^{2}_h = h\sum_{k=0}^{n+1}c_ku_k
+  \|u\|^{2}_h = h\sum_{k=0}^{n+1}c_ku_k^{2}
   \qquad \text{ donde }
   c_1=c_2=\dots=c_n=1 
   \text{ y }
@@ -1539,8 +1837,42 @@ El resultado de estabilidad que tenemos es
   \|u_h\|_h \leq \frac{1}{2} \|f_h\|_h
 .\end{equation}
 
+\subsection{Convergencia}
 
-\section{Diferencias finitas en dimensión 2}
+Denotemos
+\begin{equation}
+  \|w_h\|_{h,\infty} = \max_{n}|w_h(x_n)|
+.\end{equation}
+
+\begin{theorem}
+  Suponga que $f\in C^{2}[0,1]$. Entonces el error
+  $e(x_j)=u(x_j)-u_h(x_j)$ satisface
+  \begin{equation}
+    \|u-u_h\|_{h,\infty} \leq \frac{h^{2}}{96}\|f''\|_{\infty}
+  ,\end{equation}
+  es decir, $u_h\to u$ cuando $h\to 0$. Más aún, el orden de
+  convergencia es $2$.
+\end{theorem}
+
+\subsection{Distintas condiciones de frontera}
+
+Ahora consideremos el problema
+\begin{equation}
+  \left\{
+    \begin{aligned}
+      -u'' = f,&
+      \\
+      u'(a)=\alpha,\quad u(b)=\beta.&
+    \end{aligned}
+  \right.
+\end{equation}
+\dots PENDIENTE
+
+\subsubsection{Nodos fantasma}
+\dots PENDIENTE
+
+
+\subsection{Dimensión 2}
 
 Supongamos que queremos encontrar una solución de la ecuación de
 Poisson en 2 dimensiones
