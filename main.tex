@@ -30,7 +30,7 @@
     filecolor=cyan,
     citecolor=blue,     
     urlcolor=cyan,
-    pdftitle={tesis-jorge-alfredo-conjuntos-sobre-marcos},
+    pdftitle={analisis-numerico-notas-2023b},
     }
 
 \title{Análisis numérico para ecuaciones diferenciales
@@ -1856,7 +1856,7 @@ Denotemos
 
 \subsection{Distintas condiciones de frontera}
 
-Ahora consideremos el problema
+Ahora consideremos el problema con condiciones de frontera mixtas
 \begin{equation}
   \left\{
     \begin{aligned}
@@ -1866,11 +1866,89 @@ Ahora consideremos el problema
     \end{aligned}
   \right.
 \end{equation}
-\dots PENDIENTE
+Para puntos interiores, ($i=1,\dots,n$) podemos usar el esquema
+anterior, de orden $2$:
+\begin{equation}
+  - \left( \frac{u_{j-1}-2u_j+u_{j+1}}{h^{2}} \right)
+    =
+    f(x_j), \quad j=1,\dots,n
+.\end{equation}
+Elegiremos $u_h(x_{n+1})=u_h(b)=\beta$. Sin embargo, estas son solo
+$n$ ecuaciones, que no son suficientes para determinar los $n+2$
+valores de $u_i$. La condición de frontera derecha $u(b)=\beta$ nos da
+una ecuación más: $u_{n+1}=\beta$. Sin embargo,
+¿cómo aproximamos la solución cerca de $x_0=a$? Debemos imponer
+una ecuación más para que la aproximación esté bien definida.
+Esta última ecuación puede ser, por ejemplo, el esquema
+\begin{equation}
+  \frac{u_1-u_0}{h},
+\end{equation}
+el cual aproxima $u'(x_0)$ a orden $1$, pues
+\begin{align}
+  \frac{u(x_1)-u(x_0)}{h}
+  &=
+  \frac{
+    u(x_0)
+    +hu'(x_0)
+    +\frac{h^{2}}{2}u''(x_0)
+    +O(h^{3})
+    -u(x_0)
+  }{h} \\
+  &=
+    u'(x_0)
+    +\frac{h}{2}u''(x_0)
+    +O(h^{2})
+.\end{align}
+Esto ya se puede resolver, pero el esquema total termina siendo de
+orden $1$. Queremos encontrar una mejor aproximación.
 
 \subsubsection{Nodos fantasma}
-\dots PENDIENTE
+Se agrega un nodo más en dirección normal hacia afuera de la frontera
+para los puntos donde se imponen condiciones de frontera con primera
+derivada. Por ejemplo, para el caso de arriba, agregamos un punto
+nuevo $x_{-1}=x_0-h=a-h$, al cual le corresponde una incógnita nueva
+$u_{-1}$. Ahora aproximamos la derivada $u'(a)=u'(x_0)$ con una
+diferencia centrada
+\begin{equation}
+  \frac{u_{1}-u_{-1}}{2h}
+.\end{equation}
+Este esquema ahora es de orden $2$, pues
+\begin{align}
+  \frac{u(x_1)-u(x_{-1})}{2h}
+  &=
+  \frac{
+    u(x_0)+hu'(x_0)+\frac{h^{2}}{2}u''(x_0)+\frac{h^{3}}{6}u'''(x_0)
+    +O(h^{4})
+  }{2h} \\
+  &\quad -
+  \frac{
+    u(x_0)-hu'(x_0)+\frac{h^{2}}{2}u''(x_0)-\frac{h^{3}}{6}u'''(x_0)
+    +O(h^{4})
+  }{2h} \\
+  &= u'(x_0)+\frac{h^{2}}{6}u'''(x_0) +O(h^{3})
+.\end{align}
+Para completar las ecuaciones del esquema, ahora tomamos $x_0$ como
+punto interior, así que en total tenemos las $n+3$ ecuaciones
+\begin{equation}
+  \left\{
+    \begin{aligned}
+      &- \left( \frac{u_{j-1}-2u_j+u_{j+1}}{h^{2}} \right)
+        =
+        f(x_j), \quad j=0,1,\dots,n
+      \\
+      &\frac{u_{1}-u_{-1}}{2h} = \alpha
+      \\
+      &u(x_{n+1})=\beta
+    \end{aligned}
+  \right.
+\end{equation}
+para las $n+3$ incógnitas $u_{-1},u_0,u_1,\dots,u_n,u_{n+1}$.
+El esquema resultante es de orden $2$.
 
+Si en el extremo derecho tuviéramos otra condición de primer orden,
+introduciríamos otro punto extra $x_{n+2}$, tomaríamos a $x_{n+1}$
+como punto interior y usaríamos otra diferencia centrada, con lo cual
+obtendríamos $n+4$ ecuaciones para $n+4$ incógnitas.
 
 \subsection{Dimensión 2}
 
